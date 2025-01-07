@@ -1,5 +1,5 @@
 {
-  "name": "xslint",
+  "name": "@maxonfjvipon/xslint",
   "version": "0.0.0",
   "description": "XSL Linter",
   "main": "src/xslint.js",

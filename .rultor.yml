@@ -46,7 +46,7 @@ release:
     echo "Check if xslint exists:"
     npm view xlint@${tag} && exit 1
     echo "Publishing xslint:"
-    npm publish --userconfig=../npmrc
+    npm publish --userconfig=../npmrc --access=public
 merge:
   script: |-
     npm test
