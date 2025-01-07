@@ -1,0 +1,30 @@
+{
+  "name": "xslint",
+  "version": "0.0.0",
+  "description": "XSL Linter",
+  "main": "src/xslint.js",
+  "bin": {
+    "xslint": "src/xslint.js"
+  },
+  "scripts": {
+    "postinstall": "patch-package",
+    "test": "grunt"
+  },
+  "keywords": [
+    "xsl",
+    "linter"
+  ],
+  "author": "maxonfjvipon",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.14.0",
+    "grunt": "^1.6.1",
+    "grunt-eslint": "^24.3.0",
+    "grunt-mocha-cli": "^7.0.0",
+    "mocha": "^11.0.1",
+    "patch-package": "^8.0.0"
+  }
+}

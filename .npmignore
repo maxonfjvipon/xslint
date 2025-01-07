@@ -1,0 +1,16 @@
+.pdd
+.0pdd.yml
+.eslintrc
+.gitattributes
+.github/
+.pdd
+.rultor.yml
+Gruntfile.js
+test/
+node_modules/
+temp/
+mochawesome-report/
+.idea/
+coverage.html
+*.tgz
+CITATION.cff
