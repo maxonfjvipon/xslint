@@ -40,3 +40,4 @@ jobs:
         with:
           fix: true
           globs: '**/*.md'
+          config: '.markdownlint.json'
