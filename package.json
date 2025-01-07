@@ -7,6 +7,7 @@
     "xslint": "src/xslint.js"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "test": "grunt"
   },
   "keywords": [
@@ -19,10 +20,11 @@
     "commander": "^13.0.0"
   },
   "devDependencies": {
-    "mocha": "^11.0.1",
+    "eslint-config-google": "^0.14.0",
     "grunt": "^1.6.1",
     "grunt-eslint": "^24.3.0",
     "grunt-mocha-cli": "^7.0.0",
-    "eslint-config-google": "^0.14.0"
+    "mocha": "^11.0.1",
+    "patch-package": "^8.0.0"
   }
 }

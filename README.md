@@ -1,4 +1,4 @@
-## Xslint
+# Xslint
 
 XSL Linter CLI
 
