@@ -1,5 +1,5 @@
 diff --git a/node_modules/grunt-mocha-cli/lib/index.js b/node_modules/grunt-mocha-cli/lib/index.js
-index 59f7a07..13e22fd 100644
+index 59f7a07..72bf0fc 100644
 --- a/node_modules/grunt-mocha-cli/lib/index.js
 +++ b/node_modules/grunt-mocha-cli/lib/index.js
 @@ -2,6 +2,7 @@
@@ -21,3 +21,12 @@ index 59f7a07..13e22fd 100644
      if (Array.isArray(options.flags)) {
        args = args.concat(options.flags)
      }
+@@ -124,6 +129,8 @@ module.exports = function(options) {
+ 
+     spawnOptions.args = args
+ 
++    console.log(`SPAWN OPTS: ${spawnOptions}`)
++
+     grunt.util.spawn(spawnOptions, (error, output) => {
+       const combinedOutput = output.stdout + output.stderr
+ 
