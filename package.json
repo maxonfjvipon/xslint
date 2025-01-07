@@ -1,6 +1,6 @@
 {
   "name": "@maxonfjvipon/xslint",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "XSL Linter",
   "main": "src/xslint.js",
   "bin": {
