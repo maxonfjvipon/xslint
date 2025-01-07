@@ -1,0 +1,23 @@
+diff --git a/node_modules/grunt-mocha-cli/lib/index.js b/node_modules/grunt-mocha-cli/lib/index.js
+index 59f7a07..13e22fd 100644
+--- a/node_modules/grunt-mocha-cli/lib/index.js
++++ b/node_modules/grunt-mocha-cli/lib/index.js
+@@ -2,6 +2,7 @@
+ const fs = require('fs')
+ const path = require('path')
+ const grunt = require('grunt')
++const os = require("node:os");
+ 
+ const BOOL_OPTIONS = [
+   'allow-uncaught',
+@@ -70,6 +71,10 @@ module.exports = function(options) {
+       })
+     }
+     
++    if (os.platform() === 'win32') {
++      spawnOptions.shell = true
++    }
++
+     if (Array.isArray(options.flags)) {
+       args = args.concat(options.flags)
+     }
