@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-const runXslint = require('./helpers');
-const assert = require('assert');
-const version = require('../src/version');
+const runXslint = require('./helpers')
+const assert = require('assert')
+const version = require('../src/version')
 
 describe('xslint', function() {
   it('should print its own version', function() {
@@ -36,5 +36,6 @@ describe('xslint', function() {
     assert.ok(stdout.includes('Usage: xslint'))
     assert.ok(stdout.includes(version.what))
     assert.ok(stdout.includes(version.when))
-  });
+  })
+  it('should print help verbose screen', function() {})
 })

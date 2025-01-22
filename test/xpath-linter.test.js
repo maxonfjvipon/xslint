@@ -22,9 +22,40 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
-module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
-}
+const {evaluate_xpath} = require('../src/xpath-linter')
+const {allFilesFrom} = require('../src/helpers')
+const yaml = require('yaml')
+const path = require('path')
+const fs = require('fs')
+const assert = require('assert')
+const xml = require('../src/xml')
+
+/**
+ * Yaml test packs.
+ * @type {Array<String>}
+ */
+const PACKS = allFilesFrom(path.resolve(__dirname, 'resources', 'packs'))
+
+describe('xpath-linter', function() {
+  PACKS.forEach((pack) => {
+    const yml = yaml.parse(fs.readFileSync(pack, 'utf-8'))
+    it(`should find ${yml.found} node(s) by xpath in ${yml.pack}`, function() {
+      const xpath = yaml.parse(
+        fs.readFileSync(
+          path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
+          'utf-8'
+        )
+      ).xpath
+      const input = xml.parsedFromString(yml.input)
+      const actual = evaluate_xpath(input, xpath).length
+      assert.equal(
+        actual,
+        yml.found,
+        [
+          `Xpath '${xpath}' evaluated on given XML should have returned ${yml.found} nodes`,
+          `, but returned ${actual}. XML is: \n${input}`
+        ].join('')
+      )
+    })
+  })
+})

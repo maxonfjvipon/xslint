@@ -22,9 +22,50 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
+const {evaluateXPathToNodes} = require('fontoxpath')
+
+/**
+ * Prefixes.
+ * @type {{xsl: string}}
+ */
+const PREFIXES = {
+  'xsl': 'http://www.w3.org/1999/XSL/Transform'
+}
+
+/**
+ * Resolve prefix.
+ * @param {String} prefix - Prefix itself
+ * @return {null|String} - Resolved prefix
+ */
+const resolvePrefix = function(prefix) {
+  let spec = null
+  if (Object.hasOwn(PREFIXES, prefix)) {
+    spec = PREFIXES[prefix]
+  }
+  return spec
+};
+
+/**
+ * Evaluate Xpath on given XSL and return found nodes.
+ * @param {Document} xsl - XSL document parsed as {@link Document}
+ * @param {String} xpath - Xpath
+ * @return {Node[]} - All matching Nodes, in the order defined by the XPath.
+ */
+const evaluate_xpath = function(xsl, xpath) {
+  return evaluateXPathToNodes(
+    xpath, xsl, null, {}, {namespaceResolver: resolvePrefix}
+  )
+}
+
+/**
+ * Lint given XSL by Xpath packs.
+ * @param {Document} xsl - XSL document parsed as {@link Document}
+ */
+const lint_by_xpath = function(xsl) {
+
+}
+
 module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
+  lint_by_xpath,
+  evaluate_xpath,
 }

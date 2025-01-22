@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,24 +22,50 @@
  * SOFTWARE.
  */
 
-const {program} = require('commander')
-const version = require('./version')
+const path = require('path')
+const fs = require('fs')
+const {allFilesFrom} = require('./helpers')
+const {lint_by_xpath} = require('./xpath-linter')
+const xml = require('./xml')
 
-program
-  .name('xslint')
-  .usage('[options] command')
-  .summary('XSL Linter')
-  .description('XLS Linter (' + version.what + ' built on ' + version.when + ')')
-  .version(version.what, '-v, --version', 'Output the version number')
-  .helpOption('-?, --help', 'Print this help information');
+/**
+ * Linters.
+ * @type {Array.<function(xsl: String): Array.<Object>>}
+ */
+const LINTERS = [
+  lint_by_xpath,
+]
 
-program
-  .option('--verbose', 'Print debug messages and full output of child processes');
-
-try {
-  program.parse(process.argv)
-} catch (e) {
-  console.error(e.message)
-  console.debug(e.stack)
-  process.exit(1)
+/**
+ * Returns all .xsl files paths depending on provided path.
+ * @param {String} pth - Path to certain file or directory where .xsl should be placed
+ * @return {Array.<String>} - Array of .xsl files paths
+ */
+const xsls = function(pth) {
+  let files
+  if (fs.statSync(pth).isDirectory()) {
+    files = allFilesFrom(pth)
+  } else {
+    files = [pth]
+  }
+  return files.filter((file) => file.endsWith('.xsl'))
 }
+
+const xslint = function(pth, options) {
+  const stylesheets = xsls(path.resolve(process.cwd(), pth))
+  console.debug(`Found ${stylesheets.length} .xsl files to process`)
+  const errors = []
+  for (const stylesheet of stylesheets) {
+    let xsl
+    try {
+      xsl = xml.parsedFromFile(stylesheet)
+    } catch (err) {
+      throw err
+    }
+    for (const lint of LINTERS) {
+      errors.push(lint(xsl))
+    }
+  }
+}
+
+module.exports = xslint;

@@ -22,9 +22,46 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
-module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
+const fs = require('fs')
+const {DOMParser} = require('xmldom')
+
+/**
+ * XML Parser
+ * @type {DOMParser}
+ */
+const parser = new DOMParser()
+
+/**
+ * Parse XML file by given path.
+ * @param {string} path - Path to XML file
+ * @return {any} - Parsed XML structure ready for XSL transformations or XPATH checking
+ */
+const fromFile = function(path) {
+  if (!fs.existsSync(path)) {
+    throw new Error(`XML file ${path} does not exist, can't parse`)
+  }
+  if (fs.statSync(path).isDirectory()) {
+    throw new Error(`XML file ${path} is directory, can't parse`)
+  }
+  return fromString(fs.readFileSync(path, 'utf-8'))
 }
+
+/**
+ * Parse XML from string.
+ * @param {String} str - XML as string
+ * @return {Document}
+ */
+const fromString = function(str) {
+  let parsed
+  try {
+    parsed = parser.parseFromString(str, 'text/xml')
+  } catch (err) {
+    throw new Error(`Couldn't parse XML:\n${str}\n\nCause: ${err.message}`)
+  }
+  return parsed
+}
+
+module.exports = {
+  parsedFromFile: fromFile,
+  parsedFromString: fromString
+};

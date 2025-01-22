@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -22,9 +23,27 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
-module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
+const {program} = require('commander')
+const version = require('./version')
+const xslint = require('./xslint')
+
+program
+  .name('xslint')
+  .usage('path [options]')
+  .summary('XSL Linter')
+  .description('XLS Linter (' + version.what + ' built on ' + version.when + ')')
+  .version(version.what, '-v, --version', 'Output the version number')
+  .helpOption('-?, --help', 'Print this help information')
+  .option('--verbose', 'Print debug messages and full output of child processes')
+  .argument('[path]', 'path to file or directory to process', '.')
+  .action((path) => {
+    xslint(path, program.opts())
+  })
+
+try {
+  program.parse(process.argv)
+} catch (e) {
+  console.error(e.message)
+  console.debug(e.stack)
+  process.exit(1)
 }

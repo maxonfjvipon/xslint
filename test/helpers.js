@@ -57,7 +57,7 @@ const execNode = function(js, args, print) {
  * @return {String} Stdout
  */
 const runXslint = function(args, print = true) {
-  return execNode(path.resolve('./src/xslint.js'), args, print)
+  return execNode(path.resolve('./src/index.js'), args, print)
 };
 
 module.exports = runXslint

@@ -2,9 +2,9 @@
   "name": "@maxonfjvipon/xslint",
   "version": "0.0.0",
   "description": "XSL Linter",
-  "main": "src/xslint.js",
+  "main": "src/index.js",
   "bin": {
-    "xslint": "src/xslint.js"
+    "xslint": "src/index.js"
   },
   "scripts": {
     "postinstall": "patch-package",
@@ -17,7 +17,10 @@
   "author": "maxonfjvipon",
   "license": "MIT",
   "dependencies": {
-    "commander": "^13.0.0"
+    "commander": "^13.0.0",
+    "fontoxpath": "^3.33.0",
+    "xmldom": "^0.6.0",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
     "eslint-config-google": "^0.14.0",

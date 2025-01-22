@@ -22,9 +22,27 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
+const fs = require('fs')
+const path = require('path')
+
+/**
+ * Get all the files recursively from given directory
+ * @param {String} dir - Directory path
+ * @return {Array.<String>} - Array of file in given directory
+ */
+const allFilesFrom = function(dir) {
+  const files = fs.readdirSync(dir, {withFileTypes: true})
+  const res = []
+  for (const file of files) {
+    if (file.isDirectory()) {
+      res.push(...allFilesFrom(path.join(dir, file.name)))
+    } else {
+      res.push(path.resolve(dir, file.name))
+    }
+  }
+  return res
+}
+
 module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
+  allFilesFrom
 }
