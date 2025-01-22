@@ -24,9 +24,10 @@
 
 const path = require('path')
 const fs = require('fs')
-const {allFilesFrom} = require('./helpers')
+const {allFilesFrom, xml} = require('./helpers')
 const {lint_by_xpath} = require('./xpath-linter')
-const xml = require('./xml')
+const {logger} = require('./logger')
+const stdout = require('./stdout')
 
 /**
  * Linters.
@@ -51,10 +52,28 @@ const xsls = function(pth) {
   return files.filter((file) => file.endsWith('.xsl'))
 }
 
+/**
+ * Process cli options.
+ * @param {{
+ *  logLevel: string
+ * }} options - CLI options
+ */
+const process_options = function(options) {
+  logger.setLevel(options.logLevel)
+}
+
+/**
+ * Entry point.
+ * @param {String} pth - Path to file or directory with .xsl files to lint
+ * @param {{
+ *  logLevel: string
+ * }} options - CLI options
+ */
 const xslint = function(pth, options) {
+  process_options(options)
   const stylesheets = xsls(path.resolve(process.cwd(), pth))
-  console.debug(`Found ${stylesheets.length} .xsl files to process`)
-  const errors = []
+  logger.debug(`Found ${stylesheets.length} .xsl files to process`)
+  const defects = []
   for (const stylesheet of stylesheets) {
     let xsl
     try {
@@ -62,9 +81,33 @@ const xslint = function(pth, options) {
     } catch (err) {
       throw err
     }
+    logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
-      errors.push(lint(xsl))
+      defects.push(
+        ...lint(xsl).map(
+          (defect) => ({
+            ...defect,
+            file: stylesheet
+          })
+        )
+      )
     }
+  }
+  if (defects.length > 0) {
+    logger.info(`Processed files: ${stylesheets.length}, defects found ${defects.length}`)
+    for (const defect of defects) {
+      stdout[defect.severity](
+        '%s(%d:%d) %s (%s)',
+        defect.file,
+        defect.line,
+        defect.pos,
+        defect.message,
+        defect.name,
+      )
+    }
+    process.exit(1)
+  } else {
+    logger.info(`Processed ${stylesheets.length} files, no defects found`)
   }
 }
 

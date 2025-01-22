@@ -37,5 +37,8 @@ describe('xslint', function() {
     assert.ok(stdout.includes(version.what))
     assert.ok(stdout.includes(version.when))
   })
-  it('should print help verbose screen', function() {})
+  it('should set log level', function() {
+    const stdout = runXslint(['src', '--log-level=debug'])
+    assert.ok(stdout.includes('Log level set to \'debug\''))
+  })
 })

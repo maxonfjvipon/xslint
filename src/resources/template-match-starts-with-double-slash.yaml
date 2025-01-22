@@ -20,11 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: xpath/template-double-slash
-found: 1
-input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="//objects">
-      <xsl:copy-of select="."/>
-    </xsl:template>
-  </xsl:stylesheet>
+xpath: //xsl:template[starts-with(@match, '//')]
+severity: warning
+message: It's not recommended to start 'match' attribute of 'xsl:template' element with '//'
