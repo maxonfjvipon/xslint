@@ -3,6 +3,7 @@ node_modules/
 coverage/
 .idea
 .xlint/
+xslint.iml
 mochawesome-report/
 coverage.html
 target/
