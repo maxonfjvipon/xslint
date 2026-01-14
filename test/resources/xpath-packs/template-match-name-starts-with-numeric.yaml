@@ -20,13 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: template-match-starts-with-double-slash
+pack: template-match-name-starts-with-numeric
 found:
-  amount: 1
-  positions: [[2, 3]]
+  amount: 2
+  positions: [[3,5],[5,5]]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="//objects/o/o[1]/o[1]">
-      <xsl:copy-of select="."/>
+    <xsl:template match="o">
+      <xsl:variable name="1o" select = "expression">
+      </xsl:variable>
+      <xsl:function name="my:22w">
+      </xsl:function>
     </xsl:template>
   </xsl:stylesheet>
