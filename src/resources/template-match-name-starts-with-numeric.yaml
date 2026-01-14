@@ -1,0 +1,25 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2025 Max Trunnikov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+xpath: //*[name()="xsl:variable" or name()="xsl:template"][starts-with(@name,'1') or starts-with(@name,'1') or starts-with(@name,'2') or starts-with(@name,'3') or starts-with(@name,'4') or starts-with(@name,'5') or starts-with(@name,'6') or starts-with(@name,'7') or starts-with(@name,'8') or starts-with(@name,'9')] | //xsl:function[starts-with(substring-after(@name, ":"), '0') or starts-with(substring-after(@name, ":"), '1') or starts-with(substring-after(@name, ":"), '2') or starts-with(substring-after(@name, ":"), '3') or starts-with(substring-after(@name, ":"), '4') or starts-with(substring-after(@name, ":"), '5') or starts-with(substring-after(@name, ":"), '6') or starts-with(substring-after(@name, ":"), '7') or starts-with(substring-after(@name, ":"), '8') or starts-with(substring-after(@name, ":"), '9')]
+severity: warning
+message: The variable/function/template name starts with a numeric character.
