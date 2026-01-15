@@ -23,12 +23,3 @@
 xpath: //*[@*[name()="match" or name()="select"][contains(., "child::") or contains(., "attribute::") or contains(., "parent::node()")]]
 severity: warning
 message: "Using the lengthy axis specifiers like child::, attribute:: or parent::node()"
-
-
-
-
-
-
-
-
-
