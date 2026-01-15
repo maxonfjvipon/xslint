@@ -23,7 +23,7 @@
 pack: template-match-starts-with-double-slash
 found:
   amount: 1
-  positions: [[2, 3]]
+  positions: [ [ 2, 3 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="//objects/o/o[1]/o[1]">

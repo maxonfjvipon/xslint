@@ -20,11 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-
 pack: template-match-use-node-set-extension
 found:
   amount: 1
-  positions: [[4, 7]]
+  positions: [ [ 4, 7 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="/o">
@@ -33,4 +32,3 @@ input: |-
       </out>
     </xsl:template>
   </xsl:stylesheet>
-

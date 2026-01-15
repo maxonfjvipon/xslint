@@ -23,7 +23,7 @@
 pack: template-match-short-names
 found:
   amount: 1
-  positions: [[3, 5]]
+  positions: [ [ 3, 5 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="o">

@@ -20,11 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-
 pack: template-match-empty-content-in-instructions
 found:
   amount: 2
-  positions: [ [3,5],[5,5]]
+  positions: [ [ 3, 5 ] , [ 5, 5 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="/objects/o/o">
