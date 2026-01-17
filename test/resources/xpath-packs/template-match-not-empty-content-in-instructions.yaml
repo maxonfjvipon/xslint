@@ -31,10 +31,10 @@ input: |-
         <xsl:choose>
           <xsl:when select="o/o/o[1]">
             <HR STYLE="color:red"/>
-          </xsl:when> 
+          </xsl:when>
           <xsl:otherwise>
             <BR/>
-          </xsl:otherwise> 
+          </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
       <xsl:if s1="o/o">
