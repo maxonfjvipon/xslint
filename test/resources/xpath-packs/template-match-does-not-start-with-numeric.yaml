@@ -20,6 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //*[name()='xsl:for-each' or name()='xsl:if' or name()='xsl:otherwise' or name()='xsl:when'][(count(node()) = count(text())) and (normalize-space() = "")]
-severity: warning
-message: Don't use empty content for instructions like 'xsl:for-each' 'xsl:if' 'xsl:when' etc.
+pack: template-match-short-names
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="o">
+      <xsl:variable name="oo" select = "expression">
+      </xsl:variable>
+      <xsl:function name="my:tw">
+      </xsl:function>
+      <xsl:template name="tq">
+      </xsl:template>
+      <xsl:variable select = "expression">
+      </xsl:variable>
+      <xsl:function>
+      </xsl:function>
+      <xsl:template>
+      </xsl:template>
+    </xsl:template>
+  </xsl:stylesheet>

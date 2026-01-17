@@ -20,6 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //*[name()='xsl:for-each' or name()='xsl:if' or name()='xsl:otherwise' or name()='xsl:when'][(count(node()) = count(text())) and (normalize-space() = "")]
-severity: warning
-message: Don't use empty content for instructions like 'xsl:for-each' 'xsl:if' 'xsl:when' etc.
+pack: template-match-setting-value-of-variable-incorrectly
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:variable name="qw" select="ooo">
+      </xsl:variable>
+    </xsl:template>
+  </xsl:stylesheet>

@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: template-match-can-use-abbreviated-axis-specifier
+pack: template-match-use-double-slash
 found:
   amount: 1
   positions: [ [ 2, 3 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="R/R/child::node()">
+    <xsl:template match="/objects//o/o[1]/o[1]">
+      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>

@@ -20,6 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //*[name()='xsl:for-each' or name()='xsl:if' or name()='xsl:otherwise' or name()='xsl:when'][(count(node()) = count(text())) and (normalize-space() = "")]
-severity: warning
-message: Don't use empty content for instructions like 'xsl:for-each' 'xsl:if' 'xsl:when' etc.
+pack: template-match-can-use-abbreviated-axis-specifier
+found:
+  amount: 3
+  positions: [ [ 2, 3 ], [ 3, 3 ], [ 6, 3 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template mat="R/R/child::qwer">
+    <xsl:if oo="attribute::ooo = 'true'">
+      <p>OOO</p>
+    </xsl:if>
+    <xsl:if oo="parent::n">
+      <p>Ooooo</p>
+    </xsl:if>
+    </xsl:template>
+  </xsl:stylesheet>

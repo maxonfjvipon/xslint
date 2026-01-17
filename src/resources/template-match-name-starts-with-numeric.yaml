@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //*[name()="xsl:variable" or name()="xsl:template"][starts-with(@name,'1') or starts-with(@name,'1') or starts-with(@name,'2') or starts-with(@name,'3') or starts-with(@name,'4') or starts-with(@name,'5') or starts-with(@name,'6') or starts-with(@name,'7') or starts-with(@name,'8') or starts-with(@name,'9')] | //xsl:function[starts-with(substring-after(@name, ":"), '0') or starts-with(substring-after(@name, ":"), '1') or starts-with(substring-after(@name, ":"), '2') or starts-with(substring-after(@name, ":"), '3') or starts-with(substring-after(@name, ":"), '4') or starts-with(substring-after(@name, ":"), '5') or starts-with(substring-after(@name, ":"), '6') or starts-with(substring-after(@name, ":"), '7') or starts-with(substring-after(@name, ":"), '8') or starts-with(substring-after(@name, ":"), '9')]
+xpath: //*[name() = 'xsl:variable' or name() = 'xsl:template'] [@name] [contains('0123456789', substring(@name, 1, 1))] | //xsl:function[@name][ contains('0123456789', substring(substring-after(@name, ":"), 1, 1))]
 severity: warning
 message: The variable/function/template name starts with a numeric character.
