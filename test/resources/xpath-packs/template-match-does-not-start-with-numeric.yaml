@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: template-match-short-names
+pack: template-match-name-starts-with-numeric
 found:
   amount: 0
   positions: [ ]
