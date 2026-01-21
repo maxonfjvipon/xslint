@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: /xsl:stylesheet[@version = "2.0"]//*[@select[contains(., ":node-set")]]
+xpath: /xsl:stylesheet[@version = "2.0"]//*[contains(@select, ":node-set")]
 severity: warning
 message: Don't use node-set extension function if using XSLT 2.0.
