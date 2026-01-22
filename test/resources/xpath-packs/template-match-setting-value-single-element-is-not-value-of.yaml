@@ -29,8 +29,9 @@ input: |-
     <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:variable name="qw">
         <xsl:value-of select="o/o/o"/>
-        <xsl:template match="/objects/o/o[1]/o[1]">
-        </xsl:template>
+        <xsl:if s1="o/o">
+          <p><strong>B</strong></p>
+        </xsl:if>
         <xsl:value-of select="o/o/o1"/>
       </xsl:variable>
     </xsl:template>
