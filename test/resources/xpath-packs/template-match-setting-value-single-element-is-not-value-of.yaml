@@ -20,6 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //xsl:variable[count(xsl:value-of) >= 1]
-severity: warning
-message: Assign value to a variable using the 'select' syntax if assigning a string value.
+pack: template-match-setting-value-of-variable-incorrectly
+found:
+  amount: 1
+  positions: [ [ 3, 5 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:variable name="qw">
+        <xsl:value-of select="o/o/o"/>
+        <xsl:template match="/objects/o/o[1]/o[1]">
+        </xsl:template>
+        <xsl:value-of select="o/o/o1"/>
+      </xsl:variable>
+    </xsl:template>
+  </xsl:stylesheet>
