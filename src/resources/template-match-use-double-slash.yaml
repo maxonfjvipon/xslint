@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //xsl:template[contains(@match, '//') and not(starts-with(@match, '//'))]
+xpath: //xsl:template[not(starts-with(@match, '//')) and contains(@match, '//')]
 severity: warning
 message: It's not recommended to use 'match' attribute of 'xsl:template' element with '//'
