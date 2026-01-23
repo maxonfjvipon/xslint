@@ -20,13 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: template-match-starts-with-double-slash
+pack: template-match-name-starts-with-numeric
 found:
   amount: 0
   positions: [ ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="."/>
+    <xsl:template match="o">
+      <xsl:variable name="oo" select = "expression">
+      </xsl:variable>
+      <xsl:function name="my:tw">
+      </xsl:function>
+      <xsl:template name="tq">
+      </xsl:template>
+      <xsl:variable select = "expression">
+      </xsl:variable>
+      <xsl:function>
+      </xsl:function>
+      <xsl:template>
+      </xsl:template>
     </xsl:template>
   </xsl:stylesheet>
