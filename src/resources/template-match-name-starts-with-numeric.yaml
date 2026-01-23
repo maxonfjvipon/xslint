@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //*[name() = 'xsl:variable' or name() = 'xsl:template'] [@name] [contains('0123456789', substring(@name, 1, 1))] | //xsl:function[@name][ contains('0123456789', substring(substring-after(@name, ":"), 1, 1))]
+xpath: //*[name()='xsl:variable' or name()='xsl:template'][@name][contains('0123456789', substring(@name, 1, 1))] | //xsl:function[@name][contains('0123456789', substring(substring-after(@name, ":"), 1, 1))]
 severity: warning
 message: The variable/function/template name starts with a numeric character.
