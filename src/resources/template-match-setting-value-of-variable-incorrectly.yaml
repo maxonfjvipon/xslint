@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xpath: //xsl:variable[count(xsl:value-of) >= 1]
+xpath: //xsl:variable[(count(*) >= 1) and (count(xsl:value-of) >= 1)]
 severity: warning
 message: Assign value to a variable using the 'select' syntax if assigning a string value.
