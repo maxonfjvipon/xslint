@@ -20,18 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-pack: template-match-can-use-abbreviated-axis-specifier
-found:
-  amount: 3
-  positions: [ [ 2, 3 ], [ 3, 3 ], [ 6, 3 ] ]
-input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template mat="R/R/child::qwer">
-    <xsl:if oo="attribute::ooo = true()">
-      <p>OOO</p>
-    </xsl:if>
-    <xsl:if oo="parent::n">
-      <p>Ooooo</p>
-    </xsl:if>
-    </xsl:template>
-  </xsl:stylesheet>
+xpath: //@*[(contains(., 'true') and not(contains(., 'true()'))) or (contains(., 'false') and not(contains(., 'false()')))]
+severity: warning
+message: Incorrectly using the boolean constants as 'true' or 'false'. Use true() instead of "true" and false() instead of "false".
