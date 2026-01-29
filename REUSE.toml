@@ -33,6 +33,7 @@ path = [
     "package.json",
     "patches/grunt-mocha-cli+7.0.0.patch",
     "renovate.json",
+    ".npmignore",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2025-2026 Max Trunnikov"
