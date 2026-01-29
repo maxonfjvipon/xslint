@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: daily
+'on':
+  schedule:
+    - cron: '30 1 * * *'
+jobs:
+  build:
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        os: [ windows-2022, ubuntu-24.04, macos-15 ]
+        node: [ 20, 22 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: npm install --force -g grunt-cli
+      - run: npm test
+  report-fail:
+    name: Create issue on failure
+    needs: build
+    if: failure() && github.event.pull_request == null
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: jayqi/failed-build-issue-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
