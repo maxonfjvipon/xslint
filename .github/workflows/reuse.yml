@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-name: pdd
+name: reuse
 'on':
   push:
     branches:
@@ -10,8 +10,10 @@ name: pdd
     branches:
       - master
 jobs:
-  pdd:
+  reuse:
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: volodya-lombrozo/pdd-action@master
+      - uses: fsfe/reuse-action@v6
+
