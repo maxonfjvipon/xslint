@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-function-template-complexity
+found:
+  amount: 1
+  positions: [ [ 2, 3 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:function name="my:sum" as="xs:integer">
+      <xsl:param name="x1" as="xsl:integer"/>
+      <xsl:param name="x2" as="xsl:integer"/>
+      <xsl:param name="x3" as="xsl:integer"/>
+      <xsl:param name="x4" as="xsl:integer"/>
+      <xsl:param name="x5" as="xsl:integer"/>
+      <xsl:param name="x6" as="xsl:integer"/>
+      <xsl:param name="x7" as="xsl:integer"/>
+      <xsl:param name="x8" as="xsl:integer"/>
+      <xsl:param name="x9" as="xsl:integer"/>
+      <xsl:param name="x10" as="xsl:integer"/>
+      <xsl:param name="x11" as="xsl:integer"/>
+      <xsl:param name="x12" as="xsl:integer"/>
+      <xsl:param name="x13" as="xsl:integer"/>
+      <xsl:param name="x14" as="xsl:integer"/>
+      <xsl:param name="x15" as="xsl:integer"/>
+      <xsl:param name="x16" as="xsl:integer"/>
+      <xsl:param name="x17" as="xsl:integer"/>
+      <xsl:param name="x18" as="xsl:integer"/>
+      <xsl:param name="x19" as="xsl:integer"/>
+      <xsl:param name="x20" as="xsl:integer"/>
+      <xsl:param name="x21" as="xsl:integer"/>
+      <xsl:param name="x22" as="xsl:integer"/>
+      <xsl:param name="x23" as="xsl:integer"/>
+      <xsl:param name="x24" as="xsl:integer"/>
+      <xsl:param name="x25" as="xsl:integer"/>
+      <xsl:param name="x26" as="xsl:integer"/>
+      <xsl:param name="x27" as="xsl:integer"/>
+      <xsl:param name="x28" as="xsl:integer"/>
+      <xsl:param name="x29" as="xsl:integer"/>
+      <xsl:param name="x30" as="xsl:integer"/>
+      <xsl:param name="x31" as="xsl:integer"/>
+      <xsl:param name="x32" as="xsl:integer"/>
+      <xsl:param name="x33" as="xsl:integer"/>
+      <xsl:param name="x34" as="xsl:integer"/>
+      <xsl:param name="x35" as="xsl:integer"/>
+      <xsl:param name="x36" as="xsl:integer"/>
+      <xsl:param name="x37" as="xsl:integer"/>
+      <xsl:param name="x38" as="xsl:integer"/>
+      <xsl:param name="x39" as="xsl:integer"/>
+      <xsl:param name="x40" as="xsl:integer"/>
+      <xsl:param name="x41" as="xsl:integer"/>
+      <xsl:param name="x42" as="xsl:integer"/>
+      <xsl:param name="x43" as="xsl:integer"/>
+      <xsl:param name="x44" as="xsl:integer"/>
+      <xsl:param name="x45" as="xsl:integer"/>
+      <xsl:param name="x46" as="xsl:integer"/>
+      <xsl:param name="x47" as="xsl:integer"/>
+      <xsl:param name="x48" as="xsl:integer"/>
+      <xsl:param name="x49" as="xsl:integer"/>
+      <xsl:param name="x50" as="xsl:integer"/>
+      <xsl:value-of select="$x1+$x2+$x3+$x4+$x5+$x6+$x7+$x8+$x9+$x10+$x11+$x12+$x13+$x14+$x15+$x16+$x17+$x18+$x19+$x20+$x21+$x22+$x23+$x24+$x25+$x26+$x27+$x28+$x29+$x30+$x31+$x32+$x33+$x34+$x35+$x36+$x37+$x38+$x39+$x40+$x41+$x42+$x43+$x44+$x45+$x46+$x47+$x48+$x49+$x50"/> 
+    </xsl:function>
+  </xsl:stylesheet>
