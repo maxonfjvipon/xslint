@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[count(//xsl:template[count(*) < 3]) >= 10]
+severity: warning
+message: Too many low granular templates in the stylesheet (10 or more).
