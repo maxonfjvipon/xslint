@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-not-creating-element-correctly
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="o">
+      <div class="container"/>
+      <xsl:element name="{concat('xsl',':','template')}" />
+      <xsl:element name="xsl:html" namespace="http://www.w3.org/1999/xhtml"/>
+      <xsl:element name="{@ooo}"/>
+      <xsl:element name="{$ooo}"/>
+    </xsl:template>
+  </xsl:stylesheet>
