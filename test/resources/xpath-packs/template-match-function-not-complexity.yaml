@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-function-template-complexity
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:function name="my:factorial" as="xs:integer">
+      <xsl:param name="number" as="xs:integer"/>
+      <xsl:sequence
+        select="if ($number=0) then 1 else $number * my:factorial($number-1)"/>
+    </xsl:function>
+  </xsl:stylesheet>
