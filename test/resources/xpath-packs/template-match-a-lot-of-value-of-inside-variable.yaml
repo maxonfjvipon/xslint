@@ -14,4 +14,7 @@ input: |-
         <xsl:value-of select="o/o/o2"/>
       </xsl:variable>
     </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
   </xsl:stylesheet>
