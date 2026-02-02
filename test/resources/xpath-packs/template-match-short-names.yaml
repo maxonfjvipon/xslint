@@ -14,5 +14,10 @@ input: |-
       </xsl:function>
       <xsl:template name="q">
       </xsl:template>
+      <xsl:template match='oo'>
+        <xsl:call-template name='q'>
+          <xsl:with-param name='oooo'>bold</xsl:with-param>
+        </xsl:call-template>
+      </xsl:template>
     </xsl:template>
   </xsl:stylesheet>
