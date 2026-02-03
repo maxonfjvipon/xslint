@@ -7,7 +7,7 @@ found:
   positions: [ [ 2, 3 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:output method="xml"/> 
+    <xsl:output method="xml"/>
     <xsl:template match="/">
       <html>
         <xsl:apply-templates/>
