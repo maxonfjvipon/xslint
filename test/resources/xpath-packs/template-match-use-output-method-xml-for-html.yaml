@@ -13,7 +13,7 @@ input: |-
         <xsl:apply-templates/>
       </html>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[1]">
+    <xsl:template match="/objects/o/o[1]">
       <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>
