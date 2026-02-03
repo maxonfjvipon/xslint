@@ -9,7 +9,7 @@ input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template name="ooo">
     </xsl:template>
-    <xsl:template match='oo'>
+    <xsl:template match='o'>
       <xsl:call-template name='ooo'>
         <xsl:with-param name='oooo'>bold</xsl:with-param>
       </xsl:call-template>
