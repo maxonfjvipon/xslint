@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet/xsl:output[@method = 'xml'][//xsl:template[starts-with(@match, '/') and (count (.//html | .//HTML) > 0)]]
+severity: warning
+message: Using the output method 'xml' when generating HTML code.
