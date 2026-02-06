@@ -7,7 +7,7 @@ found:
   positions: [ [ 2, 3 ], [ 3, 3 ], [ 6, 3 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template mat="R/R/child::qwer">
+    <xsl:template match="R/R/child::qwer">
     <xsl:if oo="attribute::ooo = true()">
       <p>OOO</p>
     </xsl:if>
