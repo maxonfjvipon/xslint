@@ -15,4 +15,7 @@ input: |-
         <p>not OOO</p>
       </xsl:if>
     </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
   </xsl:stylesheet>

@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[count(//xsl:template | //xsl:function) = 1]
+severity: warning
+message: Using a single template/function in the stylesheet. You can modularize the code.

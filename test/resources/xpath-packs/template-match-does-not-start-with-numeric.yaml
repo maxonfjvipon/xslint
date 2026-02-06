@@ -14,11 +14,19 @@ input: |-
       </xsl:function>
       <xsl:template name="tq">
       </xsl:template>
+      <xsl:template match='oo'>
+        <xsl:call-template name='tq'>
+          <xsl:with-param name='oooo'>bold</xsl:with-param>
+        </xsl:call-template>
+      </xsl:template>
       <xsl:variable select = "expression">
       </xsl:variable>
       <xsl:function>
       </xsl:function>
       <xsl:template>
       </xsl:template>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>
