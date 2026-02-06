@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-using-disable-output-escaping
+found:
+  amount: 1
+  positions: [ [ 4, 7 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <title>
+        <xsl:text disable-output-escaping="yes">ooo &lt;hr/&gt; ooo
+        </xsl:text>
+      </title>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+  </xsl:stylesheet>

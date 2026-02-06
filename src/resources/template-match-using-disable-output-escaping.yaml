@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //*[@disable-output-escaping = "yes"]
+severity: warning
+message: Have set the disable-output-escaping attribute to 'yes'. Please relook at the stylesheet logic.
