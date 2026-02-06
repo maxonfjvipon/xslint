@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:template[not(@match)][@name][not(//xsl:call-template/@name = @name)]
+severity: warning
+message: Named templates in stylesheet are unused.
