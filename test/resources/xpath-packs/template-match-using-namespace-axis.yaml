@@ -7,10 +7,10 @@ found:
   positions: [ ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="/*[in-scope-prefixes(/*)]">
+    <xsl:template match="/o/o[in-scope-prefixes(.)='o']">
       <xsl:copy-of select="."/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="in-scope-prefixes(/*)"/>
+      <xsl:value-of select="namespace-uri-for-prefix(., 'o')"/>
     </xsl:template>
   </xsl:stylesheet>
