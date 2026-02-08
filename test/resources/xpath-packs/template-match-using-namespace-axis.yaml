@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-using-namespace-axis
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="/*[in-scope-prefixes(/*)]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:copy-of select="in-scope-prefixes(/*)"/>
+    </xsl:template>
+  </xsl:stylesheet>
