@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //*[(@match | @select)[contains(., 'namespace::')][/xsl:stylesheet/@version = '2.0']]
+severity: warning
+message: Using the deprecated namespace axis, when working in XSLT 2.0 mode. If you need information about the in-scope namespaces of an element should use the functions fn:in-scope-prefixes and fn:namespace-uri-for-prefix.
