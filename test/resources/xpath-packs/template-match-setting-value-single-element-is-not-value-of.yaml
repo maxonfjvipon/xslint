@@ -15,8 +15,9 @@ input: |-
         </xsl:if>
         <xsl:value-of select="o/o/o1"/>
       </xsl:variable>
+      <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="$qw"/>
+      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>

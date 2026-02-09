@@ -4,12 +4,13 @@
 pack: template-match-name-starts-with-numeric
 found:
   amount: 3
-  positions: [ [ 3, 5 ], [ 5, 5 ], [ 7, 5 ] ]
+  positions: [ [ 3, 5 ], [ 6, 5 ], [ 8, 5 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:template match="o">
       <xsl:variable name="1o" select = "expression">
       </xsl:variable>
+      <xsl:copy-of select="$1o"/>
       <xsl:function name="my:22w">
       </xsl:function>
       <xsl:template name="1q">
@@ -21,6 +22,6 @@ input: |-
       </xsl:template>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="$1o"/>
+      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>
