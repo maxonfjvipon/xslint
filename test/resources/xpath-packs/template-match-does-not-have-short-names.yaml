@@ -12,6 +12,7 @@ input: |-
       </xsl:variable>
       <xsl:function name="my:tw">
       </xsl:function>
+      <xsl:value-of select="my:tw()"/>
       <xsl:template name="tq">
       </xsl:template>
       <xsl:variable select = "expression">
@@ -25,6 +26,9 @@ input: |-
           <xsl:with-param name='oooo'>bold</xsl:with-param>
         </xsl:call-template>
       </xsl:template>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:value-of select="my:tw()"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:copy-of select="$oo"/>

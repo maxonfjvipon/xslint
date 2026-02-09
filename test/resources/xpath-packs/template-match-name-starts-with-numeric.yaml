@@ -16,7 +16,7 @@ input: |-
       </xsl:template>
       <xsl:template match='oo'>
         <xsl:call-template name='1q'>
-          <xsl:with-param name='oooo'>bold</xsl:with-param>
+          <xsl:value-of select="my:22w"/>
         </xsl:call-template>
       </xsl:template>
     </xsl:template>
