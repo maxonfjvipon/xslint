@@ -37,4 +37,7 @@ input: |-
     <xsl:template match="/objects/o/o[1]/o[10]">
       <xsl:variable name="qw" select="ooo"/>
     </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[11]">
+      <xsl:copy-of select="$qw"/>
+    </xsl:template>
   </xsl:stylesheet>

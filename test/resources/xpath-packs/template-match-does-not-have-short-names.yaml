@@ -26,7 +26,7 @@ input: |-
         </xsl:call-template>
       </xsl:template>
     </xsl:template>
-  <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:copy-of select="."/>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:copy-of select="$oo"/>
     </xsl:template>
   </xsl:stylesheet>
