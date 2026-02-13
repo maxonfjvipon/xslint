@@ -13,7 +13,6 @@ input: |-
       <xsl:copy-of select="$oo"/>
       <xsl:function name="my:tw">
       </xsl:function>
-      <xsl:value-of select="my:tw()"/>
       <xsl:template name="tq">
       </xsl:template>
       <xsl:template match='oo'>
