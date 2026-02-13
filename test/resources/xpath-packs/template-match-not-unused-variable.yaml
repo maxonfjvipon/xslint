@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-unused-variable
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="http://www.w3.org/1999/XSL/Format" version="2.0">
+    <xsl:variable name="para-font-size">12pt</xsl:variable>
+    <xsl:template match="para">
+      <f:block font-size="{$para-font-size}">
+        <xsl:apply-templates/>
+      </f:block>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+  </xsl:stylesheet>

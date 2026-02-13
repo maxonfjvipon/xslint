@@ -10,6 +10,7 @@ input: |-
     <xsl:template match="o">
       <xsl:variable name="oo" select = "expression">
       </xsl:variable>
+      <xsl:copy-of select="$oo"/>
       <xsl:function name="my:tw">
       </xsl:function>
       <xsl:value-of select="my:tw()"/>

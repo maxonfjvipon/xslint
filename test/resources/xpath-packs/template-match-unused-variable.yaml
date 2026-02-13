@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: template-match-too-many-small-templates
+pack: template-match-unused-variable
 found:
-  amount: 0
-  positions: [ ]
+  amount: 1
+  positions: [ [ 2, 3 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:template match="/objects/o/o[1]/o[1]">
+    <xsl:variable name="para-font-size">12pt</xsl:variable>
+    <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:copy-of select="."/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
