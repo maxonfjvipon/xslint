@@ -22,9 +22,6 @@ input: |-
       </xsl:template>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="."/>
-    </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:value-of select="my:w()"/>
     </xsl:template>
   </xsl:stylesheet>

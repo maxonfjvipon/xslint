@@ -7,6 +7,7 @@ found:
   positions: [ ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="o">
       <xsl:variable name="oo" select = "expression">
       </xsl:variable>
       <xsl:copy-of select="$oo"/>
@@ -15,22 +16,19 @@ input: |-
       <xsl:value-of select="my:tw()"/>
       <xsl:template name="tq">
       </xsl:template>
+      <xsl:template match='oo'>
+        <xsl:call-template name='tq'>
+          <xsl:with-param name='oooo'>bold</xsl:with-param>
+        </xsl:call-template>
+      </xsl:template>
       <xsl:variable select = "expression">
       </xsl:variable>
       <xsl:function>
       </xsl:function>
       <xsl:template>
       </xsl:template>
-      <xsl:template match='oo'>
-        <xsl:call-template name='tq'>
-          <xsl:with-param name='oooo'>bold</xsl:with-param>
-        </xsl:call-template>
-      </xsl:template>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
+    <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:value-of select="my:tw()"/>
-    </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>

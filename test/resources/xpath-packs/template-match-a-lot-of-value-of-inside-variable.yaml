@@ -16,6 +16,6 @@ input: |-
       <xsl:copy-of select="$qw" />
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:copy-of select="." />
+      <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>
