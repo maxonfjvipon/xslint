@@ -6,7 +6,7 @@ found:
   amount: 0
   positions: [ ]
 input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="o">
       <xsl:variable name="oo" select = "expression">
       </xsl:variable>
@@ -20,7 +20,7 @@ input: |-
           <xsl:with-param name='oooo'>bold</xsl:with-param>
         </xsl:call-template>
       </xsl:template>
-      <xsl:variable select = "expression">
+      <xsl:variable as="xs:string" select = "expression">
       </xsl:variable>
       <xsl:function>
       </xsl:function>

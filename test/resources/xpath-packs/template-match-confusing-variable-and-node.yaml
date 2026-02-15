@@ -6,9 +6,9 @@ found:
   amount: 1
   positions: [ [ 5, 7 ] ]
 input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:variable name="qw" select="ooo"/>
+      <xsl:variable name="qw" as="xs:string" select="ooo"/>
       <p>
         <xsl:apply-templates select="qw"/>
       </p>

@@ -6,8 +6,8 @@ found:
   amount: 0
   positions: [ ]
 input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="http://www.w3.org/1999/XSL/Format" version="2.0">
-    <xsl:variable name="para-font-size">12pt</xsl:variable>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:variable name="para-font-size" as="xs:string">12pt</xsl:variable>
     <xsl:template match="para">
       <f:block font-size="{$para-font-size}">
         <xsl:apply-templates/>

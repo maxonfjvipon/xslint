@@ -6,8 +6,8 @@ found:
   amount: 1
   positions: [ [ 2, 3 ] ]
 input: |-
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    <xsl:variable name="para-font-size">12pt</xsl:variable>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:variable name="para-font-size" as="xs:string" >12pt</xsl:variable>
     <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:copy-of select="."/>
     </xsl:template>

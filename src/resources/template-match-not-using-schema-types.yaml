@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[@version = '2.0'][not(some $x in .//@* satisfies contains($x, 'xs:'))]
+severity: warning
+message: The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode.
