@@ -7,7 +7,7 @@ found:
   positions: [ [ 3, 5 ] ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
-    <xsl:template match="/o/o"> 
+    <xsl:template match="/o/o">
       <xsl:param name="o2"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
