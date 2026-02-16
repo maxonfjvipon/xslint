@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-unused-function-template-parameter
+found:
+  amount: 1
+  positions: [ [ 3, 5 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:template match="/o/o"> 
+      <xsl:param name="o2"/>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:variable name="qw" as="xs:string" select="ooo"/>
+      <xsl:copy-of select="$qw"/>
+    </xsl:template>
+  </xsl:stylesheet>
