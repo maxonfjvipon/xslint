@@ -6,7 +6,7 @@ found:
   amount: 0
   positions: [ ]
 input: |-
-  <xsl:stylesheet xmlns:xsl="https://www.w3.org/1999/XSL/Transform">
+  <xsl:stylesheet xmlns:xsl="https://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xsl:output method="html"/>
     <xsl:template match="/">
       <HTML>
@@ -14,6 +14,7 @@ input: |-
       </HTML>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="."/>
+      <xsl:variable name="qw" as="xs:string" select="ooo"/>
+      <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>
