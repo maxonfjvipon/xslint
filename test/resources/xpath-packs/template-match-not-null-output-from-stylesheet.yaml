@@ -1,16 +1,16 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: template-match-unused-variable
+pack: template-match-null-output-from-stylesheet
 found:
-  amount: 1
-  positions: [ [ 3, 5 ] ]
+  amount: 0
+  positions: [ ]
 input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match='/objects/o/o[1]/o[1]'>
       <xsl:variable name="oo" as="xs:string" select = "expression">
       </xsl:variable>
-      <xsl:copy-of select="."/>
+      <xsl:copy-of select="$oo"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:copy-of select="$oo"/>
