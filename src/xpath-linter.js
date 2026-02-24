@@ -59,7 +59,7 @@ const evaluate_xpath = function(xsl, xpath) {
 const lint_by_xpath = function(xsl) {
   logger.debug(`Xpath linting started`)
   const defects = []
-  for (const pack of PACKS) {
+  for (const pack of PACKS) { //правила
     const yml = yaml.parsedFromFile(pack)
     const nodes = evaluate_xpath(xsl, yml.xpath)
     if (nodes.length > 0) {
