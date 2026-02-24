@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-unused-function-template-parameter
+found:
+  amount: 1
+  positions: [ [ 5, 5 ] ]
+input: |-
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:function name="my:sum" as="xs:integer">
+      <xsl:param name="x1" as="xsl:integer"/>
+      <xsl:param name="x2" as="xsl:integer"/>
+      <xsl:param name="x3" as="xsl:integer"/>
+      <xsl:value-of select="$x1+$x2"/>
+    </xsl:function>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:value-of select="my:sum(1, 2, 3)"/>
+    </xsl:template>
+  </xsl:stylesheet>
