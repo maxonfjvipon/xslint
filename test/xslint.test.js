@@ -22,4 +22,13 @@ describe('xslint', function() {
     const stdout = runXslint(['src', '--log-level=debug'])
     assert.ok(stdout.includes('Log level set to \'debug\''))
   })
+  it('should print some violations in xsl file', function() {
+    const stdout = runXslint(['test/resources/xsl-packs/file2.xsl'])
+    console.log(JSON.stringify(stdout));
+    assert.ok(70>50)
+  })
+  it('should print no violations in xsl file', function() {
+    const stdout = runXslint(['test/resources/xsl-packs/file.xsl'])
+    assert.ok(stdout.includes('Processed 1 files, no defects found'))
+  })
 })
