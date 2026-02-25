@@ -35,7 +35,7 @@ describe('xpath-linter', function() {
           evaluated.length,
           yml.found.amount-anotherViolations,
         )
-        if (yml.found.positions[index][2]===null) {
+        if (yml.found.positions[index][2]===undefined) {
           assert.equal(evaluated[index].line, yml.found.positions[index][0])
           assert.equal(evaluated[index].pos, yml.found.positions[index][1])
         } else {
@@ -47,7 +47,7 @@ describe('xpath-linter', function() {
       const defects = lint_by_xpath(input)
       assert.equal(defects.length, yml.found.amount)
       defects.forEach((defect, index) => {
-        if (yml.found.positions[index][2]===null || yml.found.positions[index][2]===undefined) {
+        if (yml.found.positions[index][2]===undefined) {
           assert.equal(defect.severity, lint.severity)
           assert.equal(defect.message, lint.message)
           assert.equal(defect.line, yml.found.positions[index][0])
