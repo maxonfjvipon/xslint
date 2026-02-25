@@ -18,7 +18,7 @@ describe('xpath-linter', function() {
   PACKS.forEach((pack) => {
     const yml = yaml.parsedFromFile(pack)
     const lint = yaml.parsedFromFile(
-        path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
+      path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
     )
     const input = xml.parsedFromString(yml.input)
     let anotherViolations = 0;
@@ -32,14 +32,13 @@ describe('xpath-linter', function() {
 
       yml.found.positions.forEach((position, index) => {
         assert.equal(
-            evaluated.length,
-            yml.found.amount-anotherViolations,
+          evaluated.length,
+          yml.found.amount-anotherViolations,
         )
         if (yml.found.positions[index][2]===null) {
           assert.equal(evaluated[index].line, yml.found.positions[index][0])
           assert.equal(evaluated[index].pos, yml.found.positions[index][1])
-        }
-        else {
+        } else {
           position++
         }
       })
@@ -54,10 +53,9 @@ describe('xpath-linter', function() {
           assert.equal(defect.line, yml.found.positions[index][0])
           assert.equal(defect.pos, yml.found.positions[index][1])
           assert.equal(defect.name, yml.pack)
-        }
-        else {
+        } else {
           const tempLint = yaml.parsedFromFile(
-              path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
+            path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
           )
           assert.equal(defect.severity, tempLint.severity)
           assert.equal(defect.message, tempLint.message)
