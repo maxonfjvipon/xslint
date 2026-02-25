@@ -24,8 +24,7 @@ describe('xslint', function() {
   })
   it('should print some violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/file2.xsl'])
-    console.log(JSON.stringify(stdout));
-    assert.ok(70>50)
+    assert.ok(stdout.includes('Processed files: 1, defects found 3'))
   })
   it('should print no violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/file.xsl'])
