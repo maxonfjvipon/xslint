@@ -18,7 +18,7 @@ describe('xpath-linter', function() {
   PACKS.forEach((pack) => {
     const yml = yaml.parsedFromFile(pack)
     const lint = yaml.parsedFromFile(
-        path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
+      path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
     )
     const input = xml.parsedFromString(yml.input)
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
