@@ -43,7 +43,7 @@ describe('xpath-linter', function() {
           assert.equal(defect.name, yml.pack)
         } else {
           const temp = yaml.parsedFromFile(
-              path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
+            path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
           )
           assert.equal(defect.severity, temp.severity)
           assert.equal(defect.message, temp.message)
