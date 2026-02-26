@@ -42,7 +42,7 @@ describe('xpath-linter', function() {
         let name = yml.pack
         if (yml.found.positions[index].length == 3) {
           const temp = yaml.parsedFromFile(
-              path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
+            path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
           )
           severity = temp.severity
           message = temp.message
