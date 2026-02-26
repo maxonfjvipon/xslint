@@ -41,4 +41,27 @@ const runXslint = function(args, print = true) {
   return execNode(path.resolve('./src/index.js'), args, print)
 };
 
+/**
+ * Helper to run xcope command line tool.
+ *
+ * @param {Array.<string>} arg - Array of args
+ * @param {Boolean} print - Capture logs
+ * @return {String} Stdout
+ */
+const runXcope = function(arg, print = true) {
+    try {
+      return execSync(
+        `echo "${arg}" | xcope`,
+          {
+            timeout: 120000,
+            windowsHide: true,
+            stdio: print ? null : 'ignore'
+            }
+        ).toString()
+    } catch (ex) {
+      console.debug(ex.stdout.toString())
+      throw ex
+    }
+};
+
 module.exports = runXslint

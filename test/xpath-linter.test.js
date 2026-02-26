@@ -7,6 +7,7 @@ const {evaluate_xpath, lint_by_xpath} = require('../src/xpath-linter')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
+const runXslint = require("./helpers");
 
 /**
  * Yaml test packs.
@@ -53,6 +54,17 @@ describe('xpath-linter', function() {
         assert.equal(defect.line, yml.found.positions[index][0])
         assert.equal(defect.pos, yml.found.positions[index][1])
         assert.equal(defect.name, name)
+      })
+    })
+    it(`should find 0 errors by xpath in ${yml.pack}`, function() {
+      const stdout = runXcode(['src', '--log-level=debug'])
+      assert.equal(
+          evaluated.length,
+          yml.found.amount - other,
+      )
+      yml.found.positions.filter((pos) => pos.length == 2).forEach((pos, index) => {
+        assert.equal(evaluated[index].line, yml.found.positions[index][0])
+        assert.equal(evaluated[index].pos, yml.found.positions[index][1])
       })
     })
   })
