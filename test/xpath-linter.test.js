@@ -21,13 +21,14 @@ describe('xpath-linter', function() {
       path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
     )
     const input = xml.parsedFromString(yml.input)
-    it(`should find ${yml.found.amount} node(s) by xpath in ${yml.pack}`, function() {
+    const other = yml.found.positions.filter((pos) => pos.length == 3).length
+    it(`should find ${yml.found.amount - other} node(s) by xpath in ${yml.pack}`, function() {
       const evaluated = evaluate_xpath(input, lint.xpath)
       assert.equal(
         evaluated.length,
-        yml.found.amount,
+        yml.found.amount - other,
       )
-      yml.found.positions.forEach((position, index) => {
+      yml.found.positions.filter((pos) => pos.length == 2).forEach((pos, index) => {
         assert.equal(evaluated[index].line, yml.found.positions[index][0])
         assert.equal(evaluated[index].pos, yml.found.positions[index][1])
       })
@@ -36,11 +37,22 @@ describe('xpath-linter', function() {
       const defects = lint_by_xpath(input)
       assert.equal(defects.length, yml.found.amount)
       defects.forEach((defect, index) => {
-        assert.equal(defect.severity, lint.severity)
-        assert.equal(defect.message, lint.message)
+        let severity = lint.severity
+        let message = lint.message
+        let name = yml.pack
+        if (yml.found.positions[index].length == 3) {
+          const temp = yaml.parsedFromFile(
+            path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
+          )
+          severity = temp.severity
+          message = temp.message
+          name = yml.found.positions[index][2]
+        }
+        assert.equal(defect.severity, severity)
+        assert.equal(defect.message, message)
         assert.equal(defect.line, yml.found.positions[index][0])
         assert.equal(defect.pos, yml.found.positions[index][1])
-        assert.equal(defect.name, yml.pack)
+        assert.equal(defect.name, name)
       })
     })
   })
