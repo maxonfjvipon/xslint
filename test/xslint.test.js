@@ -23,4 +23,3 @@ describe('xslint', function() {
     assert.ok(stdout.includes('Log level set to \'debug\''))
   })
 })
-// echo "Текст для обработки" | команда

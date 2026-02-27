@@ -48,10 +48,10 @@ const runXslint = function(args, print = true) {
  * @param {Boolean} print - Capture logs
  * @return {String} Stdout
  */
-const runXcope = function(arg, print = true) {
+const runXcop = function(arg, print = true) {
     try {
       return execSync(
-        `echo "${arg}" | xcope`,
+        `xcop ${arg} `,
           {
             timeout: 120000,
             windowsHide: true,
@@ -65,3 +65,4 @@ const runXcope = function(arg, print = true) {
 };
 
 module.exports = runXslint
+module.exports = runXcop

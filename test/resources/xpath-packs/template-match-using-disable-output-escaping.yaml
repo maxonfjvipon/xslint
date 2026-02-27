@@ -6,10 +6,13 @@ found:
   amount: 0
   positions: [ ]
 input: |-
+  <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="/objects/o/o[1]/o[1]">
       <title>
-        <xsl:text disable-output-escaping="no">ooo &lt;hr/&gt; ooo
+        <xsl:text disable-output-escaping="no">
+          &lt;hr/&gt;
+          &lt;hr/&gt;
         </xsl:text>
       </title>
     </xsl:template>

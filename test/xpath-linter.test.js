@@ -7,7 +7,8 @@ const {evaluate_xpath, lint_by_xpath} = require('../src/xpath-linter')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
-const runXslint = require("./helpers");
+const runXcop = require("./helpers");
+const fs = require('fs')
 
 /**
  * Yaml test packs.
@@ -56,16 +57,12 @@ describe('xpath-linter', function() {
         assert.equal(defect.name, name)
       })
     })
-    it(`should find 0 errors by xpath in ${yml.pack}`, function() {
-      const stdout = runXcode(['src', '--log-level=debug'])
-      assert.equal(
-          evaluated.length,
-          yml.found.amount - other,
-      )
-      yml.found.positions.filter((pos) => pos.length == 2).forEach((pos, index) => {
-        assert.equal(evaluated[index].line, yml.found.positions[index][0])
-        assert.equal(evaluated[index].pos, yml.found.positions[index][1])
-      })
+    it(`should find 0 errors in xsl in ${path.basename(pack)}`, function() {
+      fs.writeFileSync('test/temp.xsl', `${input}`);
+      fs.appendFileSync('test/temp.xsl', '\n');
+      const stdout = runXcop(['test/temp.xsl'])
+      assert.ok(stdout.includes(`${__dirname}/temp.xsl looks good`))
+      fs.unlinkSync('test/temp.xsl');
     })
   })
 })
