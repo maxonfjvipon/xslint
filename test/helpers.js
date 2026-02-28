@@ -86,7 +86,7 @@ const cmdAvailable = function(cmd, print = true){
       console.debug(ex.stdout.toString())
       throw ex
     }
-}
+};
 module.exports = runXslint
 module.exports = runXcop
 module.exports = cmdAvailable
