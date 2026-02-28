@@ -9,6 +9,7 @@ const path = require('path')
 const assert = require('assert')
 const runXcop = require("./helpers");
 const fs = require('fs')
+const cmdAvailable = require("./helpers");
 
 /**
  * Yaml test packs.
@@ -57,12 +58,14 @@ describe('xpath-linter', function() {
         assert.equal(defect.name, name)
       })
     })
-    it(`should find 0 errors in xsl in ${path.basename(pack)}`, function() {
-      fs.writeFileSync('test/temp.xsl', `${input}`);
-      fs.appendFileSync('test/temp.xsl', '\n');
-      const stdout = runXcop(['test/temp.xsl'])
-      assert.ok(stdout.includes(`${__dirname}/temp.xsl looks good`))
-      fs.unlinkSync('test/temp.xsl');
-    })
+    if (cmdAvailable('xcop')) {
+      it(`should find 0 errors in xsl in ${path.basename(pack)}`, function () {
+        const xsl = path.resolve(__dirname, 'temp.xsl')
+        fs.writeFileSync(xsl, `${input}\n`);
+        const stdout = runXcop([`${xsl}`])
+        assert.ok(stdout.includes(`${xsl} looks good`))
+        fs.unlinkSync(xsl);
+      })
+    }
   })
 })

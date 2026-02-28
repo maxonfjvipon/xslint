@@ -5,6 +5,8 @@
 
 const path = require('path')
 const {execSync} = require('child_process')
+const os = require('os')
+const fs = require('fs')
 
 /**
  * Execute JS file with node.
@@ -43,26 +45,48 @@ const runXslint = function(args, print = true) {
 
 /**
  * Helper to run xcope command line tool.
- *
- * @param {Array.<string>} arg - Array of args
- * @param {Boolean} print - Capture logs
- * @return {String} Stdout
  */
 const runXcop = function(arg, print = true) {
     try {
-      return execSync(
-        `xcop ${arg} `,
+        return execSync(
+            `xcop ${arg} `,
+            {
+                timeout: 120000,
+                windowsHide: true,
+                stdio: print ? null : 'ignore'
+            }
+        ).toString()
+    } catch (ex) {
+        console.debug(ex.stdout.toString())
+        throw ex
+    }
+};
+
+/**
+ * Helper to check if command is available in the system.
+ */
+const cmdAvailable = function(cmd, print = true){
+    try {
+      let input;
+      os.platform() === 'win32' ? input = `where ${cmd}` : input = `which ${cmd}`
+      try {
+        const result = execSync(
+          `${input}`,
           {
             timeout: 120000,
             windowsHide: true,
             stdio: print ? null : 'ignore'
-            }
-        ).toString()
+          }).toString()
+        return true
+      } catch (ex) {
+        console.debug(ex.stdout.toString())
+        return false
+      }
     } catch (ex) {
       console.debug(ex.stdout.toString())
       throw ex
     }
-};
-
+}
 module.exports = runXslint
 module.exports = runXcop
+module.exports = cmdAvailable
