@@ -87,6 +87,10 @@ const cmdAvailable = function(cmd, print = true){
       throw ex
     }
 };
-module.exports = runXslint
-module.exports = runXcop
-module.exports = cmdAvailable
+
+module.exports = {
+    runXslint,
+    runXcop,
+    cmdAvailable,
+}
+

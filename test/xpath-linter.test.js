@@ -7,9 +7,8 @@ const {evaluate_xpath, lint_by_xpath} = require('../src/xpath-linter')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
-const runXcop = require("./helpers");
+const {runXcop, cmdAvailable} = require('./helpers')
 const fs = require('fs')
-const cmdAvailable = require("./helpers");
 
 /**
  * Yaml test packs.
