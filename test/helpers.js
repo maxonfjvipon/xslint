@@ -45,34 +45,34 @@ const runXslint = function(args, print = true) {
 /**
  * Helper to run xcope command line tool.
  *
- * @param {Array.<string>} args - Array of args
+ * @param {Array.<string>} args - Array of xsl file's names
  * @param {Boolean} print - Capture logs
  * @return {String} Stdout
  */
-const runXcop = function(arg, print = true) {
+const runXcop = function(args, print = true) {
   try {
     return execSync(
-      `xcop ${arg} `,
+      `xcop ${args} `,
       {
         timeout: 120000,
         windowsHide: true,
         stdio: print ? null : 'ignore'
       }
     ).toString()
-    } catch (ex) {
-      console.debug(ex.stdout.toString())
-      throw ex
-    }
+  } catch (ex) {
+    console.debug(ex.stdout.toString())
+    throw ex
+  }
 };
 
 /**
  * Helper to check if command is available in the system.
  *
- * @param {Array.<string>} args - Array of args
+ * @param {String} cmd - Command
  * @param {Boolean} print - Capture logs
- * @return {Boolean}
+ * @return {Boolean} - Result
  */
-const cmdAvailable = function(cmd, print = true){
+const cmdAvailable = function(cmd, print = true) {
   try {
     let input;
     os.platform() === 'win32' ? input = `where ${cmd}` : input = `which ${cmd}`
@@ -85,14 +85,14 @@ const cmdAvailable = function(cmd, print = true){
           stdio: print ? null : 'ignore'
         }).toString()
       return true
-      } catch (ex) {
-        console.debug(ex.stdout.toString())
-        return false
-      }
     } catch (ex) {
       console.debug(ex.stdout.toString())
-      throw ex
+      return false
     }
+  } catch (ex) {
+    console.debug(ex.stdout.toString())
+    throw ex
+  }
 };
 
 module.exports = {
