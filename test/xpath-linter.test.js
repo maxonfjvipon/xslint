@@ -7,6 +7,8 @@ const {evaluate_xpath, lint_by_xpath} = require('../src/xpath-linter')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
+const {runXcop, cmdAvailable} = require('./helpers')
+const fs = require('fs')
 
 /**
  * Yaml test packs.
@@ -55,5 +57,14 @@ describe('xpath-linter', function() {
         assert.equal(defect.name, name)
       })
     })
+    if (cmdAvailable(['xcop'])) {
+      it(`should find 0 errors in xsl in ${path.basename(pack)}`, function() {
+        const xsl = path.resolve(__dirname, 'temp.xsl')
+        fs.writeFileSync(xsl, `${input}\n`);
+        const stdout = runXcop([`${xsl}`])
+        assert.ok(stdout.includes(`${xsl} looks good`))
+        fs.unlinkSync(xsl);
+      })
+    }
   })
 })

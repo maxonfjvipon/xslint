@@ -4,162 +4,265 @@
 pack: template-match-function-template-complexity
 found:
   amount: 1
-  positions: [ [ 2, 3 ] ]
+  positions: [ [ 3, 3 ] ]
 input: |-
+  <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="/objects/o/o">
       <xsl:if s1="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s2="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s3="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s4="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s5="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s6="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s7="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s8="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s9="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s10="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s11="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s12="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s13="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s14="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s15="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s16="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s17="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s18="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s19="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s20="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s21="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s22="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s23="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s24="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s25="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s26="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s27="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s28="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s29="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s30="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s31="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s32="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s33="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s34="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s35="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s36="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s37="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s38="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s39="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s40="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s41="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s42="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s43="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s44="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s45="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s46="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s47="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s48="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s49="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s50="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
       <xsl:if s51="o/o">
-          <p><strong>B</strong></p>
+        <p>
+          <strong>B</strong>
+        </p>
       </xsl:if>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">

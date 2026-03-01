@@ -4,8 +4,9 @@
 pack: template-match-short-names
 found:
   amount: 3
-  positions: [ [ 3, 5 ], [ 6, 5 ], [ 8, 5 ] ]
+  positions: [ [ 4, 5 ], [ 7, 5 ], [ 9, 5 ] ]
 input: |-
+  <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="o">
       <xsl:variable name="o" as="xs:string" select = "expression">

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const runXslint = require('./helpers')
+const {runXslint} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
 
