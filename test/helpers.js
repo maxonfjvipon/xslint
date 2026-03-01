@@ -40,8 +40,7 @@ const execNode = function(js, args, print) {
 const runXslint = function(args, print = true) {
   try {
     return execNode(path.resolve('./src/index.js'), args, print)
-  }
-  catch (ex) {
+  } catch (ex) {
     console.debug(ex.stdout.toString())
     return ex.stdout.toString()
   }
