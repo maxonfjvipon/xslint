@@ -15,7 +15,7 @@ const os = require('os')
  * @param {boolean} print - Capture logs or not
  * @return {string} Stdout
  */
-const execNode = function(command, args, print) {
+const execCmd = function(command, args, print) {
   try {
     return execSync(
       `${command} ${args.join(' ')}`,
@@ -39,7 +39,7 @@ const execNode = function(command, args, print) {
  * @return {String} Stdout
  */
 const runXslint = function(args, print = true) {
-  return execNode(`node ${path.resolve('./src/index.js')}`, args, print)
+  return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
 };
 
 /**
@@ -50,7 +50,7 @@ const runXslint = function(args, print = true) {
  * @return {String} Stdout
  */
 const runXcop = function(args, print = true) {
-  return execNode(`xcop`, args, print)
+  return execCmd(`xcop`, args, print)
 };
 
 /**
@@ -63,7 +63,7 @@ const runXcop = function(args, print = true) {
 const cmdAvailable = function(cmd, print = true) {
   try {
     const input = os.platform === 'win32' ? `where` : `which`
-    execNode(input, cmd, print)
+    execCmd(input, cmd, print)
     return true
   } catch (ex) {
     console.debug(ex.stdout.toString())
