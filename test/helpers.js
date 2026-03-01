@@ -15,7 +15,7 @@ const os = require('os')
  * @param {boolean} print - Capture logs or not
  * @return {string} Stdout
  */
-const execNode = function(command , args, print) {
+const execNode = function(command, args, print) {
   try {
     return execSync(
       `${command} ${args.join(' ')}`,
