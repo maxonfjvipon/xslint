@@ -57,7 +57,7 @@ describe('xpath-linter', function() {
         assert.equal(defect.name, name)
       })
     })
-    if (cmdAvailable('xcop')) {
+    if (cmdAvailable(['xcop'])) {
       it(`should find 0 errors in xsl in ${path.basename(pack)}`, function() {
         const xsl = path.resolve(__dirname, 'temp.xsl')
         fs.writeFileSync(xsl, `${input}\n`);
