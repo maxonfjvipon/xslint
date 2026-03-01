@@ -12,7 +12,6 @@ path = [
     "**.png",
     "**.svg",
     "**.txt",
-    "**.xsl",
     "**/.DS_Store",
     "**/.gitignore",
     "**/.pdd",
@@ -24,7 +23,6 @@ path = [
     "**/*.png",
     "**/*.svg",
     "**/*.txt",
-    "**/*.xsl",
     "**/*.vm",
     "README.md",
     ".eslintrc",
@@ -36,6 +34,8 @@ path = [
     "patches/grunt-mocha-cli+7.0.0.patch",
     "renovate.json",
     ".npmignore",
+    "test/resources/xsl-packs/file.xsl"
+    "test/resources/xsl-packs/file2.xsl"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2025-2026 Max Trunnikov"
