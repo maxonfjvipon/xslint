@@ -45,25 +45,27 @@ const runXslint = function(args, print = true) {
 /**
  * Helper to run xcop command line tool.
  *
- * @param {Array.<string>} args - Array of args
+ * @param {String} arg - arg
  * @param {Boolean} print - Capture logs
  * @return {String} Stdout
  */
-const runXcop = function(args, print = true) {
+const runXcop = function(arg, print = true) {
+  const args = [arg]
   return execCmd(`xcop`, args, print)
 };
 
 /**
  * Helper to check if command is available in the system.
  *
- * @param {Array.<String>} cmd - Command
+ * @param {String} cmd - Command
  * @param {Boolean} print - Capture logs
  * @return {boolean} - Result
  */
 const cmdAvailable = function(cmd, print = true) {
   try {
-    const input = os.platform === 'win32' ? `where` : `which`
-    execCmd(input, cmd, print)
+    const command = os.platform === 'win32' ? `where` : `which`
+    const args = [cmd]
+    execCmd(command, args, print)
     return true
   } catch (ex) {
     console.debug(ex.stdout.toString())
