@@ -50,8 +50,7 @@ const runXslint = function(args, print = true) {
  * @return {String} Stdout
  */
 const runXcop = function(arg, print = true) {
-  const args = [arg]
-  return execCmd(`xcop`, args, print)
+  return execCmd('xcop', [arg], print)
 };
 
 /**
@@ -63,9 +62,8 @@ const runXcop = function(arg, print = true) {
  */
 const cmdAvailable = function(cmd, print = true) {
   try {
-    const command = os.platform === 'win32' ? `where` : `which`
-    const args = [cmd]
-    execCmd(command, args, print)
+    const command = os.platform === 'win32' ? 'where' : 'which'
+    execCmd(command, [cmd], print)
     return true
   } catch (ex) {
     console.debug(ex.stdout.toString())
