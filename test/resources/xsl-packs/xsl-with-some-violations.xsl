@@ -22,10 +22,8 @@
         <xsl:apply-templates select="artist"/>
       </xsl:if>
       <xsl:choose>
-        <xsl:when test="price &lt; 300">
-        </xsl:when>
-        <xsl:otherwise>
-        </xsl:otherwise>
+        <xsl:when test="price &lt; 300"/>
+        <xsl:otherwise/>
       </xsl:choose>
     </p>
   </xsl:template>
