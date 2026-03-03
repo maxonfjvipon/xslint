@@ -39,7 +39,11 @@ const execCmd = function(command, args, print) {
  * @return {String} Stdout
  */
 const runXslint = function(args, print = true) {
-  return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
+  try {
+    return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
+  } catch (ex) {
+    return ex.stdout.toString()
+  }
 };
 
 /**
@@ -66,7 +70,6 @@ const cmdAvailable = function(cmd, print = true) {
     execCmd(command, [cmd], print)
     return true
   } catch (ex) {
-    console.debug(ex.stdout.toString())
     return false
   }
 };
