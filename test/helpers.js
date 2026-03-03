@@ -70,7 +70,6 @@ const cmdAvailable = function(cmd, print = true) {
     execCmd(command, [cmd], print)
     return true
   } catch (ex) {
-    console.debug(ex.stdout.toString())
     return false
   }
 };
