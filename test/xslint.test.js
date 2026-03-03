@@ -26,13 +26,13 @@ describe('xslint', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl'])
     const expected = [
       'Processed files: 1, defects found 7',
-      '(25:17) Don\'t use empty content for instructions like \'xsl:for-each\' \'xsl:if\' \'xsl:when\' etc. (template-match-empty-content-in-instructions)',
-      '(27:17) Don\'t use empty content for instructions like \'xsl:for-each\' \'xsl:if\' \'xsl:when\' etc. (template-match-empty-content-in-instructions)',
-      '(2:1) The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode. (template-match-not-using-schema-types)',
-      '(14:5) Assign value to a variable using the \'select\' syntax if assigning a string value. (template-match-setting-value-of-variable-incorrectly)',
-      '(14:5) Using a single character name for variable/function/template. Use meaningful names for these features. (template-match-short-names)',
-      '(33:5) It\'s not recommended to start \'match\' attribute of \'xsl:template\' element with \'//\' (template-match-starts-with-double-slash)',
-      '(45:5) Named templates in stylesheet are unused. (template-match-unused-named-template)',
+      '(25:9) Don\'t use empty content for instructions like \'xsl:for-each\' \'xsl:if\' \'xsl:when\' etc. (template-match-empty-content-in-instructions)',
+      '(27:9) Don\'t use empty content for instructions like \'xsl:for-each\' \'xsl:if\' \'xsl:when\' etc. (template-match-empty-content-in-instructions)',
+      '(6:1) The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode. (template-match-not-using-schema-types)',
+      '(15:3) Assign value to a variable using the \'select\' syntax if assigning a string value. (template-match-setting-value-of-variable-incorrectly)',
+      '(15:3) Using a single character name for variable/function/template. Use meaningful names for these features. (template-match-short-names)',
+      '(32:3) It\'s not recommended to start \'match\' attribute of \'xsl:template\' element with \'//\' (template-match-starts-with-double-slash)',
+      '(40:3) Named templates in stylesheet are unused. (template-match-unused-named-template)',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
