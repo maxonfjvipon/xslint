@@ -22,23 +22,21 @@
         <xsl:apply-templates select="artist"/>
       </xsl:if>
       <xsl:choose>
-        <xsl:when test="price &lt; 300">
-                </xsl:when>
-        <xsl:otherwise>
-                </xsl:otherwise>
+        <xsl:when test="price &lt; 300"/>
+        <xsl:otherwise/>
       </xsl:choose>
     </p>
   </xsl:template>
   <xsl:template match="//title">
-        Title: <span style="color:#ff0000"><xsl:value-of select="."/></span>
-        <br/>
-    </xsl:template>
+    Title: <span style="color:#ff0000"><xsl:value-of select="."/></span>
+    <br/>
+  </xsl:template>
   <xsl:template match="artist">
-        Artist: <span style="color:#00ff00"><xsl:value-of select="."/></span>
-        <br/>
-    </xsl:template>
+    Artist: <span style="color:#00ff00"><xsl:value-of select="."/></span>
+    <br/>
+  </xsl:template>
   <xsl:template name="year">
-        Artist: <span style="color:#0000ff"><xsl:value-of select="."/></span>
-        <br/>
-    </xsl:template>
+    Artist: <span style="color:#0000ff"><xsl:value-of select="."/></span>
+    <br/>
+  </xsl:template>
 </xsl:stylesheet>
