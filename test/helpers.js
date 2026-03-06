@@ -47,6 +47,27 @@ const runXslint = function(args, print = true) {
 };
 
 /**
+ * Helper to run xslint command line tool with exclude options .
+ *
+ * @param {Array.<string>} args - Array of args
+ * @param {Array.<string>} excludes - Array of excludes
+ * @param {Boolean} print - Capture logs
+ * @return {String} Stdout
+ */
+const runXslintWithExcludes = function(args, excludes, print = true) {
+  let options='';
+  excludes.forEach(exclude => {
+    options = `${options} --exclude=${exclude}`
+  })
+  try {
+    return execCmd(`node ${path.resolve('./src/index.js')} ${options}`, args, print)
+  } catch (ex) {
+    console.debug(ex.stdout.toString())
+    return ex.stdout.toString()
+  }
+};
+
+/**
  * Helper to run xcop command line tool.
  *
  * @param {String} arg - arg
@@ -78,4 +99,5 @@ module.exports = {
   runXslint,
   runXcop,
   cmdAvailable,
+  runXslintWithExcludes,
 }

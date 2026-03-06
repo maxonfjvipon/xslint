@@ -8,8 +8,13 @@ const {program} = require('commander')
 const version = require('./version')
 const xslint = require('./xslint')
 const {levels} = require('./logger')
+const path = require("path");
 
 function addExclude(check, excludes) {
+    if (!check.includes("template-match-")) {
+        check=`template-match-${check}`
+    }
+    check=`${path.resolve(__dirname, '../src/resources', `${check}.yaml`)}`
     return [...excludes, check];
 }
 
