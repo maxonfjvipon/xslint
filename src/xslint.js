@@ -17,7 +17,7 @@ const stdout = require('./stdout')
 const LINTERS = [
   lint_by_xpath,
 ]
-
+let EXCLUDES
 /**
  * Returns all .xsl files paths depending on provided path.
  * @param {String} pth - Path to certain file or directory where .xsl should be placed
@@ -37,10 +37,12 @@ const xsls = function(pth) {
  * Process cli options.
  * @param {{
  *  logLevel: string
+ *  exclude: array<string>
  * }} options - CLI options
  */
 const process_options = function(options) {
   logger.setLevel(options.logLevel)
+  EXCLUDES = options.exclude
 }
 
 /**
@@ -65,7 +67,7 @@ const xslint = function(pth, options) {
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
-        ...lint(xsl).map(
+        ...lint(xsl, EXCLUDES).map(
           (defect) => ({
             ...defect,
             file: stylesheet
