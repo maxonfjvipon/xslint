@@ -10,6 +10,12 @@ const xslint = require('./xslint')
 const {levels} = require('./logger')
 const path = require("path");
 
+/**
+ * Сollects an array of exclude checks.
+ * @param {String} check - New exclude check
+ * @param {Array.<String>} excludes - Array of excludes
+ * @return {Array.<String>} - Array of excludes
+ */
 function addExclude(check, excludes) {
     if (!check.includes("template-match-")) {
         check=`template-match-${check}`
