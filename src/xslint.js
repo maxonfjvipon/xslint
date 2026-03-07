@@ -57,7 +57,7 @@ const process_options = function(options) {
  */
 function normalize(suppressions) {
   suppressions.forEach((sup, index) => {
-    if (!sup.includes("template-match-")) {
+    if (!sup.includes('template-match-')) {
       sup=`template-match-${sup}`
     }
     suppressions[index]=`${path.resolve(__dirname, '../src/resources', `${sup}.yaml`)}`
