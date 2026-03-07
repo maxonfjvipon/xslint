@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {runXslint} = require('./helpers')
+const {runXslint, runXslintWithSuppress} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
 
@@ -32,6 +32,17 @@ describe('xslint', function() {
       '(15:3) Assign value to a variable using the \'select\' syntax if assigning a string value. (template-match-setting-value-of-variable-incorrectly)',
       '(15:3) Using a single character name for variable/function/template. Use meaningful names for these features. (template-match-short-names)',
       '(30:3) It\'s not recommended to start \'match\' attribute of \'xsl:template\' element with \'//\' (template-match-starts-with-double-slash)',
+      '(38:3) Named templates in stylesheet are unused. (template-match-unused-named-template)',
+    ]
+    expected.forEach((str) => assert.ok(stdout.includes(str)))
+  })
+  it('should print less violations in xsl file', function() {
+    const stdout = runXslintWithSuppress(['test/resources/xsl-packs/xsl-with-some-violations.xsl'], ['empty-content-in-instructions', 'template-match-starts-with-double-slash'])
+    const expected = [
+      'Processed files: 1, defects found 4',
+      '(6:1) The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode. (template-match-not-using-schema-types)',
+      '(15:3) Assign value to a variable using the \'select\' syntax if assigning a string value. (template-match-setting-value-of-variable-incorrectly)',
+      '(15:3) Using a single character name for variable/function/template. Use meaningful names for these features. (template-match-short-names)',
       '(38:3) Named templates in stylesheet are unused. (template-match-unused-named-template)',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str)))

@@ -26,7 +26,6 @@ const execCmd = function(command, args, print) {
       }
     ).toString()
   } catch (ex) {
-    console.debug(ex.stdout.toString())
     throw ex
   }
 }
@@ -41,6 +40,26 @@ const execCmd = function(command, args, print) {
 const runXslint = function(args, print = true) {
   try {
     return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
+  } catch (ex) {
+    return ex.stdout.toString()
+  }
+};
+
+/**
+ * Helper to run xslint command line tool with suppressed options .
+ *
+ * @param {Array.<string>} args - Array of args
+ * @param {Array.<string>} suppressions - Array of suppressions
+ * @param {Boolean} print - Capture logs
+ * @return {String} Stdout
+ */
+const runXslintWithSuppress = function(args, suppressions, print = true) {
+  let options='';
+  suppressions.forEach((suppression) => {
+    options = `${options} --suppress=${suppression}`
+  })
+  try {
+    return execCmd(`node ${path.resolve('./src/index.js')} ${options}`, args, print)
   } catch (ex) {
     return ex.stdout.toString()
   }
@@ -78,4 +97,5 @@ module.exports = {
   runXslint,
   runXcop,
   cmdAvailable,
+  runXslintWithSuppress,
 }
