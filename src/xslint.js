@@ -19,10 +19,10 @@ const LINTERS = [
 ]
 
 /**
- * Exclusions.
+ * Suppressions.
  * @type {Array.<String>}
  */
-let EXCLUSIONS
+let SUPPRESSIONS
 /**
  * Returns all .xsl files paths depending on provided path.
  * @param {String} pth - Path to certain file or directory where .xsl should be placed
@@ -42,14 +42,28 @@ const xsls = function(pth) {
  * Process cli options.
  * @param {{
  *  logLevel: string
- *  exclude: array<string>
+ *  suppress: array<string>
  * }} options - CLI options
  */
 const process_options = function(options) {
   logger.setLevel(options.logLevel)
-  EXCLUSIONS = options.exclude
+  SUPPRESSIONS = normalize(options.suppress)
 }
 
+/**
+ * Сreating absolute paths for suppressed checks.
+ * @param {Array.<String>} suppressions - Array of suppressions
+ * @return {Array.<String>} - Array of normalized suppressions
+ */
+function normalize(suppressions) {
+  suppressions.forEach((sup, index) => {
+    if (!sup.includes("template-match-")) {
+      sup=`template-match-${sup}`
+    }
+    suppressions[index]=`${path.resolve(__dirname, '../src/resources', `${sup}.yaml`)}`
+  })
+  return suppressions
+}
 /**
  * Entry point.
  * @param {String} pth - Path to file or directory with .xsl files to lint
@@ -72,7 +86,7 @@ const xslint = function(pth, options) {
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
-        ...lint(xsl, EXCLUSIONS).map(
+        ...lint(xsl, SUPPRESSIONS).map(
           (defect) => ({
             ...defect,
             file: stylesheet

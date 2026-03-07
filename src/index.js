@@ -11,17 +11,13 @@ const {levels} = require('./logger')
 const path = require("path");
 
 /**
- * Сollects an array of exclude checks.
- * @param {String} check - New exclude check
- * @param {Array.<String>} excludes - Array of excludes
- * @return {Array.<String>} - Array of excludes
+ * Сollects an array of suppressed checks.
+ * @param {String} check - New suppressed check
+ * @param {Array.<String>} suppressions - Array of suppressions
+ * @return {Array.<String>} - Array of suppressions
  */
-function addExclude(check, excludes) {
-    if (!check.includes("template-match-")) {
-        check=`template-match-${check}`
-    }
-    check=`${path.resolve(__dirname, '../src/resources', `${check}.yaml`)}`
-    return [...excludes, check];
+function addSuppression(check, suppressions) {
+    return [...suppressions, check];
 }
 
 program
@@ -32,7 +28,7 @@ program
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
-  .option('--exclude <check>', 'EXCLUDE some checks', addExclude, [])
+  .option('--suppress <check>', 'Suppress some checks', addSuppression, [])
   .argument('[path]', 'path to file or directory to process', '.')
   .action((path) => {
     xslint(path, program.opts())

@@ -26,7 +26,6 @@ const execCmd = function(command, args, print) {
       }
     ).toString()
   } catch (ex) {
-    console.debug(ex.stdout.toString())
     throw ex
   }
 }
@@ -47,22 +46,21 @@ const runXslint = function(args, print = true) {
 };
 
 /**
- * Helper to run xslint command line tool with exclude options .
+ * Helper to run xslint command line tool with suppressed options .
  *
  * @param {Array.<string>} args - Array of args
- * @param {Array.<string>} excludes - Array of excludes
+ * @param {Array.<string>} suppressions - Array of suppressions
  * @param {Boolean} print - Capture logs
  * @return {String} Stdout
  */
-const runXslintWithExcludes = function(args, excludes, print = true) {
+const runXslintWithSuppress = function(args, suppressions, print = true) {
   let options='';
-  excludes.forEach(exclude => {
-    options = `${options} --exclude=${exclude}`
+  suppressions.forEach(suppression => {
+    options = `${options} --suppress=${suppression}`
   })
   try {
     return execCmd(`node ${path.resolve('./src/index.js')} ${options}`, args, print)
   } catch (ex) {
-    console.debug(ex.stdout.toString())
     return ex.stdout.toString()
   }
 };
@@ -99,5 +97,5 @@ module.exports = {
   runXslint,
   runXcop,
   cmdAvailable,
-  runXslintWithExcludes,
+  runXslintWithSuppress,
 }

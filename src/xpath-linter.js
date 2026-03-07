@@ -54,13 +54,13 @@ const evaluate_xpath = function(xsl, xpath) {
 /**
  * Lint given XSL by Xpath packs.
  * @param {Document} xsl - XSL document parsed as {@link Document}
- * @param {Array.<String>} exclusions - Array of excluded checks
+ * @param {Array.<String>} suppressions - Array of suppressed checks
  * @return {{severity: string, message: string, line: number, pos: number}[]} - Defects found
  */
-const lint_by_xpath = function(xsl, exclusions) {
+const lint_by_xpath = function(xsl, suppressions = []) {
   logger.debug(`Xpath linting started`)
   const defects = []
-  const RESULT = PACKS.filter(pack => !exclusions.includes(pack));
+  const RESULT = PACKS.filter(pack => !suppressions.includes(pack));
   for (const pack of RESULT) {
     const yml = yaml.parsedFromFile(pack)
     const nodes = evaluate_xpath(xsl, yml.xpath)
