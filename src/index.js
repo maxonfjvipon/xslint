@@ -8,7 +8,6 @@ const {program} = require('commander')
 const version = require('./version')
 const xslint = require('./xslint')
 const {levels} = require('./logger')
-const path = require("path");
 
 /**
  * Сollects an array of suppressed checks.
@@ -17,7 +16,7 @@ const path = require("path");
  * @return {Array.<String>} - Array of suppressions
  */
 function addSuppression(check, suppressions) {
-    return [...suppressions, check];
+  return [...suppressions, check];
 }
 
 program

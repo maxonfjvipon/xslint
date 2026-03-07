@@ -55,7 +55,7 @@ const runXslint = function(args, print = true) {
  */
 const runXslintWithSuppress = function(args, suppressions, print = true) {
   let options='';
-  suppressions.forEach(suppression => {
+  suppressions.forEach((suppression) => {
     options = `${options} --suppress=${suppression}`
   })
   try {

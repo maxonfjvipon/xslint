@@ -42,7 +42,7 @@ const xsls = function(pth) {
  * Process cli options.
  * @param {{
  *  logLevel: string
- *  suppress: array<string>
+ *  suppress: array.<string>
  * }} options - CLI options
  */
 const process_options = function(options) {
@@ -51,7 +51,7 @@ const process_options = function(options) {
 }
 
 /**
- * Сreating absolute paths for suppressed checks.
+ * Builds right paths to suppressed checks.
  * @param {Array.<String>} suppressions - Array of suppressions
  * @return {Array.<String>} - Array of normalized suppressions
  */

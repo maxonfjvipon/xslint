@@ -37,7 +37,7 @@ describe('xslint', function() {
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
   it('should print less violations in xsl file', function() {
-    const stdout = runXslintWithSuppress(['test/resources/xsl-packs/xsl-with-some-violations.xsl'], ['empty-content-in-instructions','template-match-starts-with-double-slash'])
+    const stdout = runXslintWithSuppress(['test/resources/xsl-packs/xsl-with-some-violations.xsl'], ['empty-content-in-instructions', 'template-match-starts-with-double-slash'])
     const expected = [
       'Processed files: 1, defects found 4',
       '(6:1) The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode. (template-match-not-using-schema-types)',
