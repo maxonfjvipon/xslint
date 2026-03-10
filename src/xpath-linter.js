@@ -60,8 +60,11 @@ const evaluate_xpath = function(xsl, xpath) {
 const lint_by_xpath = function(xsl, suppressions = []) {
   logger.debug(`Xpath linting started`)
   const defects = []
-  const RESULT = PACKS.filter((pack) => !suppressions.includes(pack));
-  for (const pack of RESULT) {
+  for (const pack of PACKS) {
+    const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
+    if (suppressions.some((sup) => name.includes(sup))){
+      continue
+    }
     const yml = yaml.parsedFromFile(pack)
     const nodes = evaluate_xpath(xsl, yml.xpath)
     if (nodes.length > 0) {
