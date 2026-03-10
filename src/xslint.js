@@ -65,7 +65,7 @@ const xslint = function(pth, options) {
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
-        ...lint(xsl).map(
+        ...lint(xsl, options.suppress).map(
           (defect) => ({
             ...defect,
             file: stylesheet

@@ -36,6 +36,15 @@ describe('xslint', function() {
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
+  it('should print less violations in xsl file', function() {
+    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', '--suppress=empty-content-in-instructions', '--suppress=template-match-starts-with-double-slash'])
+    assert.ok(stdout.includes('Processed files: 1, defects found 4'))
+    const absented = [
+      'template-match-empty-content-in-instructions',
+      'template-match-starts-with-double-slash',
+    ]
+    absented.forEach((str) => assert.ok(!stdout.includes(str)))
+  })
   it('should print no violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl'])
     assert.ok(stdout.includes('Processed 1 files, no defects found'))

@@ -54,18 +54,23 @@ const evaluate_xpath = function(xsl, xpath) {
 /**
  * Lint given XSL by Xpath packs.
  * @param {Document} xsl - XSL document parsed as {@link Document}
+ * @param {Array.<String>} suppressions - Array of suppressed checks
  * @return {{severity: string, message: string, line: number, pos: number}[]} - Defects found
  */
-const lint_by_xpath = function(xsl) {
+const lint_by_xpath = function(xsl, suppressions = []) {
   logger.debug(`Xpath linting started`)
   const defects = []
   for (const pack of PACKS) {
+    const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
+    if (suppressions.some((sup) => name.includes(sup))) {
+      continue
+    }
     const yml = yaml.parsedFromFile(pack)
     const nodes = evaluate_xpath(xsl, yml.xpath)
     if (nodes.length > 0) {
       for (const node of nodes) {
         defects.push({
-          name: pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml')),
+          name: name,
           severity: yml.severity,
           message: yml.message,
           line: node.line,

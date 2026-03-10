@@ -17,6 +17,7 @@ program
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
+  .option('--suppress <check>', 'Suppress some checks', (check, suppressions) => [...suppressions, check], [])
   .argument('[path]', 'path to file or directory to process', '.')
   .action((path) => {
     xslint(path, program.opts())
