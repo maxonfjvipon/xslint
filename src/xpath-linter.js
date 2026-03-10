@@ -62,7 +62,7 @@ const lint_by_xpath = function(xsl, suppressions = []) {
   const defects = []
   for (const pack of PACKS) {
     const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
-    if (suppressions.some((sup) => name.includes(sup))){
+    if (suppressions.some((sup) => name.includes(sup))) {
       continue
     }
     const yml = yaml.parsedFromFile(pack)
