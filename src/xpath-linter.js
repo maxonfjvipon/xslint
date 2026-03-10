@@ -70,7 +70,7 @@ const lint_by_xpath = function(xsl, suppressions = []) {
     if (nodes.length > 0) {
       for (const node of nodes) {
         defects.push({
-          name: pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml')),
+          name: name,
           severity: yml.severity,
           message: yml.message,
           line: node.line,

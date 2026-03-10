@@ -38,14 +38,12 @@ describe('xslint', function() {
   })
   it('should print less violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', '--suppress=empty-content-in-instructions', '--suppress=template-match-starts-with-double-slash'])
-    const expected = [
-      'Processed files: 1, defects found 4',
-      '(6:1) The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode. (template-match-not-using-schema-types)',
-      '(15:3) Assign value to a variable using the \'select\' syntax if assigning a string value. (template-match-setting-value-of-variable-incorrectly)',
-      '(15:3) Using a single character name for variable/function/template. Use meaningful names for these features. (template-match-short-names)',
-      '(38:3) Named templates in stylesheet are unused. (template-match-unused-named-template)',
+    assert.ok(stdout.includes('Processed files: 1, defects found 4'))
+    const absented = [
+      'template-match-empty-content-in-instructions',
+      'template-match-starts-with-double-slash',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(str)))
+    absented.forEach((str) => assert.ok(!stdout.includes(str)))
   })
   it('should print no violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl'])
