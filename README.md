@@ -21,14 +21,16 @@ npm install -g .
 
 Verify that `xslint` is installed correctly:
 ```bash
-xslint --version
+$ xslint --version
 0.0.0
 ```
 ## Usage
-You can check all files in directory:
+You can check all files in the directory:
 ```bash
 xslint
 ```
+The default directory is the current (.) .
+
 Also you can check some files:
 ```bash
 xslint file1.xsl file2.xsl
