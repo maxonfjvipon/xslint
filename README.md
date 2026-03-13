@@ -1,6 +1,6 @@
 # Xslint
 
-XSL Linter CLI. The utility checks the quality of the written xslt code.
+CLI application for chekcing the quality of XSL.
 
 [![grunt](https://github.com/maxonfjvipon/xslint/actions/workflows/grunt.yml/badge.svg)](https://github.com/maxonfjvipon/xslint/actions/workflows/grunt.yml)
 [![PDD status](http://www.0pdd.com/svg?name=maxonfjvipon/xslint)](http://www.0pdd.com/p?name=maxonfjvipon/xslint)
@@ -8,51 +8,63 @@ XSL Linter CLI. The utility checks the quality of the written xslt code.
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/maxonfjvipon/eo2js/blob/master/LICENSE.txt)
 
 ## Build
+
 To build `xslint` from source, clone this repository:
+
 ```bash
 git clone git@github.com:maxonfjvipon/xslint.git 
 cd xslint
 ```
+
 Next, run these commands to install `xslint` system-wide:
+
 ```bash
 npm install
 npm install -g .
 ```
 
 Verify that `xslint` is installed correctly:
+
 ```bash
 $ xslint --version
 0.0.0
 ```
+
 ## Usage
-You can check all files in the directory:
+
+You can check all files in current directory:
+
 ```bash
 xslint
 ```
-The default directory is the current (.) .
 
-Also you can check some files:
+To check specified files - provide them as arguments:
+
 ```bash
-xslint file1.xsl file2.xsl
+xslint path/to/your/file1.xsl path/to/your/file2.xsl
 ```
-You can suppress some [checks](#checks) by using `--suppress`:
+
+You can suppress some [checks](#checks) by using `--suppress` option:
+
 ```bash
 xslint --suppress=template-match-are-you-confusing-variable-and-node
 ```
-You can use just part of check's name for this:
-```bash
-xslint --suppress=confusing-variable-and-node
-```
-If you want to suppress many checks, use `--suppress` as many times as you need:
-```bash
-xslint --suppress=monolithic-design --suppress=short-names
-```
+
 You can skip several checks at once if they contain a certain substring:
+
 ```bash
 xslint --suppress=template-match
 ```
+
+If you want to suppress many checks, use `--suppress` as many times as you need:
+
+```bash
+xslint --suppress=monolithic-design --suppress=short-names
+```
+
 ## Checks
-Implemented checks:
+
+Supported checks:
 - `template-match-starts-with-double-slash` - it's not recommended to start 'match' attribute of 'xsl:template' element with '//'
 - `template-match-use-double-slash` - it's not recommended to use 'match' attribute of 'xsl:template' element with '//'.
 - `template-match-setting-value-of-variable-incorrectly` - assign value to a variable using the 'select' syntax if assigning a string value.
