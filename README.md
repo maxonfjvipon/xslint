@@ -2,10 +2,22 @@
 
 CLI application for chekcing the quality of XSL.
 
+[![DevOps By Rultor.com](https://www.rultor.com/b/objectionary/phino)](https://www.rultor.com/p/objectionary/phino)
+
+[![npm](https://img.shields.io/npm/v/@maxonfjvipon/xslint.svg?style=flat)](https://www.npmjs.com/package/@maxonfjvipon/xslint)
 [![grunt](https://github.com/maxonfjvipon/xslint/actions/workflows/grunt.yml/badge.svg)](https://github.com/maxonfjvipon/xslint/actions/workflows/grunt.yml)
 [![PDD status](http://www.0pdd.com/svg?name=maxonfjvipon/xslint)](http://www.0pdd.com/p?name=maxonfjvipon/xslint)
 [![Hits-of-Code](https://hitsofcode.com/github/maxonfjvipon/xslint)](https://hitsofcode.com/view/github/maxonfjvipon/xslint)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/maxonfjvipon/eo2js/blob/master/LICENSE.txt)
+
+## Installation
+
+To install `xslint` you need to install [npm] first. Then run:
+
+```bash
+npm install -g @maxonfjvipon/xslint@0.0.4
+xslint --version
+```
 
 ## Build
 
@@ -91,6 +103,17 @@ Supported checks:
 
 ## How to Contribute
 
-First, run `npm install`. Then, run `npm test`. All tests should pass.
+Fork repository, make changes, then send us a [pull request][guidelines].
+We will review your changes and apply them to the `master` branch shortly,
+provided they don't violate our quality standards. To avoid frustration,
+before sending us your pull request please make sure all your tests pass:
 
-Make your changes and then [make](https://www.yegor256.com/2014/04/15/github-guidelines.html) a pull request.
+```bash
+npm test
+```
+
+You will need [npm] and [node] installed
+
+[npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+[node]: https://nodejs.org/en
+[guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
