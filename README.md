@@ -1,6 +1,6 @@
 # Xslint
 
-CLI application for chekcing the quality of XSL.
+CLI application for checking the quality of XSL.
 
 [![DevOps By Rultor.com](https://www.rultor.com/b/objectionary/phino)](https://www.rultor.com/p/objectionary/phino)
 
