@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+ * SPDX-License-Identifier: MIT
+ */
+
 import { defineConfig } from "eslint/config";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
