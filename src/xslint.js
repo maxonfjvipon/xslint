@@ -67,12 +67,12 @@ const xslint = function(pths, options) {
       logger.debug(`Linting ${stylesheet}...`)
       for (const lint of LINTERS) {
         defects.push(
-            ...lint(xsl, options.suppress).map(
-                (defect) => ({
-                  ...defect,
-                  file: stylesheet
-                })
-            )
+          ...lint(xsl, options.suppress).map(
+            (defect) => ({
+              ...defect,
+              file: stylesheet
+            })
+          )
         )
       }
     }
@@ -82,12 +82,12 @@ const xslint = function(pths, options) {
       logger.info(`Defects found: ${defects.length}`)
       for (const defect of defects) {
         stdout[defect.severity](
-            '%s(%d:%d) %s (%s)',
-            defect.file,
-            defect.line,
-            defect.pos,
-            defect.message,
-            defect.name,
+          '%s(%d:%d) %s (%s)',
+          defect.file,
+          defect.line,
+          defect.pos,
+          defect.message,
+          defect.name,
         )
       }
       result = 1
