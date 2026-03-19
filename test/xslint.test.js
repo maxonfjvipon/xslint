@@ -67,7 +67,7 @@ describe('xslint', function() {
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
   it('should test all files and directories', function() {
-    const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2/xsl-with-no-violations.xsl','test/resources/xsl-packs-3', 'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'])
+    const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2/xsl-with-no-violations.xsl', 'test/resources/xsl-packs-3', 'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'])
     const expected = [
       'test/resources/xsl-packs',
       'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
