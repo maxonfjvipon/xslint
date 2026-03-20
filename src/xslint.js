@@ -53,11 +53,16 @@ const process_options = function(options) {
 const xslint = function(pths, options) {
   process_options(options)
   let result = 0
+  let all = []
   for (const pth of pths) {
     const stylesheets = xsls(path.resolve(process.cwd(), pth))
+    stylesheets.forEach(stylesheet => {
+      all.push(stylesheet)
+    })
     logger.debug(`Found ${stylesheets.length} .xsl files to process`)
+  }
     const defects = []
-    for (const stylesheet of stylesheets) {
+    for (const stylesheet of all) {
       let xsl
       try {
         xsl = xml.parsedFromFile(stylesheet)
@@ -77,8 +82,11 @@ const xslint = function(pths, options) {
       }
     }
     if (defects.length > 0) {
-      logger.info(`Processed files: ${stylesheets.length}`)
-      logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
+      logger.info(`Processed files: ${all.length}`)
+      pths.forEach((pth)=>
+      {
+        logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
+      })
       logger.info(`Defects found: ${defects.length}`)
       for (const defect of defects) {
         stdout[defect.severity](
@@ -90,14 +98,15 @@ const xslint = function(pths, options) {
           defect.name,
         )
       }
-      result = 1
+      process.exit(1)
     } else {
-      logger.info(`Processed files: ${stylesheets.length}`)
-      logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
+      logger.info(`Processed files: ${all.length}`)
+      pths.forEach((pth)=>
+      {
+        logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
+      })
       logger.info(`No defects found`)
     }
-  }
-  process.exit(result)
 }
 
 module.exports = xslint;
