@@ -39,7 +39,8 @@ describe('xslint', function() {
   })
   it('should print less violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', '--suppress=empty-content-in-instructions', '--suppress=template-match-starts-with-double-slash'])
-    assert.ok(stdout.includes('Processed files: 1') && stdout.includes('Defects found: 4'))
+    assert.ok(stdout.includes('Processed files: 1'))
+    assert.ok(stdout.includes('Defects found: 4'))
     const absented = [
       'template-match-empty-content-in-instructions',
       'template-match-starts-with-double-slash',
@@ -48,7 +49,8 @@ describe('xslint', function() {
   })
   it('should print no violations in xsl file', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl'])
-    assert.ok(stdout.includes('Processed files: 1') && stdout.includes('No defects found'))
+    assert.ok(stdout.includes('Processed files: 1'))
+    assert.ok(stdout.includes('No defects found'))
   })
   it('should test all files', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', 'test/resources/xsl-packs/xsl-with-no-violations.xsl'])
