@@ -82,8 +82,7 @@ const xslint = function(pths, options) {
   }
   if (defects.length > 0) {
     logger.info(`Processed files: ${all.length}`)
-    pths.forEach((pth)=>
-    {
+    pths.forEach((pth)=> {
       logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
     })
     logger.info(`Defects found: ${defects.length}`)
