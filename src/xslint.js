@@ -52,16 +52,13 @@ const process_options = function(options) {
  */
 const xslint = function(pths, options) {
   process_options(options)
-  const all = []
+  let stylesheets = []
   for (const pth of pths) {
-    const stylesheets = xsls(path.resolve(process.cwd(), pth))
-    stylesheets.forEach((stylesheet) => {
-      all.push(stylesheet)
-    })
+    stylesheets = [...stylesheets, ...xsls(path.resolve(process.cwd(), pth))]
     logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   }
   const defects = []
-  for (const stylesheet of all) {
+  for (const stylesheet of stylesheets) {
     let xsl
     try {
       xsl = xml.parsedFromFile(stylesheet)
@@ -80,11 +77,11 @@ const xslint = function(pths, options) {
       )
     }
   }
+  let processed= "";
+  pths.forEach((pth)=> { processed+=`${path.resolve(process.cwd(), pth)}, `})
+  logger.info(`Directories and files to process: ${processed.slice(0, -2)}`)
   if (defects.length > 0) {
-    logger.info(`Processed files: ${all.length}`)
-    pths.forEach((pth)=> {
-      logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
-    })
+    logger.info(`Processed files: ${stylesheets.length}`)
     logger.info(`Defects found: ${defects.length}`)
     for (const defect of defects) {
       stdout[defect.severity](
@@ -98,10 +95,7 @@ const xslint = function(pths, options) {
     }
     process.exit(1)
   } else {
-    logger.info(`Processed files: ${all.length}`)
-    pths.forEach((pth)=> {
-      logger.info(`Name of file or directory: ${path.resolve(process.cwd(), pth)}`)
-    })
+    logger.info(`Processed files: ${stylesheets.length}`)
     logger.info(`No defects found`)
   }
 }
