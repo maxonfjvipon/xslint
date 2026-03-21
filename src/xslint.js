@@ -77,8 +77,8 @@ const xslint = function(pths, options) {
       )
     }
   }
-  let processed= "";
-  pths.forEach((pth)=> { processed+=`${path.resolve(process.cwd(), pth)}, `})
+  let processed= '';
+  pths.forEach((pth)=> processed+=`${path.resolve(process.cwd(), pth)}, `)
   logger.info(`Directories and files to process: ${processed.slice(0, -2)}`)
   if (defects.length > 0) {
     logger.info(`Processed files: ${stylesheets.length}`)
