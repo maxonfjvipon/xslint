@@ -6,7 +6,7 @@
 const {runXslint} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
-const path = require("path");
+const path = require('path');
 
 describe('xslint', function() {
   it('should print its own version', function() {
