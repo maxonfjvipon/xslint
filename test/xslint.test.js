@@ -56,27 +56,27 @@ describe('xslint', function() {
   it('should test all files', function() {
     const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', 'test/resources/xsl-packs/xsl-with-no-violations.xsl'])
     const expected = [
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs/xsl-with-some-violations.xsl')}`,
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs/xsl-with-no-violations.xsl')}`,
+      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      'test/resources/xsl-packs/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(str)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
   })
   it('should test all directories', function() {
     const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2'])
     const expected = [
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs')}`,
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs-2')}`,
+      'test/resources/xsl-packs',
+      'test/resources/xsl-packs-2',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(str)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
   })
   it('should test all files and directories', function() {
     const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2/xsl-with-no-violations.xsl', 'test/resources/xsl-packs-3', 'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'])
     const expected = [
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs')}`,
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs-2/xsl-with-some-violations.xsl')}`,
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs-3')}`,
-      `${path.resolve(process.cwd(), 'test/resources/xsl-packs-2/xsl-with-no-violations.xsl')}`,
+      'test/resources/xsl-packs',
+      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
+      'test/resources/xsl-packs-3',
+      'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(str)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
   })
 })

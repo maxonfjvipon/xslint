@@ -52,11 +52,13 @@ const process_options = function(options) {
  */
 const xslint = function(pths, options) {
   process_options(options)
+  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
+  logger.info(`Directories and files to process: ${pths.join(', ')}`)
   let stylesheets = []
   for (const pth of pths) {
-    stylesheets = [...stylesheets, ...xsls(path.resolve(process.cwd(), pth))]
-    logger.debug(`Found ${stylesheets.length} .xsl files to process`)
+    stylesheets = [...stylesheets, ...xsls(pth)]
   }
+  logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const defects = []
   for (const stylesheet of stylesheets) {
     let xsl
@@ -77,11 +79,8 @@ const xslint = function(pths, options) {
       )
     }
   }
-  let processed= '';
-  pths.forEach((pth)=> processed+=`${path.resolve(process.cwd(), pth)}, `)
-  logger.info(`Directories and files to process: ${processed.slice(0, -2)}`)
+  logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {
-    logger.info(`Processed files: ${stylesheets.length}`)
     logger.info(`Defects found: ${defects.length}`)
     for (const defect of defects) {
       stdout[defect.severity](
@@ -95,7 +94,6 @@ const xslint = function(pths, options) {
     }
     process.exit(1)
   } else {
-    logger.info(`Processed files: ${stylesheets.length}`)
     logger.info(`No defects found`)
   }
 }
