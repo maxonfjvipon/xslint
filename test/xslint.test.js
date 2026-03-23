@@ -39,9 +39,12 @@ describe('xslint', function() {
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
   it('should print less violations in xsl file', function() {
-    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', '--suppress=empty-content-in-instructions', '--suppress=template-match-starts-with-double-slash'])
-    assert.ok(stdout.includes('Processed files: 1'))
-    assert.ok(stdout.includes('Defects found: 4'))
+    const stdout = runXslint([
+      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      '--suppress=empty-content-in-instructions',
+      '--suppress=template-match-starts-with-double-slash'
+    ]);
+    ['Processed files: 1', 'Defects found: 4'].forEach((expected) => assert.ok(stdout.includes(expected)))
     const absented = [
       'template-match-empty-content-in-instructions',
       'template-match-starts-with-double-slash',
@@ -49,20 +52,25 @@ describe('xslint', function() {
     absented.forEach((str) => assert.ok(!stdout.includes(str)))
   })
   it('should print no violations in xsl file', function() {
-    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl'])
-    assert.ok(stdout.includes('Processed files: 1'))
-    assert.ok(stdout.includes('No defects found'))
+    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl']);
+    ['Processed files: 1', 'No defects found'].forEach((expected) => assert.ok(stdout.includes(expected)))
   })
   it('should test all files', function() {
-    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl', 'test/resources/xsl-packs/xsl-with-no-violations.xsl'])
+    const stdout = runXslint([
+      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      'test/resources/xsl-packs/xsl-with-no-violations.xsl'
+    ])
     const expected = [
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
       'test/resources/xsl-packs/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${path.normalize(str)}`)))
   })
   it('should test all directories', function() {
-    const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2'])
+    const stdout = runXslint([
+      'test/resources/xsl-packs',
+      'test/resources/xsl-packs-2'
+    ])
     const expected = [
       'test/resources/xsl-packs',
       'test/resources/xsl-packs-2',
@@ -70,13 +78,18 @@ describe('xslint', function() {
     expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
   })
   it('should test all files and directories', function() {
-    const stdout = runXslint(['test/resources/xsl-packs', 'test/resources/xsl-packs-2/xsl-with-no-violations.xsl', 'test/resources/xsl-packs-3', 'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'])
+    const stdout = runXslint([
+      'test/resources/xsl-packs',
+      'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
+      'test/resources/xsl-packs-3',
+      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'
+    ])
     const expected = [
       'test/resources/xsl-packs',
       'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
       'test/resources/xsl-packs-3',
       'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${path.normalize(str)}`)))
   })
 })

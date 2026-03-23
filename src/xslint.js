@@ -52,8 +52,8 @@ const process_options = function(options) {
  */
 const xslint = function(pths, options) {
   process_options(options)
-  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
+  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
   let stylesheets = []
   for (const pth of pths) {
     stylesheets = [...stylesheets, ...xsls(pth)]
