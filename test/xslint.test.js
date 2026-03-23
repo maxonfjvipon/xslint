@@ -64,7 +64,7 @@ describe('xslint', function() {
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
       'test/resources/xsl-packs/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(`${path.normalize(str)}`)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${str.replace(/\\/g, '/')}`)))
   })
   it('should test all directories', function() {
     const stdout = runXslint([
@@ -90,6 +90,6 @@ describe('xslint', function() {
       'test/resources/xsl-packs-3',
       'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
     ]
-    expected.forEach((str) => assert.ok(stdout.includes(`${path.normalize(str)}`)))
+    expected.forEach((str) => assert.ok(stdout.includes(`${str.replace(/\\/g, '/')}`)))
   })
 })
