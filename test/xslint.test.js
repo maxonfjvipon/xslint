@@ -95,4 +95,9 @@ describe('xslint', function() {
     expected.forEach((str) => assert.ok(stdout.includes(`${str.replace(/\\/g, '/')}`)))
     assert.ok(stdout.includes('Processed files: 6'));
   })
+  it('should test default directory', function() {
+    const stdout = runXslint([])
+    assert.ok(stdout.includes('Directories and files to process: .'));
+    assert.ok(stdout.includes('Processed files: 6'));
+  })
 })
