@@ -31,7 +31,7 @@ export default defineConfig([{
         "comma-dangle": "off",
         indent: ["error", 2],
         camelcase: "off",
-        "valid-jsdoc": "on",
+        "valid-jsdoc": "off",
 
         "max-len": ["error", {
             code: 300,
