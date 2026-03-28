@@ -68,7 +68,7 @@ const cmdAvailable = function(cmd, print = true) {
     const command = os.platform === 'win32' ? 'where' : 'which'
     execCmd(command, [cmd], print)
     return true
-  } catch (ex) {
+  } catch {
     return false
   }
 };
