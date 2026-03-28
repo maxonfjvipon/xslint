@@ -45,14 +45,19 @@ const process_options = function(options) {
 
 /**
  * Entry point.
- * @param {String} pth - Path to file or directory with .xsl files to lint
+ * @param {Array.<String>} pths - Path to file or directory with .xsl files to lint
  * @param {{
  *  logLevel: string
  * }} options - CLI options
  */
-const xslint = function(pth, options) {
+const xslint = function(pths, options) {
   process_options(options)
-  const stylesheets = xsls(path.resolve(process.cwd(), pth))
+  logger.info(`Directories and files to process: ${pths.join(', ')}`)
+  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
+  let stylesheets = []
+  for (const pth of pths) {
+    stylesheets = [...stylesheets, ...xsls(pth)]
+  }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const defects = []
   for (const stylesheet of stylesheets) {
@@ -74,8 +79,9 @@ const xslint = function(pth, options) {
       )
     }
   }
+  logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {
-    logger.info(`Processed files: ${stylesheets.length}, defects found ${defects.length}`)
+    logger.info(`Defects found: ${defects.length}`)
     for (const defect of defects) {
       stdout[defect.severity](
         '%s(%d:%d) %s (%s)',
@@ -88,7 +94,7 @@ const xslint = function(pth, options) {
     }
     process.exit(1)
   } else {
-    logger.info(`Processed ${stylesheets.length} files, no defects found`)
+    logger.info(`No defects found`)
   }
 }
 
