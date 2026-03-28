@@ -32,8 +32,8 @@ export default defineConfig([{
         indent: ["error", 2],
         camelcase: "off",
 
-        "valid-jsdoc": "warn",
-        "require-jsdoc": "warn",
+        "valid-jsdoc": "off",
+        "require-jsdoc": "off",
 
         "max-len": ["error", {
             code: 300,
