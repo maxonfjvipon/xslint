@@ -19,22 +19,18 @@ const compat = new FlatCompat({
 
 export default defineConfig([{
     extends: compat.extends("google"),
-
     languageOptions: {
         globals: {},
         ecmaVersion: 2019,
         sourceType: "script",
     },
-
     rules: {
         semi: "off",
         "comma-dangle": "off",
         indent: ["error", 2],
         camelcase: "off",
-
         "valid-jsdoc": "off",
         "require-jsdoc": "off",
-
         "max-len": ["error", {
             code: 300,
         }],
