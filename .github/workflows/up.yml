@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 name: up
 'on':
   push:
@@ -13,17 +14,21 @@ concurrency:
   cancel-in-progress: true
 jobs:
   up:
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: |-
           git fetch --tags --force && \
           latest=$(git tag --sort=creatordate | tail -1) && \
+          export latest && \
           sed -E -i "s/xslint@[0-9.]+/xslint@${latest}/g" README.md
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
+          sign-commits: true
           branch: version-up
           commit-message: 'new version in README'
           delete-branch: true
           title: 'New version in README'
+          assignees: maxonfjvipon
           base: master
