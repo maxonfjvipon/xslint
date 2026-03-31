@@ -15,7 +15,7 @@ CLI application for checking the quality of XSL.
 To install `xslint` you need to install [npm] first. Then run:
 
 ```bash
-npm install -g @maxonfjvipon/xslint@0.0.4
+npm install -g @maxonfjvipon/xslint@0.0.5
 xslint --version
 ```
 
