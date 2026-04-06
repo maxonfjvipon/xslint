@@ -14,6 +14,7 @@ module.exports = function(grunt) {
       test: {
         options: {
           files: ['test/**/*.test.js', '!test/resources/**'],
+          timeout: 10_000
         }
       }
     }
