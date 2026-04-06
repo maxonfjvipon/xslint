@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-match-empty-content-in-instructions
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:choose>
+        <xsl:when select="o/o/o[1]">
+          <HR STYLE="color:red"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <BR/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:variable name="qw" as="xs:string" select="ooo"/>
+      <xsl:copy-of select="$qw"/>
+    </xsl:template>
+  </xsl:stylesheet>
