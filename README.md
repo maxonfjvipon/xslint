@@ -100,6 +100,8 @@ Supported checks:
 - `template-match-incorrect-use-of-boolean-constants` - incorrectly using the boolean constants as 'true' or 'false'. Use true() instead of 'true', and false() instead of 'false'.
 - `template-match-short-names` - using a single character name for variable/function/template. Use meaningful names for these features.
 - `template-match-name-starts-with-numeric` - the variable/function/template name starts with a numeric character.
+- `template-match-use-single-option-for-choose` - recommended to use more than one option in 'xsl:choose'. Use 'xsl:if' for single option instead.
+- `template-match-use-choose-without-otherwise` - recommended to use 'xsl:otherwise' in 'xsl:choose'.
 
 ## How to Contribute
 
