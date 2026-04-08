@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:choose[(count(*) = 1)]
 severity: warning
-message: Recommended to use more options in 'xsl:choose'. Use 'xsl:if' instead of this.
+message: Recommended to use more than one option in 'xsl:choose'. Use 'xsl:if' for single option instead.
