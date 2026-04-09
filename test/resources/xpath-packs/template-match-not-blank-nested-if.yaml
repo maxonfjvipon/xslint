@@ -3,16 +3,17 @@
 ---
 pack: template-match-blank-nested-if
 found:
-  amount: 1
-  positions: [ [ 4, 5 ] ]
+  amount: 0
+  positions: [ ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
     <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:if test=".!=''">
         <xsl:if test="position() == 1">
-          <xsl:text>foo</xsl:text>
+          <xsl:text>foo1</xsl:text>
         </xsl:if>
+        <xsl:text>foo</xsl:text>
       </xsl:if>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[1]">
