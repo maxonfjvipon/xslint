@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:stylesheet[count(xsl:output) = 0]
+severity: warning
+message: The mandatory 'xsl:output' instruction is not used.

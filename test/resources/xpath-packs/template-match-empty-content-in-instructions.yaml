@@ -4,10 +4,11 @@
 pack: template-match-empty-content-in-instructions
 found:
   amount: 4
-  positions: [ [ 4, 5 ], [ 6, 5 ], [ 8, 7 ], [ 9, 7 ] ]
+  positions: [ [ 5, 5 ], [ 7, 5 ], [ 9, 7 ], [ 10, 7 ] ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
+    <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o">
       <xsl:for-each select="o/o">
       </xsl:for-each>

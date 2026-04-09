@@ -102,6 +102,7 @@ Supported checks:
 - `template-match-name-starts-with-numeric` - the variable/function/template name starts with a numeric character.
 - `template-match-use-single-option-for-choose` - recommended to use more than one option in 'xsl:choose'. Use 'xsl:if' for single option instead.
 - `template-match-use-choose-without-otherwise` - recommended to use 'xsl:otherwise' in 'xsl:choose'.
+- `template-match-not-using-output` - the mandatory 'xsl:output' instruction is not used.
 
 ## How to Contribute
 
