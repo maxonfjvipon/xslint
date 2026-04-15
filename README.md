@@ -102,6 +102,7 @@ Supported checks:
 - `template-match-name-starts-with-numeric` - the variable/function/template name starts with a numeric character.
 - `template-match-use-single-option-for-choose` - recommended to use more than one option in 'xsl:choose'. Use 'xsl:if' for single option instead.
 - `template-match-use-choose-without-otherwise` - recommended to use 'xsl:otherwise' in 'xsl:choose'.
+- `template-match-stylesheet-has-no-templates` - add templates to the stylesheet.
 - `template-match-not-using-output` - the mandatory 'xsl:output' instruction is not used.
 - `template-match-blank-nested-if` - incorrectly using nested 'xsl:if'. Combine nested 'xsl:if' into one or use several nodes in parent's 'xsl:if' node.
 - `template-match-using-not-outermost-stylesheet` - 'xsl:stylesheet' must be the outermost element. Please relook at the stylesheet logic.
