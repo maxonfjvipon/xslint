@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet//xsl:stylesheet
+severity: error
+message: \'xsl:stylesheet\' must be the outermost element. Please relook at the stylesheet logic.

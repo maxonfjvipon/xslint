@@ -104,6 +104,7 @@ Supported checks:
 - `template-match-use-choose-without-otherwise` - recommended to use 'xsl:otherwise' in 'xsl:choose'.
 - `template-match-not-using-output` - the mandatory 'xsl:output' instruction is not used.
 - `template-match-blank-nested-if` - incorrectly using nested 'xsl:if'. Combine nested 'xsl:if' into one or use several nodes in parent's 'xsl:if' node.
+- `template-match-using-not-outermost-stylesheet` - 'xsl:stylesheet' must be the outermost element. Please relook at the stylesheet logic.
 
 ## How to Contribute
 
