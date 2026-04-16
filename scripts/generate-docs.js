@@ -1,0 +1,165 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+ * SPDX-License-Identifier: MIT
+ */
+
+'use strict'
+
+const path = require('node:path')
+const fs = require('node:fs')
+const {allFilesFrom, yaml} = require('../src/helpers')
+const {marked} = require('marked')
+
+const CHECKS = path.join(__dirname, '..', 'src', 'resources', 'checks')
+const MOTIVES = path.join(__dirname, '..', 'src', 'resources', 'motives')
+const DOCS = path.join(__dirname, '..', 'docs')
+const CHECKS_DIR = path.join(DOCS, 'checks')
+
+const CSS = `
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #24292e;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+  h1 { font-size: 2rem; font-weight: 600; margin-bottom: 4px; }
+  h2 { font-size: 1.3rem; font-weight: 600; margin: 20px 0 8px; }
+  a { color: #0366d6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  p { margin: 8px 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.9rem; }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    font-weight: 600;
+  }
+  td { padding: 10px 12px; border: 1px solid #e1e4e8; vertical-align: top; }
+  tr:hover td { background: #f6f8fa; }
+  .severity-warning {
+    background: #fff8c5;
+    color: #9a6700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .severity-error {
+    background: #ffebe9;
+    color: #cf222e;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .back { display: inline-block; margin-bottom: 24px; font-size: 0.9rem; }
+  .meta { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0 24px; flex-wrap: wrap; }
+  .xpath {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    flex: 1;
+  }
+  pre { margin: 12px 0; border-radius: 6px; overflow-x: auto; }
+  code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; }
+  .check-content h1 { font-size: 1.6rem; margin-bottom: 8px; }
+`
+
+const HLJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0'
+
+const page = (title, content, withHighlight) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${title}</title>
+  <style>${CSS}</style>${withHighlight ? `
+  <link rel="stylesheet" href="${HLJS_CDN}/styles/github.min.css">
+  <script src="${HLJS_CDN}/highlight.min.js"></script>
+  <script src="${HLJS_CDN}/languages/xml.min.js"></script>
+  <script>hljs.highlightAll();</script>` : ''}
+</head>
+<body>
+${content}
+</body>
+</html>`
+
+const severityBadge = (severity) => {
+  return `<span class="severity-${severity}">${severity}</span>`
+}
+
+const generate = function() {
+  const checks = allFilesFrom(CHECKS)
+    .filter((f) => f.endsWith('.yaml'))
+    .sort()
+    .map((yamlFile) => {
+      const name = path.basename(yamlFile, '.yaml')
+      const lint = yaml.parsedFromFile(yamlFile)
+      const mdFile = path.join(MOTIVES, `${name}.md`)
+      const md = fs.existsSync(mdFile) ? fs.readFileSync(mdFile, 'utf-8') : null
+      return {name, lint, md}
+    })
+
+  fs.mkdirSync(CHECKS_DIR, {recursive: true})
+
+  const indexRows = checks.map(({name, lint}) => {
+    return `  <tr>
+    <td><a href="checks/${name}.html">${name}</a></td>
+    <td>${severityBadge(lint.severity)}</td>
+    <td>${lint.message}</td>
+  </tr>`
+  }).join('\n')
+
+  const indexBody = `  <h1>xslint checks</h1>
+  <p>${checks.length} checks available</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Check</th>
+        <th>Severity</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+${indexRows}
+    </tbody>
+  </table>`
+
+  fs.writeFileSync(
+    path.join(DOCS, 'index.html'),
+    page('xslint checks', indexBody, false)
+  )
+
+  for (const {name, lint, md} of checks) {
+    const mdHtml = md ? marked(md) : `<h1>${name}</h1><p>${lint.message}</p>`
+    const checkBody = `  <a class="back" href="../index.html">← all checks</a>
+  <div class="meta">
+    ${severityBadge(lint.severity)}
+    <code class="xpath">${lint.xpath.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>
+  </div>
+  <div class="check-content">
+${mdHtml}
+  </div>`
+
+    fs.writeFileSync(
+      path.join(CHECKS_DIR, `${name}.html`),
+      page(name, checkBody, true)
+    )
+  }
+
+  console.log(`Generated docs for ${checks.length} checks in ${DOCS}`)
+}
+
+generate()
+
+module.exports = generate
