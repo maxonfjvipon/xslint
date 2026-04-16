@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:element[not(contains(@name, '$') or (contains(@name, '(') and contains(@name, ')')) or (contains(@name, '{') and contains(@name, '}')) or (@namespace))]
 severity: warning
-message: Creating an element node using the xsl:element instruction when could have been possible directly
+message: xsl:element is used with a static name. Use a literal result element instead.

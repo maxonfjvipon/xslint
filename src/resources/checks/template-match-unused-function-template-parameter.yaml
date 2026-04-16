@@ -3,4 +3,4 @@
 ---
 xpath: //(xsl:function | xsl:template)/xsl:param[not(some $x in ..//(node() | @*) satisfies contains($x, concat('$', @name)))]
 severity: warning
-message: Function or template parameter is unused in the function/template body.
+message: A parameter is declared but never referenced in the function or template body. Remove it or use it.

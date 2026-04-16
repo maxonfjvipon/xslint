@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet[count(xsl:template)=0]
 severity: error
-message: Add templates to the stylesheet.
+message: The stylesheet has no xsl:template elements and produces no output. Add at least one template.

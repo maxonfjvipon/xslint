@@ -3,4 +3,4 @@
 ---
 xpath: //*[name()="xsl:variable" or name()="xsl:template"][string-length(@name) = 1] | //xsl:function[string-length(substring-after(@name, ":")) = 1]
 severity: warning
-message: Using a single character name for variable/function/template. Use meaningful names for these features.
+message: A variable, function, or template has a single-character name. Use a descriptive name that reveals intent.

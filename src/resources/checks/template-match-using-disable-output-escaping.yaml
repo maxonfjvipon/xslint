@@ -3,4 +3,4 @@
 ---
 xpath: //*[@disable-output-escaping = "yes"]
 severity: warning
-message: Have set the disable-output-escaping attribute to 'yes'. Please relook at the stylesheet logic.
+message: "disable-output-escaping='yes' is set, which produces implementation-defined output. Use xsl:copy-of or literal elements instead."

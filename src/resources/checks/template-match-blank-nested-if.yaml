@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:if[(count(*) = 1) and (count(xsl:if) = 1)]
 severity: warning
-message: Recommended to combine nested 'xsl:if' nodes into single one joining conditions with 'and' operator.
+message: "A nested xsl:if inside another xsl:if is prohibited. Combine conditions with 'and' into a single xsl:if."

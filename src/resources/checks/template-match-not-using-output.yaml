@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet[count(xsl:output) = 0]
 severity: error
-message: The mandatory 'xsl:output' instruction is not used.
+message: The xsl:output instruction is missing. Declare it to specify the serialization format explicitly.

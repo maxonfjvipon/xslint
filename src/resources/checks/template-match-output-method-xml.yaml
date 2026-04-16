@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet/xsl:output[@method = 'xml'][//xsl:template[starts-with(@match, '/') and (count (.//html | .//HTML) > 0)]]
 severity: warning
-message: Using the output method 'xml' when generating HTML code.
+message: "xsl:output declares method='xml' while the root template generates HTML elements. Change the method to 'html'."
