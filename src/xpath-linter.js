@@ -20,7 +20,7 @@ const PREFIXES = {
  * Xpath packs files paths.
  * @type {Array.<String>}
  */
-const PACKS = allFilesFrom(path.join(__dirname, 'resources'));
+const PACKS = allFilesFrom(path.join(__dirname, 'resources', 'checks'));
 
 /**
  * Resolve prefix.

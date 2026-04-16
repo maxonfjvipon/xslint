@@ -20,7 +20,7 @@ describe('xpath-linter', function() {
   PACKS.forEach((pack) => {
     const yml = yaml.parsedFromFile(pack)
     const lint = yaml.parsedFromFile(
-      path.resolve(__dirname, '../src/resources', `${yml.pack}.yaml`),
+      path.resolve(__dirname, '../src/resources/checks', `${yml.pack}.yaml`),
     )
     const input = xml.parsedFromString(yml.input)
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
@@ -44,7 +44,7 @@ describe('xpath-linter', function() {
         let name = yml.pack
         if (yml.found.positions[index].length == 3) {
           const temp = yaml.parsedFromFile(
-            path.resolve(__dirname, '../src/resources', `${yml.found.positions[index][2]}.yaml`),
+            path.resolve(__dirname, '../src/resources/checks', `${yml.found.positions[index][2]}.yaml`),
           )
           severity = temp.severity
           message = temp.message
