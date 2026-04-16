@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:template[not(starts-with(@match, '//')) and contains(@match, '//')]
 severity: warning
-message: It's not recommended to use 'match' attribute of 'xsl:template' element with '//'
+message: The match attribute of xsl:template contains //, which triggers a full document scan. Use a more specific path.

@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet//xsl:stylesheet
 severity: error
-message: \'xsl:stylesheet\' must be the outermost element. Please relook at the stylesheet logic.
+message: xsl:stylesheet is nested inside another element. It must be the outermost element of the document.

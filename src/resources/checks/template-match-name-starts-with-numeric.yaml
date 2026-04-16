@@ -3,4 +3,4 @@
 ---
 xpath: //*[name()='xsl:variable' or name()='xsl:template'][@name][contains('0123456789', substring(@name, 1, 1))] | //xsl:function[@name][contains('0123456789', substring(substring-after(@name, ":"), 1, 1))]
 severity: warning
-message: The variable/function/template name starts with a numeric character.
+message: A variable, function, or template name starts with a digit, which is invalid in XPath. Rename it to start with a letter.

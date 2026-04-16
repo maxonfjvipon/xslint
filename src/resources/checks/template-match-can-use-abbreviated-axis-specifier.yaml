@@ -3,4 +3,4 @@
 ---
 xpath: //*[@*[contains(., "child::") or contains(., "attribute::") or contains(., "parent::")]]
 severity: warning
-message: "Using the lengthy axis specifiers like child::, attribute:: or parent::node(). The abbreviation for parent::node() is .. . Instead of child::node use this node. The attribute axis attribute:: can be abbreviated by @. "
+message: Verbose axis specifiers child::, attribute::, or parent::node() are used. Replace them with the node name alone, @, or .. respectively.

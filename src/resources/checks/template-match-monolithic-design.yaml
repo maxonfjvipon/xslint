@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet[count(//xsl:template | //xsl:function) = 1]
 severity: warning
-message: Using a single template/function in the stylesheet. You can modularize the code.
+message: The stylesheet contains only one template or function. Extract logic into separate, focused templates.

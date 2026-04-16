@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:choose[(count(xsl:otherwise) = 0)]
 severity: warning
-message: Recommended to use 'xsl:otherwise' in 'xsl:choose'.
+message: xsl:choose has no xsl:otherwise branch. Add xsl:otherwise to handle unmatched cases explicitly.

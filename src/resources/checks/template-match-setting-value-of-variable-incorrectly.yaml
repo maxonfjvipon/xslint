@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1)]
 severity: warning
-message: Assign value to a variable using the 'select' syntax if assigning a string value.
+message: A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead.
