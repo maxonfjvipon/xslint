@@ -1,6 +1,8 @@
 # Missing version in stylesheet
 
-The '@version' attribute is missing in the stylesheet. Add there 'version="1.0"' or 'version="2.0"'"
+Every `xsl:stylesheet` element must declare a `version` attribute to identify
+the XSLT version the stylesheet conforms to. Omitting it produces an invalid
+stylesheet that a conformant XSLT processor is required to reject.
 
 Incorrect:
 

@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet[not(@version)]
 severity: warning
-message: "The '@version' attribute is missing in the stylesheet. Add there 'version=\"1.0\"' or 'version=\"2.0\"'"
+message: The '@version' attribute is missing in the 'xsl:stylesheet' element. Declare it to specify the stylesheet version explicitly.
