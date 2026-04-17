@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[not(@id)]
+severity: warning
+message: "The '@id' attribute is missing in the stylesheet. Add there 'id=\"your_stylesheet_name\"'."
