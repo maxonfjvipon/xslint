@@ -1,6 +1,8 @@
 # Missing version in stylesheet
 
-The '@id' attribute is missing in the stylesheet. Add there 'id="your_stylesheet_name"'.
+Every `xsl:stylesheet` should declare an `id` attribute with a unique value.
+Without it, stylesheets are indistinguishable in logs, error messages, and
+tooling that processes multiple stylesheets together.
 
 Incorrect:
 
