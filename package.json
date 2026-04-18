@@ -30,7 +30,7 @@
     "grunt-cli": "^1.5.0",
     "grunt-eslint": "^24.3.0",
     "grunt-mocha-cli": "^7.0.0",
-    "marked": "^15.0.0",
+    "marked": "^18.0.1",
     "mocha": "^11.0.1"
   }
 }
