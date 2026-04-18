@@ -1,7 +1,7 @@
 # Function use in XSLT version 1.0
 
 `xsl:function` does not exist in XSLT 1.0. Use a `xsl:template` with `name` attribute 
-or XSLT version 2.0 instead.
+or upgrade the stylesheet version to 2.0.
 
 Incorrect:
 
