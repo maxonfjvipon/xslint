@@ -7,27 +7,26 @@ Declaring them in other nodes is a syntax error.
 Incorrect:
 
 ```xsl
-<xsl:template match="/">
-  <!-- more than 50 xsl:* descendant elements -->
-  <xsl:variable name="a" select="foo"/>
-  <xsl:variable name="b" select="bar"/>
-  <!-- ... many more elements ... -->
-</xsl:template>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:function name="my:factorial" as="xs:integer">
+        <!-- function body -->
+      </xsl:function>
+    </xsl:template>
+  </xsl:stylesheet>
 ```
 
 Correct:
 
 ```xsl
-<xsl:template match="/">
-  <xsl:apply-templates select="header"/>
-  <xsl:apply-templates select="body"/>
-</xsl:template>
-
-<xsl:template match="header">
-  <!-- header logic -->
-</xsl:template>
-
-<xsl:template match="body">
-  <!-- body logic -->
-</xsl:template>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+        <!-- template body -->
+    </xsl:template>
+     <xsl:function name="my:factorial" as="xs:integer">
+       <!-- function body -->
+     </xsl:function>
+  </xsl:stylesheet>
 ```
