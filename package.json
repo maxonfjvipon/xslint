@@ -20,7 +20,7 @@
     "colors": "1.4.0",
     "commander": "^14.0.0",
     "fontoxpath": "^3.34.0",
-    "xmldom": "^0.6.0",
+    "@xmldom/xmldom": "^0.9.9",
     "yaml": "^2.7.0",
     "patch-package": "^8.0.0"
   },
