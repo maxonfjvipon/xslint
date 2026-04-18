@@ -10,8 +10,8 @@ input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:function name="my:sum" as="xs:integer">
-      <xsl:param name="x1" as="xsl:integer"/>
-      <xsl:param name="x2" as="xsl:integer"/>
+      <xsl:param name="x1" as="xs:integer"/>
+      <xsl:param name="x2" as="xs:integer"/>
       <xsl:value-of select="$x1+$x2"/>
     </xsl:function>
     <xsl:template match="/objects/o/o[1]/o[1]">
