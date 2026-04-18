@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[@version="1.0"]//xsl:function
+severity: error
+message: "'xsl:function' is declared in XSLT version 1.0. Use a named template or XSLT version 2.0 instead."
