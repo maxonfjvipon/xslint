@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>31 checks available</p>
+  <p>32 checks available</p>
   <table>
     <thead>
       <tr>
@@ -100,6 +100,11 @@
     <td><a href="checks/template-match-function-template-complexity.html">template-match-function-template-complexity</a></td>
     <td><span class="severity-warning">warning</span></td>
     <td>The function or template contains more than 50 XSLT elements. Split it into smaller, focused units.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-function-use-in-xslt-1.html">template-match-function-use-in-xslt-1</a></td>
+    <td><span class="severity-error">error</span></td>
+    <td>'xsl:function' is declared in XSLT version 1.0. Use a named template or upgrade the stylesheet version to 2.0 instead.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-incorrect-use-of-boolean-constants.html">template-match-incorrect-use-of-boolean-constants</a></td>
