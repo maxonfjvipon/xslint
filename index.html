@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>33 checks available</p>
+  <p>34 checks available</p>
   <table>
     <thead>
       <tr>
@@ -185,6 +185,11 @@
     <td><a href="checks/template-match-too-many-small-templates.html">template-match-too-many-small-templates</a></td>
     <td><span class="severity-warning">warning</span></td>
     <td>The stylesheet has 10 or more templates with fewer than 3 child elements. Merge related small templates to reduce fragmentation.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-unsorted-imports.html">template-match-unsorted-imports</a></td>
+    <td><span class="severity-warning">warning</span></td>
+    <td>The 'xsl:import' elements are not sorted alphabetically by '@href'. Sort imports to improve readability.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-unused-function-template-parameter.html">template-match-unused-function-template-parameter</a></td>
