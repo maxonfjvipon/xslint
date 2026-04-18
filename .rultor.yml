@@ -7,7 +7,7 @@ assets:
   npmrc: maxonfjvipon/secrets#.npmrc
 install: |
   npm install --no-color
-  sudo npm install --no-color --global grunt-cli
+  npm install --no-color --global grunt-cli
   npm uninstall --no-color grunt-cli
   npm install --no-color mocha
   pdd -f /dev/null -v
