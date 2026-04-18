@@ -3,4 +3,4 @@
 ---
 xpath: /xsl:stylesheet/*//(xsl:function|xsl:template)
 severity: warning
-message: "Boolean constants 'true' and 'false' are non-empty strings, not booleans. Use true() and false() instead."
+message: 'xsl:function' or 'xsl:template' are used in the wrong places. Use 'xsl:function' and 'xsl:template' as child nodes of 'xsl:stylesheet'.
