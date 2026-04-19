@@ -4,4 +4,3 @@
 xpath: //xsl:function[not(some $x in //(@match | @select) except (./(@match | @select) | .//*/(@match | @select)) satisfies contains($x, concat(@name,'(')))]
 severity: warning
 message: A stylesheet function is never called in any match or select expression. Remove it or call it.
-
