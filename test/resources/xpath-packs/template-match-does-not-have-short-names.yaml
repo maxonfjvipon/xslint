@@ -17,6 +17,7 @@ input: |-
     <xsl:template name="ooo">
       <xsl:variable name="qw" as="xs:string" select="ooo" />
       <xsl:copy-of select="$qw"/>
+      <xsl:copy-of select="my:factorial(3)"/>
     </xsl:template>
     <xsl:template match='o'>
       <xsl:call-template name='ooo'>

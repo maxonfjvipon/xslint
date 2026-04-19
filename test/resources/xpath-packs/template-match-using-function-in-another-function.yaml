@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: template-match-name-starts-with-numeric
+pack: template-match-unused-function
 found:
   amount: 0
   positions: [ ]
@@ -14,14 +14,12 @@ input: |-
       <xsl:sequence
         select="if ($number=0) then 1 else $number * my:factorial($number-1)"/>
     </xsl:function>
-    <xsl:template name="ooo">
-      <xsl:variable name="qw" as="xs:string" select="ooo" />
-      <xsl:copy-of select="$qw"/>
-      <xsl:copy-of select="my:factorial(3)"/>
-    </xsl:template>
-    <xsl:template match='o'>
-      <xsl:call-template name='ooo'>
-        <xsl:with-param name='oooo'>bold</xsl:with-param>
-      </xsl:call-template>
+    <xsl:function name="my:factorial2" as="xs:integer">
+      <xsl:param name="number" as="xs:integer"/>
+      <xsl:sequence
+        select="if ($number=0) then 1 else $number * my:factorial($number-1)"/>
+    </xsl:function>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:copy-of select="my:factorial2(3)"/>
     </xsl:template>
   </xsl:stylesheet>
