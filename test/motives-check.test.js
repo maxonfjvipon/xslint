@@ -15,11 +15,11 @@ const fs = require('fs')
  */
 const MOTIVES = allFilesFrom(path.resolve(__dirname, '../src/resources/motives'))
 
-describe('motives-check', function() {
+describe('xcop motives check', function() {
   MOTIVES.forEach((motive) => {
     const lines = fs.readFileSync(`${motive}`, 'utf8').split(/\r?\n/);
     if (cmdAvailable('xcop')) {
-      it(`should find 0 errors in xsl in ${path.basename(motive)}`, function() {
+      it(`should find no errors in xsl in ${path.basename(motive)}`, function() {
         for (let i = 0; i < lines.length; i++) {
           if (lines[i].startsWith('```xsl')) {
             const xsl = path.resolve(__dirname, 'temp-motives-check.xsl')
@@ -27,7 +27,8 @@ describe('motives-check', function() {
             while (!lines[i+1].startsWith('```')) {
               fs.appendFileSync(xsl, lines[i+1] + '\n')
               i++
-            } const stdout = runXcop(xsl)
+            }
+            const stdout = runXcop(xsl)
             assert.ok(stdout.includes(`${xsl} looks good`))
             fs.unlinkSync(xsl);
           }
