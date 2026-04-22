@@ -2,5 +2,5 @@
 # SPDX-License-Identifier: MIT
 ---
 xpath: //*[name()='xsl:for-each' or name()='xsl:if' or name()='xsl:otherwise' or name()='xsl:when'][count(node()) = count(text()) and normalize-space() = ""]
-severity: warning
+severity: error
 message: An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element.
