@@ -26,7 +26,7 @@ const execCmd = function(command, args, print) {
       }
     ).toString()
   } catch (ex) {
-    console.warn(ex.stdout.toString())
+    console.info(ex.stdout.toString())
     throw ex
   }
 }
