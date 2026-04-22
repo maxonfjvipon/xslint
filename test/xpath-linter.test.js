@@ -59,7 +59,7 @@ describe('xpath-linter', function() {
     })
     if (cmdAvailable('xcop')) {
       it(`should find 0 errors in xsl in ${path.basename(pack)}`, function() {
-        const xsl = path.resolve(__dirname, 'temp.xsl')
+        const xsl = path.resolve(__dirname, 'temp-xpath-linter.xsl')
         fs.writeFileSync(xsl, `${input}\n`);
         const stdout = runXcop(xsl)
         assert.ok(stdout.includes(`${xsl} looks good`))

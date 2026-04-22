@@ -17,6 +17,8 @@ Correct:
 ```xsl
 <xsl:template name="greet">
   <xsl:param name="name"/>
-  <p><xsl:value-of select="concat('Hello, ', $name)"/></p>
+  <p>
+    <xsl:value-of select="concat('Hello, ', $name)"/>
+  </p>
 </xsl:template>
 ```

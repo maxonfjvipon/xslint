@@ -7,15 +7,19 @@ is written as `..`.
 Incorrect:
 
 ```xsl
-<xsl:value-of select="child::title"/>
-<xsl:value-of select="attribute::name"/>
-<xsl:apply-templates select="parent::node()"/>
+<re>
+  <xsl:value-of select="child::title"/>
+  <xsl:value-of select="attribute::name"/>
+  <xsl:apply-templates select="parent::node()"/>
+</re>
 ```
 
 Correct:
 
 ```xsl
-<xsl:value-of select="title"/>
-<xsl:value-of select="@name"/>
-<xsl:apply-templates select=".."/>
+<re>
+  <xsl:value-of select="title"/>
+  <xsl:value-of select="@name"/>
+  <xsl:apply-templates select=".."/>
+</re>
 ```

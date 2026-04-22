@@ -7,7 +7,7 @@ namespace bindings instead.
 Incorrect:
 
 ```xsl
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:output method="html"/>
   <xsl:template match="*">
     <xsl:for-each select="namespace::*">
@@ -20,7 +20,7 @@ Incorrect:
 Correct:
 
 ```xsl
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:output method="html"/>
   <xsl:template match="*">
     <xsl:for-each select="in-scope-prefixes(.)">

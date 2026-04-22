@@ -7,11 +7,19 @@ to improve readability.
 Incorrect:
 
 ```xsl
-<!-- 10 or more templates each with fewer than 3 child xsl:* elements -->
-<xsl:template match="a"><xsl:value-of select="."/></xsl:template>
-<xsl:template match="b"><xsl:value-of select="."/></xsl:template>
-<xsl:template match="c"><xsl:value-of select="."/></xsl:template>
-<!-- ... 7 or more similar templates ... -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+  <!-- 10 or more templates each with fewer than 3 child xsl:* elements -->
+  <xsl:template match="a">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="b">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="c">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <!-- ... 7 or more similar templates ... -->
+</xsl:stylesheet>
 ```
 
 Correct:
