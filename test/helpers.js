@@ -42,7 +42,6 @@ const runXslint = function(args, print = true) {
   try {
     return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
   } catch (ex) {
-    console.log(ex.stdout.toString())
     return ex.stdout.toString()
   }
 };
