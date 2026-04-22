@@ -24,7 +24,7 @@ describe('motives-check', function() {
           if (lines[i].startsWith('```xsl')) {
             const xsl = path.resolve(__dirname, 'temp-motives-check.xsl')
             fs.writeFileSync(xsl, '<?xml version="1.0"?>\n');
-            while(!lines[i+1].startsWith('```')) {
+            while (!lines[i+1].startsWith('```')) {
               fs.appendFileSync(xsl, lines[i+1] + '\n')
               i++
             } const stdout = runXcop(xsl)
