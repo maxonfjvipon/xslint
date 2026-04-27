@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-xpath: //*[@*[(contains(., 'true') and not(contains(., 'true()'))) or (contains(., 'false') and not(contains(., 'false()')))]]
+xpath: //*[@*[((contains(., 'true') and not(contains(., 'true()'))) or (contains(., 'false') and not(contains(., 'false()')))) and not(contains(., 'string('))]]
 severity: warning
-message: "Boolean constants 'true' and 'false' are non-empty strings, not booleans. Use true() and false() instead."
+message: "Boolean constants 'true' and 'false' are non-empty strings, not booleans. Use true() and false() instead if you want to use boolean. Use string() if you want to use strings."
