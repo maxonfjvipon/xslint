@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: deps-sentinel
+'on':
+  schedule:
+    - cron: '0 6,12,18,0 * * *'
+  workflow_dispatch:
+jobs:
+  sentinel:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: maxonfjvipon/deps-sentinel-action@0.0.1
+        with:
+          token: ${{ secrets.OWNER_TOKEN }}
+          owner: maxonfjvipon
