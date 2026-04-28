@@ -24,7 +24,7 @@ npx mocha test/xslint.test.js --grep "sentence"  # Run tests matching a pattern
 **xslint** is a CLI linter for XSL stylesheets. It finds `.xsl` files, parses them as XML, evaluates XPath rules against each file, and reports defects.
 
 Linting flow:
-```
+```text
 src/index.js (CLI, commander.js)
   → src/xslint.js (file discovery, defect aggregation, stdout output)
     → src/xpath-linter.js (XPath rule engine using fontoxpath)
