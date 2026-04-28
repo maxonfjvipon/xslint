@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v6
       - uses: maxonfjvipon/deps-sentinel-action@0.0.1
         with:
           token: ${{ secrets.OWNER_TOKEN }}
