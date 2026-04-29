@@ -3,8 +3,8 @@
 ---
 pack: template-match-incorrect-use-of-boolean-constants
 found:
-  amount: 2
-  positions: [ [ 5, 5 ], [ 14, 5 ] ]
+  amount: 5
+  positions: [ [ 5, 5 ], [ 14, 5 ], [ 17, 5 ], [ 20, 5 ], [ 23, 5 ] ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
@@ -20,6 +20,15 @@ input: |-
         <p>not OOO</p>
       </xsl:if>
       <xsl:if test="string(toggles) = 'hi' and @ready='true'">
+        <p>not OOO</p>
+      </xsl:if>
+      <xsl:if test="string(toggles) = 'true' and @ready='true'">
+        <p>not OOO</p>
+      </xsl:if>
+      <xsl:if test="string(toggles)='true' and non-string(ready)='false'">
+        <p>not OOO</p>
+      </xsl:if>
+      <xsl:if test="non-string(bool)='false' and string(toggles)='true'">
         <p>not OOO</p>
       </xsl:if>
     </xsl:template>
