@@ -49,8 +49,8 @@ export default defineConfig([{
         "require-jsdoc": "off",
         /**
          * Incorrect length of line.
-         * @todo #119:5min  Reduce max-len to 80
-         * We have to reduce max-len to 80 here.
+         * @todo #119:15min Reduce max-len to 80
+         * We have to reduce max-len to 80 here to check length of lines in code.
          * @type {string[]}
          */
         "max-len": ["error", {
