@@ -29,8 +29,30 @@ export default defineConfig([{
         "comma-dangle": "off",
         indent: ["error", 2],
         camelcase: "off",
+        /**
+         * Excluded valid-jsdoc.
+         * @todo Add valid-jsdoc
+         * This rule was removed in ESLint v9.0.0 and replaced by the eslint-plugin-jsdoc equivalent.
+         * https://eslint.org/docs/latest/rules/valid-jsdoc
+         * We have to use this rule here.
+         * @type {string[]}
+         */
         "valid-jsdoc": "off",
+        /**
+         * Excluded require-jsdoc.
+         * @todo Add require-jsdoc
+         * This rule was removed in ESLint v9.0.0 and replaced by the eslint-plugin-jsdoc equivalent.
+         * https://eslint.org/docs/latest/rules/require-jsdoc
+         * We have to use this rule here.
+         * @type {string[]}
+         */
         "require-jsdoc": "off",
+        /**
+         * Incorrect length of line.
+         * @todo Reduce max-len to 80
+         * We have to reduce max-len to 80 here.
+         * @type {string[]}
+         */
         "max-len": ["error", {
             code: 300,
         }],
