@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:import[preceding-sibling::xsl:import/@href > @href]
+severity: warning
+message: The 'xsl:import' elements are not sorted alphabetically by '@href'. Sort imports to improve readability.

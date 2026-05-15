@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //*[@*[contains(., "child::") or contains(., "attribute::") or contains(., "parent::")]]
+severity: warning
+message: Verbose axis specifiers child::, attribute::, or parent::node() are used. Replace them with the node name alone, @, or .. respectively.

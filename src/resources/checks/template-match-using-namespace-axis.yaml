@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //*[(@match | @select)[contains(., 'namespace::')][/xsl:stylesheet/@version = '2.0']]
+severity: warning
+message: "The namespace:: axis is deprecated in XSLT 2.0. Use fn:in-scope-prefixes() and fn:namespace-uri-for-prefix() instead."

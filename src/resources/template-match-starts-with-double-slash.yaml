@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //xsl:template[starts-with(@match, '//')]
-severity: warning
-message: It's not recommended to start 'match' attribute of 'xsl:template' element with '//'

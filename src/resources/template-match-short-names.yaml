@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //*[name()="xsl:variable" or name()="xsl:template"][string-length(@name) = 1] | //xsl:function[string-length(substring-after(@name, ":")) = 1]
-severity: warning
-message: Using a single character name for variable/function/template. Use meaningful names for these features.

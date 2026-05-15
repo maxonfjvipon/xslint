@@ -4,25 +4,24 @@
 pack: template-match-short-names
 found:
   amount: 3
-  positions: [ [ 4, 5 ], [ 7, 5 ], [ 9, 5 ] ]
+  positions: [ [ 4, 3 ], [ 9, 3 ], [ 10, 5 ] ]
 input: |-
   <?xml version="1.0"?>
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
-    <xsl:template match="o">
-      <xsl:variable name="o" as="xs:string" select = "expression">
-      </xsl:variable>
-      <xsl:copy-of select="$o"/>
-      <xsl:function name="my:w">
-      </xsl:function>
-      <xsl:template name="q">
-      </xsl:template>
-      <xsl:template match='oo'>
-        <xsl:call-template name='q'>
-          <xsl:with-param name='oooo'>bold</xsl:with-param>
-        </xsl:call-template>
-      </xsl:template>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:function name="my:v" as="xs:integer">
+      <xsl:param name="number" as="xs:integer"/>
+      <xsl:sequence
+        select="if ($number=0) then 1 else $number * my:factorial($number-1)"/>
+    </xsl:function>
+    <xsl:template name="a">
+      <xsl:variable name="a" as="xs:string" select="ooo" />
+      <xsl:copy-of select="$a"/>
+      <xsl:value-of select="my:v(3)"/>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:value-of select="my:w()"/>
+    <xsl:template match='ooo'>
+      <xsl:call-template name='a'>
+        <xsl:with-param name='oooo'>bold</xsl:with-param>
+      </xsl:call-template>
     </xsl:template>
   </xsl:stylesheet>

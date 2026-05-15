@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[count(xsl:template)=0]
+severity: error
+message: The stylesheet has no xsl:template elements and produces no output. Add at least one template.

@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //*[name()='xsl:for-each' or name()='xsl:if' or name()='xsl:otherwise' or name()='xsl:when'][count(node()) = count(text()) and normalize-space() = ""]
-severity: warning
-message: Don't use empty content for instructions like 'xsl:for-each' 'xsl:if' 'xsl:when' etc.

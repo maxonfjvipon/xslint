@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[count(//xsl:template[count(*) < 3]) >= 10]
+severity: warning
+message: The stylesheet has 10 or more templates with fewer than 3 child elements. Merge related small templates to reduce fragmentation.

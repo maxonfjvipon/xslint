@@ -20,17 +20,17 @@
     "colors": "1.4.0",
     "commander": "^14.0.0",
     "fontoxpath": "^3.34.0",
-    "patch-package": "^8.0.0",
-    "xmldom": "^0.6.0",
-    "yaml": "^2.7.0"
+    "@xmldom/xmldom": "^0.9.9",
+    "yaml": "^2.7.0",
+    "patch-package": "^8.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
-    "@eslint/js": "^10.0.1",
     "eslint-config-google": "^0.14.0",
     "grunt": "^1.6.1",
-    "grunt-eslint": "^26.0.0",
+    "grunt-cli": "^1.5.0",
+    "grunt-eslint": "^24.3.0",
     "grunt-mocha-cli": "^7.0.0",
+    "marked": "^18.0.1",
     "mocha": "^11.0.1"
   }
 }
