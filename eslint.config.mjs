@@ -31,7 +31,7 @@ export default defineConfig([{
         camelcase: "off",
         /**
          * Excluded valid-jsdoc.
-         * @todo Add valid-jsdoc
+         * @todo #119:45min Add valid-jsdoc
          * This rule was removed in ESLint v9.0.0 and replaced by the eslint-plugin-jsdoc equivalent.
          * https://eslint.org/docs/latest/rules/valid-jsdoc
          * We have to use this rule here.
@@ -40,7 +40,7 @@ export default defineConfig([{
         "valid-jsdoc": "off",
         /**
          * Excluded require-jsdoc.
-         * @todo Add require-jsdoc
+         * @todo #119:45min Add require-jsdoc
          * This rule was removed in ESLint v9.0.0 and replaced by the eslint-plugin-jsdoc equivalent.
          * https://eslint.org/docs/latest/rules/require-jsdoc
          * We have to use this rule here.
@@ -49,7 +49,7 @@ export default defineConfig([{
         "require-jsdoc": "off",
         /**
          * Incorrect length of line.
-         * @todo Reduce max-len to 80
+         * @todo #119:5min  Reduce max-len to 80
          * We have to reduce max-len to 80 here.
          * @type {string[]}
          */
