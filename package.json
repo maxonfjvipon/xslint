@@ -6,6 +6,9 @@
   "bin": {
     "xslint": "src/index.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "postinstall": "patch-package",
     "test": "grunt"
