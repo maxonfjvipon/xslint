@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //*[count(text()[normalize-space()])>0 and (not(name() = 'xsl:text') and (not((name() = 'xsl:variable' or name() = 'xsl:param' or name() = 'xsl:with-param') and not(@select))))]
+severity: error
+message: The stylesheet has no xsl:template elements and produces no output. Add at least one template.

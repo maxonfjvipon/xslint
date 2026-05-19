@@ -35,7 +35,7 @@ describe('xpath-linter', function() {
         assert.equal(evaluated[index].pos, yml.found.positions[index][1])
       })
     })
-    it(`should return defects array with ${yml.found.amount} elements`, function() {
+    it(`should return defects array with ${yml.found.amount} elements in ${yml.pack}`, function() {
       const defects = lint_by_xpath(input)
       assert.equal(defects.length, yml.found.amount)
       defects.forEach((defect, index) => {
