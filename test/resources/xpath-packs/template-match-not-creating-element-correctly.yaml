@@ -4,7 +4,7 @@
 pack: template-match-not-creating-element-correctly
 found:
   amount: 2
-  positions: [ [ 5, 5 ], [ 6, 7, 'template-match-text-outside-node'] ]
+  positions: [ [ 5, 5 ], [ 6, 7, 'template-match-text-outside-node' ] ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
