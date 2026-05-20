@@ -49,5 +49,5 @@
       <xsl:with-param name="color" select="'#00ffff'"/>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template name="string"><xsl:param name="name" select="'Unknown'"/><xsl:param name="color" select="'#000000'"/><xsl:value-of select="$name"/>: <span style="color:{$color}"><xsl:value-of select="."/></span><br/></xsl:template>
+  <xsl:template name="string"><xsl:param name="name" select="'Unknown'"/><xsl:param name="color" select="'#000000'"/><xsl:value-of select="$name"/><xsl:text>:</xsl:text><span style="color:{$color}"><xsl:value-of select="."/></span><br/></xsl:template>
 </xsl:stylesheet>
