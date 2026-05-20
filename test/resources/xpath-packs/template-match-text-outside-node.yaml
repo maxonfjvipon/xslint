@@ -16,6 +16,7 @@ input: |-
       <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:copy-of select="."/>
+      <xsl:variable name="qw" as="xs:string" select="ooo" />
+      <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>

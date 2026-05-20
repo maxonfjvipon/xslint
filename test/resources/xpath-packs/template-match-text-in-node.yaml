@@ -11,11 +11,12 @@ input: |-
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:if test="position() == 1">
-        <xsl:text>foo<xsl:text>
+        <xsl:text>foo</xsl:text>
       </xsl:if>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:copy-of select="."/>
+      <xsl:variable name="qw" as="xs:string" select="ooo" />
+      <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>
