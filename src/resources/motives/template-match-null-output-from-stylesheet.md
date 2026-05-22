@@ -19,7 +19,9 @@ Correct:
 <xsl:template match="/">
   <xsl:variable name="heading" select="title"/>
   <xsl:variable name="count" select="count(item)"/>
-  <h1><xsl:value-of select="$heading"/></h1>
+  <h1>
+    <xsl:value-of select="$heading"/>
+  </h1>
   <p>Items: <xsl:value-of select="$count"/></p>
 </xsl:template>
 ```
