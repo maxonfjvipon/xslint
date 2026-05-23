@@ -66,7 +66,6 @@ const lint_by_xpath = function(xsl, suppressions = []) {
       continue
     }
     const yml = yaml.parsedFromFile(pack)
-
     const nodes = evaluate_xpath(xsl, yml.xpath)
     if (nodes.length > 0) {
       for (const node of nodes) {

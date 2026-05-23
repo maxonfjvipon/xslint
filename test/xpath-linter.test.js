@@ -28,8 +28,8 @@ describe('xpath-linter', function() {
       it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function () {
         const evaluated = evaluate_xpath(input, lint.xpath)
         assert.equal(
-            evaluated.length,
-            yml.found.amount - other,
+          evaluated.length,
+          yml.found.amount - other,
         )
         yml.found.positions.filter((pos) => pos.length == 2).forEach((pos, index) => {
           assert.equal(evaluated[index].line, yml.found.positions[index][0])
