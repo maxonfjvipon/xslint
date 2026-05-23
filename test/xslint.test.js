@@ -102,18 +102,18 @@ describe('xslint', function() {
   })
   it('should test non-existing directory', function() {
     const dir = 'non-existing-directory'
-    const stdout = runXslint([`${dir}`])
+    const stdout = runXslint([dir])
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
   })
   it('should test non-existing file', function() {
     const file = 'non-existing-file.xsl'
-    const stdout = runXslint([`${file}`])
+    const stdout = runXslint([file])
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
   })
   it('should test non-existing file and directory', function() {
     const file = 'non-existing-file.xsl'
     const dir = 'non-existing-directory'
-    const stdout = runXslint([`${file}`, `${dir}`])
+    const stdout = runXslint([file, dir])
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
   })
