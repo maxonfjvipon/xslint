@@ -20,12 +20,12 @@ describe('xpath-linter', function() {
   PACKS.forEach((pack) => {
     const yml = yaml.parsedFromFile(pack)
     const lint = yaml.parsedFromFile(
-        path.resolve(__dirname, '../src/resources/checks', `${yml.pack}.yaml`),
+      path.resolve(__dirname, '../src/resources/checks', `${yml.pack}.yaml`),
     )
     const input = xml.parsedFromString(yml.input)
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
-    describe(`testing ${path.basename(pack)} pack`, function () {
-      it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function () {
+    describe(`testing ${path.basename(pack)} pack`, function (){
+      it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function (){
         const evaluated = evaluate_xpath(input, lint.xpath)
         assert.equal(
           evaluated.length,
@@ -36,7 +36,7 @@ describe('xpath-linter', function() {
           assert.equal(evaluated[index].pos, yml.found.positions[index][1])
         })
       })
-      it(`should find ${yml.found.amount} defects by all checks`, function () {
+      it(`should find ${yml.found.amount} defects by all checks`, function (){
         const defects = lint_by_xpath(input)
         assert.equal(defects.length, yml.found.amount)
         defects.forEach((defect, index) => {
@@ -45,7 +45,7 @@ describe('xpath-linter', function() {
           let name = yml.pack
           if (yml.found.positions[index].length == 3) {
             const temp = yaml.parsedFromFile(
-                path.resolve(__dirname, '../src/resources/checks', `${yml.found.positions[index][2]}.yaml`),
+              path.resolve(__dirname, '../src/resources/checks', `${yml.found.positions[index][2]}.yaml`),
             )
             severity = temp.severity
             message = temp.message
@@ -59,7 +59,7 @@ describe('xpath-linter', function() {
         })
       })
       if (cmdAvailable('xcop')) {
-        it(`check format of xsl. should find 0 errors`, function () {
+        it(`check format of xsl. should find 0 errors`, function (){
           const xsl = path.resolve(__dirname, 'temp.xsl')
           fs.writeFileSync(xsl, `${input}\n`);
           const stdout = runXcop(xsl)
