@@ -24,7 +24,7 @@ describe('xpath-linter', function() {
     )
     const input = xml.parsedFromString(yml.input)
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
-    describe(`testing ${path.basename(pack)} pack`,function () {
+    describe(`testing ${path.basename(pack)} pack`, function() {
       it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function() {
         const evaluated = evaluate_xpath(input, lint.xpath)
         assert.equal(
