@@ -25,7 +25,7 @@ describe('xpath-linter', function() {
     const input = xml.parsedFromString(yml.input)
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
     describe(`testing ${path.basename(pack)} pack`,function () {
-      it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`,function () {
+      it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function() {
         const evaluated = evaluate_xpath(input, lint.xpath)
         assert.equal(
           evaluated.length,
@@ -36,7 +36,7 @@ describe('xpath-linter', function() {
           assert.equal(evaluated[index].pos, yml.found.positions[index][1])
         })
       })
-      it(`should find ${yml.found.amount} defects by all checks`,function () {
+      it(`should find ${yml.found.amount} defects by all checks`, function() {
         const defects = lint_by_xpath(input)
         assert.equal(defects.length, yml.found.amount)
         defects.forEach((defect, index) => {
@@ -59,7 +59,7 @@ describe('xpath-linter', function() {
         })
       })
       if (cmdAvailable('xcop')) {
-        it(`check format of xsl. should find 0 errors`,function () {
+        it(`check format of xsl. should find 0 errors`, function() {
           const xsl = path.resolve(__dirname, 'temp.xsl')
           fs.writeFileSync(xsl, `${input}\n`);
           const stdout = runXcop(xsl)
