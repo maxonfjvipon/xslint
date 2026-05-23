@@ -57,7 +57,7 @@ const xslint = function(pths, options) {
   let stylesheets = []
   for (const pth of pths) {
     if (!fs.existsSync(pth)) {
-        logger.warn(`File or directory ${pth} does not exist`)
+      logger.warn(`File or directory ${pth} does not exist`)
     } else {
       stylesheets = [...stylesheets, ...xsls(pth)]
     }
