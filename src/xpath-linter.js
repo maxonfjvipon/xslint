@@ -52,7 +52,7 @@ const evaluate_xpath = function(xsl, xpath) {
 }
 
 /**
- * Normalizing list of suppressions
+ * Deleting incorrect substring-suppressions from array of arguments
  * @param {Array.<String>} suppressions - Array of suppressed checks
  * @return {Array.<String>} - Normalizing list of suppressions
  */

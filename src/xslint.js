@@ -51,6 +51,7 @@ const process_options = function(options) {
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
+  suppressions = correct_suppressions(options.suppress)
   process_options(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
   pths = pths.map((pth) => path.resolve(process.cwd(), pth));
@@ -71,7 +72,6 @@ const xslint = function(pths, options) {
     } catch (err) {
       throw err
     }
-    suppressions = correct_suppressions(options.suppress)
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
