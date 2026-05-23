@@ -58,8 +58,7 @@ const evaluate_xpath = function(xsl, xpath) {
  */
 const correct_suppressions = function(suppressions) {
   for (const sup of suppressions) {
-    if (!PACKS.some((check) => check.includes(sup)))
-    {
+    if (!PACKS.some((check) => check.includes(sup))) {
       logger.warn(`Check with substring '${sup}' is existing. Delete this '--suppress' or use another one.`)
     }
   }
