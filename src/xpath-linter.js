@@ -52,13 +52,11 @@ const evaluate_xpath = function(xsl, xpath) {
 }
 
 /**
- * Lint given XSL by Xpath packs.
- * @param {Document} xsl - XSL document parsed as {@link Document}
+ * Normalizing list of suppressions
  * @param {Array.<String>} suppressions - Array of suppressed checks
- * @return {{severity: string, message: string, line: number, pos: number}[]} - Defects found
+ * @return {Array.<String>} - Normalizing list of suppressions
  */
-const lint_by_xpath = function(xsl, suppressions = []) {
-  logger.debug(`Xpath linting started`)
+const correct_suppressions = function(suppressions) {
   for (const sup of suppressions) {
     if (!PACKS.some((check) => check.includes(sup)))
     {
@@ -69,6 +67,17 @@ const lint_by_xpath = function(xsl, suppressions = []) {
     logger.warn('Empty suppress is incorrect. Delete this "--suppress" or use another one.')
     suppressions = suppressions.filter((sup) => (sup) !== '');
   }
+  return suppressions;
+}
+
+/**
+ * Lint given XSL by Xpath packs.
+ * @param {Document} xsl - XSL document parsed as {@link Document}
+ * @param {Array.<String>} suppressions - Array of suppressed checks
+ * @return {{severity: string, message: string, line: number, pos: number}[]} - Defects found
+ */
+const lint_by_xpath = function(xsl, suppressions = []) {
+  logger.debug(`Xpath linting started`)
   const defects = []
   for (const pack of PACKS) {
     const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
@@ -96,4 +105,5 @@ const lint_by_xpath = function(xsl, suppressions = []) {
 module.exports = {
   lint_by_xpath,
   evaluate_xpath,
+  correct_suppressions,
 }
