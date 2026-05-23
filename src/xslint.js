@@ -56,7 +56,11 @@ const xslint = function(pths, options) {
   pths = pths.map((pth) => path.resolve(process.cwd(), pth));
   let stylesheets = []
   for (const pth of pths) {
-    stylesheets = [...stylesheets, ...xsls(pth)]
+    if (!fs.existsSync(pth)) {
+        logger.warn(`File or directory ${pth} does not exist`)
+    } else {
+      stylesheets = [...stylesheets, ...xsls(pth)]
+    }
   }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const defects = []

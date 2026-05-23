@@ -100,4 +100,14 @@ describe('xslint', function() {
     assert.ok(stdout.includes('Directories and files to process: .'));
     assert.ok(stdout.includes('Processed files: 6'));
   })
+  it('should test non-existing directory', function() {
+    const dir = "non-existing-directory"
+    const stdout = runXslint([`${dir}`])
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
+  })
+  it('should test non-existing file', function() {
+    const file = "non-existing-file.xsl"
+    const stdout = runXslint([`${file}`])
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
+  })
 })
