@@ -59,6 +59,16 @@ const evaluate_xpath = function(xsl, xpath) {
  */
 const lint_by_xpath = function(xsl, suppressions = []) {
   logger.debug(`Xpath linting started`)
+  for (const sup of suppressions) {
+    if (!PACKS.some((check) => check.includes(sup)))
+    {
+      logger.warn(`Check with substring '${sup}' is existing. Delete this '--suppress' or use another one.`)
+    }
+  }
+  if (suppressions.some((sup) => (sup) === '')) {
+    logger.warn('Empty suppress is incorrect. Delete this "--suppress" or use another one.')
+    suppressions = suppressions.filter((sup) => (sup) !== '');
+  }
   const defects = []
   for (const pack of PACKS) {
     const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
