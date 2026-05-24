@@ -29,7 +29,7 @@
     </p>
   </xsl:template>
   <xsl:template match="//title">
-    <xsl:text>Title:</xsl:text>
+    <xsl:text>Title: </xsl:text>
     <span style="color:#ff0000">
       <xsl:value-of select="."/>
     </span>

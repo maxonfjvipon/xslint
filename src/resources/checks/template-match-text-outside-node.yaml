@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //*[count(text()[normalize-space()])>0 and (not(name() = 'xsl:text') and (not((name() = 'xsl:variable' or name() = 'xsl:param' or name() = 'xsl:with-param') and not(@select)))) and not(name() = ('div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'section', 'article', 'header', 'footer', 'main', 'aside', 'nav', 'blockquote', 'pre', 'figure', 'figcaption', 'details', 'form', 'fieldset', 'legend', 'span', 'a', 'strong', 'em', 'b', 'i', 'u', 's', 'small', 'mark', 'code', 'kbd', 'samp', 'var', 'sub', 'sup', 'abbr', 'time', 'data', 'q', 'cite', 'dfn', 'bdi', 'bdo', 'ruby', 'rt', 'rp', 'wbr', 'li', 'dt', 'dd', 'td', 'th', 'caption', 'colgroup', 'video', 'audio', 'iframe', 'object', 'canvas', 'svg', 'math'))]
-severity: warning
-message: Text element is outside the node. Write it in 'xsl:text'.

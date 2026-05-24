@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: template-match-text-outside-node
+pack: template-match-text-outside-xsl-text
 found:
   amount: 1
   positions: [ [ 5, 5 ] ]
