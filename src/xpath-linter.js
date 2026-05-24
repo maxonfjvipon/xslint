@@ -56,13 +56,13 @@ const evaluate_xpath = function(xsl, xpath) {
  * @param {Array.<String>} suppressions - Array of suppressed checks
  * @return {Array.<String>} - Normalizing list of suppressions
  */
-const correct_suppressions = function(suppressions) {
+const validated_suppressions = function(suppressions) {
   for (const sup of suppressions) {
     if (!PACKS.some((check) => check.includes(sup))) {
-      logger.warn(`Check with substring '${sup}' is existing. Delete this '--suppress' or use another one.`)
+      logger.warn(`Check with substring '${sup}' does not exist. Delete this '--suppress' or use another one.`)
     }
   }
-  if (suppressions.some((sup) => (sup) === '')) {
+  if (suppressions.some((sup) => sup === '')) {
     logger.warn('Empty suppress is incorrect. Delete this "--suppress" or use another one.')
     suppressions = suppressions.filter((sup) => (sup) !== '');
   }
@@ -104,5 +104,5 @@ const lint_by_xpath = function(xsl, suppressions = []) {
 module.exports = {
   lint_by_xpath,
   evaluate_xpath,
-  correct_suppressions,
+  validated_suppressions,
 }

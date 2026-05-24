@@ -125,7 +125,7 @@ describe('xslint', function() {
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
       `--suppress=${suppress}`
     ])
-    assert.ok(stdout.includes(`Check with substring '${suppress}' is existing. Delete this '--suppress' or use another one.`))
+    assert.ok(stdout.includes(`Check with substring '${suppress}' does not exist. Delete this '--suppress' or use another one.`))
   })
   it('should test non-existing directory', function() {
     const dir = 'non-existing-directory'

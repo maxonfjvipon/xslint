@@ -6,7 +6,7 @@
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom, xml} = require('./helpers')
-const {lint_by_xpath, correct_suppressions} = require('./xpath-linter')
+const {lint_by_xpath, validated_suppressions} = require('./xpath-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
@@ -51,7 +51,7 @@ const process_options = function(options) {
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
-  suppressions = correct_suppressions(options.suppress)
+  const suppressions = validated_suppressions(options.suppress)
   process_options(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
   pths = pths.map((pth) => path.resolve(process.cwd(), pth));
