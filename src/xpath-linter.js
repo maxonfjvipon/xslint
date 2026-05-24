@@ -52,6 +52,24 @@ const evaluate_xpath = function(xsl, xpath) {
 }
 
 /**
+ * Deleting incorrect substring-suppressions from array of arguments
+ * @param {Array.<String>} suppressions - Array of suppressed checks
+ * @return {Array.<String>} - Normalizing list of suppressions
+ */
+const validated_suppressions = function(suppressions) {
+  for (const sup of suppressions) {
+    if (!PACKS.some((check) => check.includes(sup))) {
+      logger.warn(`Check with substring '${sup}' does not exist. Delete this '--suppress' or use another one.`)
+    }
+  }
+  if (suppressions.some((sup) => sup === '')) {
+    logger.warn('Empty suppress is incorrect. Delete this "--suppress" or use another one.')
+    suppressions = suppressions.filter((sup) => (sup) !== '');
+  }
+  return suppressions;
+}
+
+/**
  * Lint given XSL by Xpath packs.
  * @param {Document} xsl - XSL document parsed as {@link Document}
  * @param {Array.<String>} suppressions - Array of suppressed checks
@@ -86,4 +104,5 @@ const lint_by_xpath = function(xsl, suppressions = []) {
 module.exports = {
   lint_by_xpath,
   evaluate_xpath,
+  validated_suppressions,
 }
