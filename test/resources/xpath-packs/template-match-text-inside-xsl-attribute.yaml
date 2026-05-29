@@ -10,10 +10,11 @@ input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:if test="position() == 1">
-        <xsl:text>foo</xsl:text>
-      </xsl:if>
-      <xsl:copy-of select="$qw"/>
+      <xsl:attribute-set name="font">
+        <xsl:attribute name="fname">
+          Arial
+        </xsl:attribute>
+      </xsl:attribute-set>
     </xsl:template>
     <xsl:template match="/objects/o/o[2]">
       <xsl:variable name="qw" select="."/>

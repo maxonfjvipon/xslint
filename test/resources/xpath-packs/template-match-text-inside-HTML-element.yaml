@@ -13,10 +13,14 @@ input: |-
       <xsl:if test="position() == 1">
         <xsl:text>foo</xsl:text>
       </xsl:if>
-      <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[2]">
-      <xsl:variable name="qw" select="."/>
+      <xsl:variable name="qw" select=".">
       <xsl:copy-of select="$qw"/>
+      <ul>
+        <li>William Shakespeare</li>
+        <li>Robert Burns</li>
+        <li>Lord Byron</li>
+      </ul>
     </xsl:template>
   </xsl:stylesheet>

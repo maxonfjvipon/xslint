@@ -39,7 +39,7 @@ or:
 ```xsl
 <xsl:param name="William Shakespeare">
   1564–1616
-</xsl:variable>
+</xsl:param>
 ```
 
 or:
