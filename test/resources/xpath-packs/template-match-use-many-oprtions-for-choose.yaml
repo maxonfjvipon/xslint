@@ -11,7 +11,7 @@ input: |-
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:choose>
-        <xsl:when select="o/o/o[1]">
+        <xsl:when test="@name='Pol'">
           <HR STYLE="color:red"/>
         </xsl:when>
         <xsl:otherwise>

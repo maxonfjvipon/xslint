@@ -12,9 +12,9 @@ input: |-
     <xsl:template match="/objects/o/o">
       <xsl:for-each select="o/o">
       </xsl:for-each>
-      <xsl:if/>
+      <xsl:if test="@ooo = true()"/>
       <xsl:choose>
-        <xsl:when select="o/o"/>
+        <xsl:when test="o/o"/>
         <xsl:otherwise>
         </xsl:otherwise>
       </xsl:choose>
