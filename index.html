@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>34 checks available</p>
+  <p>35 checks available</p>
   <table>
     <thead>
       <tr>
@@ -140,6 +140,11 @@
     <td><a href="checks/template-match-not-creating-element-correctly.html">template-match-not-creating-element-correctly</a></td>
     <td><span class="severity-warning">warning</span></td>
     <td>xsl:element is used with a static name. Use a literal result element instead.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-not-using-attribute-test-in-if-when-node.html">template-match-not-using-attribute-test-in-if-when-node</a></td>
+    <td><span class="severity-error">error</span></td>
+    <td>'xsl:if' or 'xsl:when' don't have attribute @test. Add this attribute or delete node.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-not-using-output.html">template-match-not-using-output</a></td>
