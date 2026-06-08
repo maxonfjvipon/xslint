@@ -12,7 +12,7 @@ input: |-
     <xsl:template match="/objects/o/o[1]/o[1]">
       <xsl:variable name="qw" as="xs:string">
         <xsl:value-of select="o/o/o"/>
-        <xsl:if s1="o/o">
+        <xsl:if test="@ooo = false()">
           <p>
             <strong>B</strong>
           </p>

@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "colors": "1.4.0",
-    "commander": "^14.0.0",
+    "commander": "^15.0.0",
     "fontoxpath": "^3.34.0",
     "@xmldom/xmldom": "^0.9.9",
     "yaml": "^2.7.0",
