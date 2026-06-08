@@ -20,7 +20,7 @@ input: |-
       </xsl:function>
     </xsl:function>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:copy-of select="."/>
+      <xsl:copy-of select="my:factorial(3)"/>
       <xsl:template match="/objects/o/o[1]/o[1]">
         <xsl:copy-of select="."/>
       </xsl:template>

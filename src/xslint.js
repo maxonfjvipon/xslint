@@ -6,7 +6,7 @@
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom, xml} = require('./helpers')
-const {lint_by_xpath} = require('./xpath-linter')
+const {lint_by_xpath, validated_suppressions} = require('./xpath-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
@@ -51,12 +51,17 @@ const process_options = function(options) {
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
+  const suppressions = validated_suppressions(options.suppress)
   process_options(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
   pths = pths.map((pth) => path.resolve(process.cwd(), pth));
   let stylesheets = []
   for (const pth of pths) {
-    stylesheets = [...stylesheets, ...xsls(pth)]
+    if (!fs.existsSync(pth)) {
+      logger.warn(`File or directory ${pth} does not exist`)
+    } else {
+      stylesheets = [...stylesheets, ...xsls(pth)]
+    }
   }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const defects = []
@@ -70,7 +75,7 @@ const xslint = function(pths, options) {
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
-        ...lint(xsl, options.suppress).map(
+        ...lint(xsl, suppressions).map(
           (defect) => ({
             ...defect,
             file: stylesheet

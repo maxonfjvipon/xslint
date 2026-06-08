@@ -100,4 +100,48 @@ describe('xslint', function() {
     assert.ok(stdout.includes('Directories and files to process: .'));
     assert.ok(stdout.includes('Processed files: 6'));
   })
+  it('should test empty suppress', function() {
+    const stdout = runXslint([
+      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      '--suppress='
+    ])
+    const expected = [
+      'Processed files: 1',
+      'Defects found: 7',
+      '(26:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
+      '(27:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
+      '(6:1) No built-in Schema types are used in XSLT 2.0 mode. Declare variable types with xs:string, xs:integer, or similar. (template-match-not-using-schema-types)',
+      '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (template-match-setting-value-of-variable-incorrectly)',
+      '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (template-match-short-names)',
+      '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (template-match-starts-with-double-slash)',
+      '(39:3) A named template is never invoked via xsl:call-template. Remove it or call it. (template-match-unused-named-template)',
+    ]
+    assert.ok(stdout.includes('Empty suppress is incorrect. Delete this "--suppress" or use another one.'))
+    expected.forEach((str) => assert.ok(stdout.includes(str)))
+  })
+  it('should test incorrect suppress', function() {
+    const suppress='qwerty'
+    const stdout = runXslint([
+      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      `--suppress=${suppress}`
+    ])
+    assert.ok(stdout.includes(`Check with substring '${suppress}' does not exist. Delete this '--suppress' or use another one.`))
+  })
+  it('should test non-existing directory', function() {
+    const dir = 'non-existing-directory'
+    const stdout = runXslint([dir])
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
+  })
+  it('should test non-existing file', function() {
+    const file = 'non-existing-file.xsl'
+    const stdout = runXslint([file])
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
+  })
+  it('should test non-existing file and directory', function() {
+    const file = 'non-existing-file.xsl'
+    const dir = 'non-existing-directory'
+    const stdout = runXslint([file, dir])
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
+  })
 })
