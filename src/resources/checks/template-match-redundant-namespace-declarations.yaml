@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: /xsl:stylesheet[some $prefix in xslint:in-scope-prefixes(.)[. != 'xml'] satisfies not(descendant-or-self::*[starts-with(name(), concat($prefix, ':'))] or descendant-or-self::*/@*[starts-with(name(), concat($prefix, ':')) or contains(., concat($prefix, ':'))])]
+severity: warning
+message: The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration.
