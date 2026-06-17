@@ -24,7 +24,7 @@ describe('xslint', function() {
     assert.ok(stdout.includes('Log level set to \'debug\''))
   })
   it('should print some violations in xsl file', function() {
-    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-some-violations.xsl'])
+    const stdout = runXslint(['test/resources/stylesheets/xsl-with-some-violations.xsl'])
     const expected = [
       'Processed files: 1',
       'Defects found: 7',
@@ -40,7 +40,7 @@ describe('xslint', function() {
   })
   it('should print less violations in xsl file', function() {
     const stdout = runXslint([
-      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
       '--suppress=empty-content-in-instructions',
       '--suppress=template-match-starts-with-double-slash',
     ]);
@@ -52,45 +52,45 @@ describe('xslint', function() {
     absented.forEach((str) => assert.ok(!stdout.includes(str)))
   })
   it('should print no violations in xsl file', function() {
-    const stdout = runXslint(['test/resources/xsl-packs/xsl-with-no-violations.xsl']);
+    const stdout = runXslint(['test/resources/stylesheets/xsl-with-no-violations.xsl']);
     ['Processed files: 1', 'No defects found'].forEach((expected) => assert.ok(stdout.includes(expected)))
   })
   it('should test all files', function() {
     const stdout = runXslint([
-      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
-      'test/resources/xsl-packs/xsl-with-no-violations.xsl',
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets/xsl-with-no-violations.xsl',
     ])
     const expected = [
-      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
-      'test/resources/xsl-packs/xsl-with-no-violations.xsl',
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets/xsl-with-no-violations.xsl',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str.split(path.sep).join('/'))))
     assert.ok(stdout.includes('Processed files: 2'))
   })
   it('should test all directories', function() {
     const stdout = runXslint([
-      'test/resources/xsl-packs',
-      'test/resources/xsl-packs-2',
+      'test/resources/stylesheets',
+      'test/resources/templates',
     ])
     const expected = [
-      'test/resources/xsl-packs',
-      'test/resources/xsl-packs-2',
+      'test/resources/stylesheets',
+      'test/resources/templates',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
     assert.ok(stdout.includes('Processed files: 4'))
   })
   it('should test all files and directories', function() {
     const stdout = runXslint([
-      'test/resources/xsl-packs',
-      'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
-      'test/resources/xsl-packs-3',
-      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets',
+      'test/resources/templates/xsl-with-no-violations.xsl',
+      'test/resources/reports',
+      'test/resources/templates/xsl-with-some-violations.xsl',
     ])
     const expected = [
-      'test/resources/xsl-packs',
-      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
-      'test/resources/xsl-packs-3',
-      'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
+      'test/resources/stylesheets',
+      'test/resources/templates/xsl-with-some-violations.xsl',
+      'test/resources/reports',
+      'test/resources/templates/xsl-with-no-violations.xsl',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(`${str.replace(/\\/g, '/')}`)))
     assert.ok(stdout.includes('Processed files: 6'))
@@ -102,7 +102,7 @@ describe('xslint', function() {
   })
   it('should test empty suppress', function() {
     const stdout = runXslint([
-      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
       '--suppress=',
     ])
     const expected = [
@@ -122,7 +122,7 @@ describe('xslint', function() {
   it('should test incorrect suppress', function() {
     const suppress='qwerty'
     const stdout = runXslint([
-      'test/resources/xsl-packs/xsl-with-some-violations.xsl',
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
       `--suppress=${suppress}`,
     ])
     assert.ok(stdout.includes(`Check with substring '${suppress}' does not exist. Delete this '--suppress' or use another one.`))
