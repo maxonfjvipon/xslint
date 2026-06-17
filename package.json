@@ -28,7 +28,7 @@
     "yaml": "^2.7.0"
   },
   "devDependencies": {
-    "eslint": "^9.39.4",
+    "eslint": "^10.5.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-jsdoc": "^63.0.5",
     "globals": "^17.6.0",
