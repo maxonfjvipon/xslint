@@ -7,5 +7,5 @@
 // at the "release" pipeline:
 module.exports = {
   what: '0.0.0',
-  when: '0000-00-00'
+  when: '0000-00-00',
 }

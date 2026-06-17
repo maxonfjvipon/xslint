@@ -13,19 +13,19 @@ const {logger} = require('./logger')
  * @type {{xsl: string}}
  */
 const PREFIXES = {
-  'xsl': 'http://www.w3.org/1999/XSL/Transform'
+  'xsl': 'http://www.w3.org/1999/XSL/Transform',
 }
 
 /**
  * Xpath packs files paths.
- * @type {Array.<String>}
+ * @type {Array.<string>}
  */
-const PACKS = allFilesFrom(path.join(__dirname, 'resources', 'checks'));
+const PACKS = allFilesFrom(path.join(__dirname, 'resources', 'checks'))
 
 /**
  * Resolve prefix.
- * @param {String} prefix - Prefix itself
- * @return {null|String} - Resolved prefix
+ * @param {string} prefix - Prefix itself
+ * @return {null | string} - Resolved prefix
  */
 const resolvePrefix = function(prefix) {
   let spec = null
@@ -33,58 +33,68 @@ const resolvePrefix = function(prefix) {
     spec = PREFIXES[prefix]
   }
   return spec
-};
+}
 
 /**
  * Evaluate Xpath on given XSL and return found nodes.
  * @param {Document} xsl - XSL document parsed as {@link Document}
- * @param {String} xpath - Xpath
- * @return {{name: String, line: number, pos: number}[]} - All matching Nodes, in the order defined by the XPath.
+ * @param {string} xpath - Xpath
+ * @return {{name: string, line: number, pos: number}[]} - Matching
+ *  nodes in the order defined by the XPath
  */
-const evaluate_xpath = function(xsl, xpath) {
+const evaluateXpath = function(xsl, xpath) {
   return evaluateXPathToNodes(
-    xpath, xsl, null, {}, {namespaceResolver: resolvePrefix}
+    xpath, xsl, null, {}, {namespaceResolver: resolvePrefix},
   ).map((node) => ({
     name: node.nodeName,
     line: node.lineNumber,
-    pos: node.columnNumber
+    pos: node.columnNumber,
   }))
 }
 
 /**
  * Deleting incorrect substring-suppressions from array of arguments
- * @param {Array.<String>} suppressions - Array of suppressed checks
- * @return {Array.<String>} - Normalizing list of suppressions
+ * @param {Array.<string>} suppressions - Array of suppressed checks
+ * @return {Array.<string>} - Normalizing list of suppressions
  */
-const validated_suppressions = function(suppressions) {
+const validatedSuppressions = function(suppressions) {
   for (const sup of suppressions) {
     if (!PACKS.some((check) => check.includes(sup))) {
-      logger.warn(`Check with substring '${sup}' does not exist. Delete this '--suppress' or use another one.`)
+      logger.warn(
+        `Check with substring '${sup}' does not exist. ` +
+        `Delete this '--suppress' or use another one.`,
+      )
     }
   }
   if (suppressions.some((sup) => sup === '')) {
-    logger.warn('Empty suppress is incorrect. Delete this "--suppress" or use another one.')
-    suppressions = suppressions.filter((sup) => (sup) !== '');
+    logger.warn(
+      'Empty suppress is incorrect. ' +
+      'Delete this "--suppress" or use another one.',
+    )
+    suppressions = suppressions.filter((sup) => (sup) !== '')
   }
-  return suppressions;
+  return suppressions
 }
 
 /**
  * Lint given XSL by Xpath packs.
  * @param {Document} xsl - XSL document parsed as {@link Document}
- * @param {Array.<String>} suppressions - Array of suppressed checks
- * @return {{severity: string, message: string, line: number, pos: number}[]} - Defects found
+ * @param {Array.<string>} suppressions - Array of suppressed checks
+ * @return {{severity: string, message: string, line: number, pos: number}[]}
+ *  - Defects found
  */
-const lint_by_xpath = function(xsl, suppressions = []) {
+const lintByXpath = function(xsl, suppressions = []) {
   logger.debug(`Xpath linting started`)
   const defects = []
   for (const pack of PACKS) {
-    const name = pack.substring(pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'))
+    const name = pack.substring(
+      pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'),
+    )
     if (suppressions.some((sup) => name.includes(sup))) {
       continue
     }
     const yml = yaml.parsedFromFile(pack)
-    const nodes = evaluate_xpath(xsl, yml.xpath)
+    const nodes = evaluateXpath(xsl, yml.xpath)
     if (nodes.length > 0) {
       for (const node of nodes) {
         defects.push({
@@ -92,7 +102,7 @@ const lint_by_xpath = function(xsl, suppressions = []) {
           severity: yml.severity,
           message: yml.message,
           line: node.line,
-          pos: node.pos
+          pos: node.pos,
         })
       }
     }
@@ -102,7 +112,7 @@ const lint_by_xpath = function(xsl, suppressions = []) {
 }
 
 module.exports = {
-  lint_by_xpath,
-  evaluate_xpath,
-  validated_suppressions,
+  lintByXpath,
+  evaluateXpath,
+  validatedSuppressions,
 }

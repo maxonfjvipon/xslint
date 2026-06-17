@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-const safe = require('colors/safe');
+const safe = require('colors/safe')
 
 /**
  * Stdout.
  * @type {{
- *  debug: function(msg: String, ...args: any)
- *  info: function(msg: String, ...args: any)
- *  warn: function(msg: String, ...args: any)
- *  warning: function(msg: String, ...args: any)
- *  error: function(msg: String, ...args: any)
+ *  debug: function(string, ...*): void,
+ *  info: function(string, ...*): void,
+ *  warn: function(string, ...*): void,
+ *  warning: function(string, ...*): void,
+ *  error: function(string, ...*): void
  * }}
  */
 const stdout = {
@@ -30,7 +30,7 @@ const stdout = {
   },
   error: (msg, ...args) => {
     console.log(`${safe.red('[ERROR]')} ${msg}`, ...args)
-  }
+  },
 }
 
 module.exports = stdout

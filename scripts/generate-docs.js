@@ -137,7 +137,7 @@ ${indexRows}
 
   fs.writeFileSync(
     path.join(DOCS, 'index.html'),
-    page('xslint checks', indexBody, false)
+    page('xslint checks', indexBody, false),
   )
 
   for (const {name, lint, md} of checks) {
@@ -153,7 +153,7 @@ ${mdHtml}
 
     fs.writeFileSync(
       path.join(CHECKS_DIR, `${name}.html`),
-      page(name, checkBody, true)
+      page(name, checkBody, true),
     )
   }
 

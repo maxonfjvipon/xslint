@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {evaluate_xpath, lint_by_xpath} = require('../src/xpath-linter')
+const {evaluateXpath, lintByXpath} = require('../src/xpath-linter')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
@@ -12,7 +12,7 @@ const fs = require('fs')
 
 /**
  * Yaml test packs.
- * @type {Array<String>}
+ * @type {Array<string>}
  */
 const PACKS = allFilesFrom(path.resolve(__dirname, 'resources', 'xpath-packs'))
 
@@ -26,18 +26,20 @@ describe('xpath-linter', function() {
     const other = yml.found.positions.filter((pos) => pos.length == 3).length
     describe(`testing ${path.basename(pack)} pack`, function() {
       it(`should find ${yml.found.amount - other} defects by check ${yml.pack}`, function() {
-        const evaluated = evaluate_xpath(input, lint.xpath)
+        const evaluated = evaluateXpath(input, lint.xpath)
         assert.equal(
           evaluated.length,
           yml.found.amount - other,
         )
-        yml.found.positions.filter((pos) => pos.length == 2).forEach((pos, index) => {
-          assert.equal(evaluated[index].line, yml.found.positions[index][0])
-          assert.equal(evaluated[index].pos, yml.found.positions[index][1])
-        })
+        yml.found.positions
+          .filter((pos) => pos.length == 2)
+          .forEach((pos, index) => {
+            assert.equal(evaluated[index].line, yml.found.positions[index][0])
+            assert.equal(evaluated[index].pos, yml.found.positions[index][1])
+          })
       })
       it(`should find ${yml.found.amount} defects by all checks`, function() {
-        const defects = lint_by_xpath(input)
+        const defects = lintByXpath(input)
         assert.equal(defects.length, yml.found.amount)
         defects.forEach((defect, index) => {
           let severity = lint.severity
@@ -61,10 +63,10 @@ describe('xpath-linter', function() {
       if (cmdAvailable('xcop')) {
         it(`check format of xsl. should find 0 errors`, function() {
           const xsl = path.resolve(__dirname, 'temp.xsl')
-          fs.writeFileSync(xsl, `${input}\n`);
+          fs.writeFileSync(xsl, `${input}\n`)
           const stdout = runXcop(xsl)
           assert.ok(stdout.includes(`${xsl} looks good`))
-          fs.unlinkSync(xsl);
+          fs.unlinkSync(xsl)
         })
       }
     })
