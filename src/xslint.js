@@ -6,22 +6,22 @@
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom, xml} = require('./helpers')
-const {lint_by_xpath, validated_suppressions} = require('./xpath-linter')
+const {lintByXpath, validatedSuppressions} = require('./xpath-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
 /**
  * Linters.
- * @type {Array.<function(xsl: String): Array.<Object>>}
+ * @type {Array.<function(Document): Array.<object>>}
  */
 const LINTERS = [
-  lint_by_xpath,
+  lintByXpath,
 ]
 
 /**
  * Returns all .xsl files paths depending on provided path.
- * @param {String} pth - Path to certain file or directory where .xsl should be placed
- * @return {Array.<String>} - Array of .xsl files paths
+ * @param {string} pth - Path to a file or directory holding .xsl files
+ * @return {Array.<string>} - Array of .xsl files paths
  */
 const xsls = function(pth) {
   let files
@@ -39,22 +39,22 @@ const xsls = function(pth) {
  *  logLevel: string
  * }} options - CLI options
  */
-const process_options = function(options) {
+const processOptions = function(options) {
   logger.setLevel(options.logLevel)
 }
 
 /**
  * Entry point.
- * @param {Array.<String>} pths - Path to file or directory with .xsl files to lint
+ * @param {Array.<string>} pths - Files or directories with .xsl to lint
  * @param {{
  *  logLevel: string
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
-  const suppressions = validated_suppressions(options.suppress)
-  process_options(options)
+  const suppressions = validatedSuppressions(options.suppress)
+  processOptions(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
-  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
+  pths = pths.map((pth) => path.resolve(process.cwd(), pth))
   let stylesheets = []
   for (const pth of pths) {
     if (!fs.existsSync(pth)) {
@@ -66,21 +66,16 @@ const xslint = function(pths, options) {
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const defects = []
   for (const stylesheet of stylesheets) {
-    let xsl
-    try {
-      xsl = xml.parsedFromFile(stylesheet)
-    } catch (err) {
-      throw err
-    }
+    const xsl = xml.parsedFromFile(stylesheet)
     logger.debug(`Linting ${stylesheet}...`)
     for (const lint of LINTERS) {
       defects.push(
         ...lint(xsl, suppressions).map(
           (defect) => ({
             ...defect,
-            file: stylesheet
-          })
-        )
+            file: stylesheet,
+          }),
+        ),
       )
     }
   }
@@ -103,4 +98,4 @@ const xslint = function(pths, options) {
   }
 }
 
-module.exports = xslint;
+module.exports = xslint

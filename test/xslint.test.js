@@ -6,7 +6,7 @@
 const {runXslint} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
-const path = require('path');
+const path = require('path')
 
 describe('xslint', function() {
   it('should print its own version', function() {
@@ -42,7 +42,7 @@ describe('xslint', function() {
     const stdout = runXslint([
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
       '--suppress=empty-content-in-instructions',
-      '--suppress=template-match-starts-with-double-slash'
+      '--suppress=template-match-starts-with-double-slash',
     ]);
     ['Processed files: 1', 'Defects found: 4'].forEach((expected) => assert.ok(stdout.includes(expected)))
     const absented = [
@@ -58,33 +58,33 @@ describe('xslint', function() {
   it('should test all files', function() {
     const stdout = runXslint([
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
-      'test/resources/xsl-packs/xsl-with-no-violations.xsl'
+      'test/resources/xsl-packs/xsl-with-no-violations.xsl',
     ])
     const expected = [
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
       'test/resources/xsl-packs/xsl-with-no-violations.xsl',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str.split(path.sep).join('/'))))
-    assert.ok(stdout.includes('Processed files: 2'));
+    assert.ok(stdout.includes('Processed files: 2'))
   })
   it('should test all directories', function() {
     const stdout = runXslint([
       'test/resources/xsl-packs',
-      'test/resources/xsl-packs-2'
+      'test/resources/xsl-packs-2',
     ])
     const expected = [
       'test/resources/xsl-packs',
       'test/resources/xsl-packs-2',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(`${path.resolve(process.cwd(), str)}`)))
-    assert.ok(stdout.includes('Processed files: 4'));
+    assert.ok(stdout.includes('Processed files: 4'))
   })
   it('should test all files and directories', function() {
     const stdout = runXslint([
       'test/resources/xsl-packs',
       'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
       'test/resources/xsl-packs-3',
-      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl'
+      'test/resources/xsl-packs-2/xsl-with-some-violations.xsl',
     ])
     const expected = [
       'test/resources/xsl-packs',
@@ -93,17 +93,17 @@ describe('xslint', function() {
       'test/resources/xsl-packs-2/xsl-with-no-violations.xsl',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(`${str.replace(/\\/g, '/')}`)))
-    assert.ok(stdout.includes('Processed files: 6'));
+    assert.ok(stdout.includes('Processed files: 6'))
   })
   it('should test default directory', function() {
     const stdout = runXslint([])
-    assert.ok(stdout.includes('Directories and files to process: .'));
-    assert.ok(stdout.includes('Processed files: 6'));
+    assert.ok(stdout.includes('Directories and files to process: .'))
+    assert.ok(stdout.includes('Processed files: 6'))
   })
   it('should test empty suppress', function() {
     const stdout = runXslint([
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
-      '--suppress='
+      '--suppress=',
     ])
     const expected = [
       'Processed files: 1',
@@ -123,25 +123,25 @@ describe('xslint', function() {
     const suppress='qwerty'
     const stdout = runXslint([
       'test/resources/xsl-packs/xsl-with-some-violations.xsl',
-      `--suppress=${suppress}`
+      `--suppress=${suppress}`,
     ])
     assert.ok(stdout.includes(`Check with substring '${suppress}' does not exist. Delete this '--suppress' or use another one.`))
   })
   it('should test non-existing directory', function() {
     const dir = 'non-existing-directory'
     const stdout = runXslint([dir])
-    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`))
   })
   it('should test non-existing file', function() {
     const file = 'non-existing-file.xsl'
     const stdout = runXslint([file])
-    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`))
   })
   it('should test non-existing file and directory', function() {
     const file = 'non-existing-file.xsl'
     const dir = 'non-existing-directory'
     const stdout = runXslint([file, dir])
-    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`));
-    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`));
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`))
+    assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`))
   })
 })

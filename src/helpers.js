@@ -16,8 +16,8 @@ const parser = new DOMParser()
 
 /**
  * Get all the files recursively from given directory
- * @param {String} dir - Directory path
- * @return {Array.<String>} - Array of file in given directory
+ * @param {string} dir - Directory path
+ * @return {Array.<string>} - Array of file in given directory
  */
 const allFilesFrom = function(dir) {
   const files = fs.readdirSync(dir, {withFileTypes: true})
@@ -34,9 +34,9 @@ const allFilesFrom = function(dir) {
 
 /**
  * Read file content and parse it.
- * @param {String} type - Type of document
- * @param {function(str: String): any} fromString - Function that parses from string
- * @return {function(path: String): any} - Function that checks file and parses from string
+ * @param {string} type - Type of document
+ * @param {function(string): *} fromString - Parser from string
+ * @return {function(string): *} - Function that checks file and parses it
  */
 const fromFile = function(type, fromString) {
   return function(path) {
@@ -52,7 +52,7 @@ const fromFile = function(type, fromString) {
 
 /**
  * Parse XML from string.
- * @param {String} str - XML as string
+ * @param {string} str - XML as string
  * @return {Document} - Parsed XML as Document
  */
 const xmlFromString = function(str) {
@@ -67,7 +67,7 @@ const xmlFromString = function(str) {
 
 /**
  * Parse YAML from string.
- * @param {String} str - YAML as string
+ * @param {string} str - YAML as string
  * @return {any} - Parses YAML
  */
 const yamlFromString = function(str) {
@@ -84,10 +84,10 @@ module.exports = {
   allFilesFrom,
   xml: {
     parsedFromFile: fromFile('XML', xmlFromString),
-    parsedFromString: xmlFromString
+    parsedFromString: xmlFromString,
   },
   yaml: {
     parsedFromFile: fromFile('YAML', yamlFromString),
-    parsedFromString: yamlFromString
-  }
+    parsedFromString: yamlFromString,
+  },
 }
