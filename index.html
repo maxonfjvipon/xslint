@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>35 checks available</p>
+  <p>36 checks available</p>
   <table>
     <thead>
       <tr>
@@ -165,6 +165,11 @@
     <td><a href="checks/template-match-output-method-xml.html">template-match-output-method-xml</a></td>
     <td><span class="severity-warning">warning</span></td>
     <td>xsl:output declares method='xml' while the root template generates HTML elements. Change the method to 'html'.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-redundant-namespace-declarations.html">template-match-redundant-namespace-declarations</a></td>
+    <td><span class="severity-warning">warning</span></td>
+    <td>The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-setting-value-of-variable-incorrectly.html">template-match-setting-value-of-variable-incorrectly</a></td>
