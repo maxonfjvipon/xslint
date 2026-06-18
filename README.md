@@ -79,6 +79,14 @@ xslint --suppress=monolithic-design --suppress=short-names
 The full list of checks with descriptions and examples is available at
 [maxonfjvipon.github.io/xslint][checks].
 
+Checks come in two kinds:
+
+- **Per-file** checks evaluate one stylesheet at a time (most checks).
+- **Cross-file** checks reason across all the stylesheets you lint together.
+  For example, a named template defined in one file but invoked from another
+  (via `xsl:import`/`xsl:include`) is not reported as unused. Lint the whole
+  project at once so these checks can see every caller.
+
 ## How to Contribute
 
 Fork repository, make changes, then send us a [pull request][guidelines].
@@ -89,6 +97,10 @@ before sending us your pull request please make sure all your tests pass:
 ```bash
 npm test
 ```
+
+New checks live in `src/resources/checks/xpath` (per-file) or
+`src/resources/checks/corpus` (cross-file), each with a matching test pack
+in `test/resources`. Regenerate the documentation site with `npx grunt docs`.
 
 You will need [npm] and [node] installed
 

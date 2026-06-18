@@ -6,17 +6,50 @@
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom, xml} = require('./helpers')
-const {lintByXpath, validatedSuppressions} = require('./xpath-linter')
+const {lintByXpath, names: xpathChecks} = require('./xpath-linter')
+const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
 /**
- * Linters.
- * @type {Array.<function(Document): Array.<object>>}
+ * Linters, each given the whole corpus of parsed stylesheets.
+ * @type {Array.<function(Array.<{file: string, xsl: Document}>,
+ *  Array.<string>): Array.<object>>}
  */
 const LINTERS = [
   lintByXpath,
+  lintByCorpus,
 ]
+
+/**
+ * Names of every check across all linters, that suppressions match against.
+ * @type {Array.<string>}
+ */
+const CHECKS = [...xpathChecks, ...corpusChecks]
+
+/**
+ * Deleting incorrect substring-suppressions from array of arguments
+ * @param {Array.<string>} suppressions - Array of suppressed checks
+ * @return {Array.<string>} - Normalizing list of suppressions
+ */
+const validatedSuppressions = function(suppressions) {
+  for (const sup of suppressions) {
+    if (!CHECKS.some((check) => check.includes(sup))) {
+      logger.warn(
+        `Check with substring '${sup}' does not exist. ` +
+        `Delete this '--suppress' or use another one.`,
+      )
+    }
+  }
+  if (suppressions.some((sup) => sup === '')) {
+    logger.warn(
+      'Empty suppress is incorrect. ' +
+      'Delete this "--suppress" or use another one.',
+    )
+    suppressions = suppressions.filter((sup) => (sup) !== '')
+  }
+  return suppressions
+}
 
 /**
  * Returns all .xsl files paths depending on provided path.
@@ -64,20 +97,13 @@ const xslint = function(pths, options) {
     }
   }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
+  const corpus = stylesheets.map((stylesheet) => ({
+    file: stylesheet,
+    xsl: xml.parsedFromFile(stylesheet),
+  }))
   const defects = []
-  for (const stylesheet of stylesheets) {
-    const xsl = xml.parsedFromFile(stylesheet)
-    logger.debug(`Linting ${stylesheet}...`)
-    for (const lint of LINTERS) {
-      defects.push(
-        ...lint(xsl, suppressions).map(
-          (defect) => ({
-            ...defect,
-            file: stylesheet,
-          }),
-        ),
-      )
-    }
+  for (const lint of LINTERS) {
+    defects.push(...lint(corpus, suppressions))
   }
   logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {

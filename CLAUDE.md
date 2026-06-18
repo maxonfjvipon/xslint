@@ -21,53 +21,65 @@ npx mocha test/xslint.test.js --grep "sentence"  # Run tests matching a pattern
 
 ## Architecture
 
-**xslint** is a CLI linter for XSL stylesheets. It finds `.xsl` files, parses them as XML, evaluates XPath rules against each file, and reports defects.
+**xslint** is a CLI linter for XSL stylesheets. It finds `.xsl` files, parses them all into a *corpus* of XML documents, runs each linter over the whole corpus, and reports defects.
 
 Linting flow:
 ```text
 src/index.js (CLI, commander.js)
-  → src/xslint.js (file discovery, defect aggregation, stdout output)
-    → src/xpath-linter.js (XPath rule engine using fontoxpath)
-      → src/resources/checks/*.yaml (rule definitions)
+  → src/xslint.js (file discovery, corpus building, suppression, stdout output)
+    → src/xpath-linter.js (per-file rules)   → src/resources/checks/xpath/*.yaml
+    → src/corpus-linter.js (cross-file rules) → src/resources/checks/corpus/*.yaml
+        both evaluate via src/xpath.js (fontoxpath environment:
+        prefixes, custom functions, node/string evaluators)
 ```
 
-**Rule format** (`src/resources/checks/<name>.yaml`):
+Every linter has the same shape — `(corpus, suppressions) => defects`, where `corpus` is `[{file, xsl}]` and each defect is tagged with its `file`. `xpath-linter` loops the corpus applying file-local rules; `corpus-linter` reasons across files (e.g. a named template defined in one file but invoked from another is *not* flagged as unused). The two linters do not depend on each other — both depend only on `src/xpath.js`.
+
+**Per-file rule format** (`src/resources/checks/xpath/<name>.yaml`):
 ```yaml
 xpath: <XPath expression that selects violation nodes>
 severity: warning|error
 message: <human-readable explanation>
 ```
-XPath uses namespace prefix `xsl:` → `http://www.w3.org/1999/XSL/Transform`.
 
-**Test case format** (`test/resources/xpath-packs/<name>.yaml`):
+**Cross-file (corpus) rule format** (`src/resources/checks/corpus/<name>.yaml`):
 ```yaml
-pack: <rule-filename-without-extension>
-found:
-  amount: <expected violation count>
-  positions: [ [line, col], ... ]
-input: |-
-  <?xml version="1.0"?>
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-    ...
-  </xsl:stylesheet>
+declaration: <XPath selecting declared nodes that carry an @name>
+usage: <XPath selecting the names used, collected across the whole corpus>
+severity: warning|error
+message: <human-readable explanation>
 ```
+A `declaration` node is a defect only when its `@name` appears in no `usage` value anywhere in the corpus.
 
-The test suite (`test/xpath-linter.test.js`) auto-discovers all `test/resources/xpath-packs/*.yaml` files and validates each against its corresponding rule.
+XPath uses namespace prefix `xsl:` → `http://www.w3.org/1999/XSL/Transform` and `xslint:` → custom functions (`src/xpath.js`).
+
+**Per-file test pack** (`test/resources/xpath-packs/<name>.yaml`): `pack`, `found.amount`, `found.positions: [[line, col], ...]`, single `input`. Auto-discovered by `test/xpath-linter.test.js`.
+
+**Corpus test pack** (`test/resources/corpus-packs/<name>.yaml`): `pack`, `found.amount`, `found.positions: [[fileIndex, line, col], ...]`, multiple `inputs: [ ... ]`. Auto-discovered by `test/corpus-linter.test.js`.
 
 ## Adding a New Rule
 
-1. Create `src/resources/checks/<rule-name>.yaml` with `xpath`, `severity`, and `message`.
-2. Create `test/resources/xpath-packs/<rule-name>.yaml` with matching `pack`, `found`, and `input`.
-3. Run `npm test` to verify.
+Per-file rule:
+1. Create `src/resources/checks/xpath/<rule-name>.yaml` with `xpath`, `severity`, `message`.
+2. Create `test/resources/xpath-packs/<rule-name>.yaml` with matching `pack`, `found`, `input`.
 
-Suppression by users: `xslint --suppress=<rule-substring>`.
+Cross-file rule:
+1. Create `src/resources/checks/corpus/<rule-name>.yaml` with `declaration`, `usage`, `severity`, `message`.
+2. Create `test/resources/corpus-packs/<rule-name>.yaml` with matching `pack`, `found`, `inputs`.
+
+Then: optionally add a rationale at `src/resources/motives/{xpath,corpus}/<rule-name>.md`, run `npm test`, and regenerate the doc site with `npx grunt docs`.
+
+Suppression by users: `xslint --suppress=<rule-substring>` (matches names from both linters).
 
 ## Key Files
 
 | File | Role |
 |------|------|
-| `src/xslint.js` | Orchestrates file discovery, invokes linter, formats output |
-| `src/xpath-linter.js` | Loads YAML rules, evaluates XPath, returns defects |
+| `src/xslint.js` | Orchestrates file discovery, builds the corpus, validates suppressions, invokes linters, formats output |
+| `src/xpath-linter.js` | Loads `checks/xpath/*.yaml`, applies per-file XPath rules |
+| `src/corpus-linter.js` | Loads `checks/corpus/*.yaml`, applies cross-file rules over the corpus |
+| `src/xpath.js` | Shared fontoxpath environment: prefixes, custom functions, node/string evaluators |
 | `src/helpers.js` | XML parsing (`@xmldom/xmldom`), YAML parsing, file recursion |
 | `src/logger.js` | 4-level logger (debug/info/warning/error) |
+| `scripts/generate-docs.js` | Builds the `docs/` site from checks + motives (`npx grunt docs`) |
 | `test/helpers.js` | `runXslint` / `runXcop` test utilities |
