@@ -72,12 +72,17 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">//xsl:template[not(@match)][@name][not(//xsl:call-template/@name = @name)]</code>
+    <code class="xpath">declaration: //xsl:template[not(@match)][@name]</code>
+    <code class="xpath">usage: //xsl:call-template/@name</code>
   </div>
   <div class="check-content">
 <h1>Unused named template</h1>
 <p>A named template that is never invoked via <code>xsl:call-template</code> is dead code
 and should be removed.</p>
+<p>This is a cross-file check: it looks at every stylesheet linted together, so
+a template invoked from another file (via <code>xsl:import</code> or <code>xsl:include</code>) is
+not reported. The template is flagged only when no file calls it. Lint the
+whole project at once so the check can see every caller.</p>
 <p>Incorrect:</p>
 <pre><code class="language-xsl">&lt;xsl:template name=&quot;footer&quot;&gt;
   &lt;footer&gt;Copyright 2026&lt;/footer&gt;
