@@ -14,7 +14,7 @@ const CHECKS = path.join(__dirname, '..', 'src', 'resources', 'checks')
 const MOTIVES = path.join(__dirname, '..', 'src', 'resources', 'motives')
 const DOCS = path.join(__dirname, '..', 'docs')
 const CHECKS_DIR = path.join(DOCS, 'checks')
-const KINDS = ['xpath', 'corpus']
+const KINDS = ['xpath', 'corpus', 'validation']
 
 const CSS = `
   * { box-sizing: border-box; }
@@ -101,10 +101,16 @@ const severityBadge = (severity) => {
 
 const escaped = (xpath) => xpath.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-const expressions = (kind, lint) => kind === 'corpus' ?
-  `<code class="xpath">declaration: ${escaped(lint.declaration)}</code>
-    <code class="xpath">usage: ${escaped(lint.usage)}</code>` :
-  `<code class="xpath">${escaped(lint.xpath)}</code>`
+const expressions = (kind, lint) => {
+  if (kind === 'corpus') {
+    return `<code class="xpath">declaration: ${escaped(lint.declaration)}</code>
+    <code class="xpath">usage: ${escaped(lint.usage)}</code>`
+  }
+  if (kind === 'validation') {
+    return `<code class="xpath">verified by the parser, not an XPath rule</code>`
+  }
+  return `<code class="xpath">${escaped(lint.xpath)}</code>`
+}
 
 const generate = function() {
   const checks = KINDS.flatMap((kind) => allFilesFrom(path.join(CHECKS, kind))

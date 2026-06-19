@@ -5,14 +5,28 @@
 
 const path = require('path')
 const fs = require('fs')
-const {allFilesFrom, xml} = require('./helpers')
+const {allFilesFrom} = require('./helpers')
+const {validate: validateXsls, names: xslChecks} = require('./xsl-validator')
+const {
+  validate: validateXpaths, names: xpathValidatorChecks,
+} = require('./xpath-validator')
 const {lintByXpath, names: xpathChecks} = require('./xpath-linter')
 const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
 /**
- * Linters, each given the whole corpus of parsed stylesheets.
+ * Validators, each given the corpus of well-formed stylesheets, run before the
+ * linters so the linters reason only over input known to be valid.
+ * @type {Array.<function(Array.<{file: string, xsl: Document}>,
+ *  Array.<string>): Array.<object>>}
+ */
+const VALIDATORS = [
+  validateXpaths,
+]
+
+/**
+ * Linters, each given the corpus of well-formed stylesheets.
  * @type {Array.<function(Array.<{file: string, xsl: Document}>,
  *  Array.<string>): Array.<object>>}
  */
@@ -22,10 +36,13 @@ const LINTERS = [
 ]
 
 /**
- * Names of every check across all linters, that suppressions match against.
+ * Names of every check across all validators and linters, that suppressions
+ * match against.
  * @type {Array.<string>}
  */
-const CHECKS = [...xpathChecks, ...corpusChecks]
+const CHECKS = [
+  ...xslChecks, ...xpathValidatorChecks, ...xpathChecks, ...corpusChecks,
+]
 
 /**
  * Deleting incorrect substring-suppressions from array of arguments
@@ -97,11 +114,14 @@ const xslint = function(pths, options) {
     }
   }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
-  const corpus = stylesheets.map((stylesheet) => ({
+  const sources = stylesheets.map((stylesheet) => ({
     file: stylesheet,
-    xsl: xml.parsedFromFile(stylesheet),
+    content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
-  const defects = []
+  const {corpus, defects} = validateXsls(sources, suppressions)
+  for (const validate of VALIDATORS) {
+    defects.push(...validate(corpus, suppressions))
+  }
   for (const lint of LINTERS) {
     defects.push(...lint(corpus, suppressions))
   }

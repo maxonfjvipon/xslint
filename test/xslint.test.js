@@ -7,6 +7,8 @@ const {runXslint} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
+const fs = require('fs')
+const os = require('os')
 
 describe('xslint', function() {
   it('should print its own version', function() {
@@ -143,5 +145,39 @@ describe('xslint', function() {
     const stdout = runXslint([file, dir])
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`))
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`))
+  })
+  it('should lint the parseable stylesheets and report the malformed ones', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    fs.writeFileSync(
+      path.join(dir, 'good.xsl'),
+      [
+        '<?xml version="1.0"?>',
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">',
+        '  <xsl:template match="/">',
+        '    <xsl:value-of select="1 +"/>',
+        '  </xsl:template>',
+        '</xsl:stylesheet>',
+      ].join('\n'),
+    )
+    fs.writeFileSync(
+      path.join(dir, 'bad.xsl'),
+      [
+        '<?xml version="1.0"?>',
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">',
+        '  <xsl:template match="/">',
+        '    <result>',
+        '  </xsl:template>',
+        '</xsl:stylesheet>',
+      ].join('\n'),
+    )
+    const stdout = runXslint([dir])
+    fs.rmSync(dir, {recursive: true, force: true});
+    [
+      'Processed files: 2',
+      'bad.xsl(1:1)',
+      'malformed-stylesheet',
+      'good.xsl',
+      'invalid-xpath-expression',
+    ].forEach((str) => assert.ok(stdout.includes(str)))
   })
 })

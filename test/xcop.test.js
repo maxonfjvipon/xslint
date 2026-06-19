@@ -16,6 +16,7 @@ const {runXcop, cmdAvailable} = require('./helpers')
 const PACKS = [
   ...allFilesFrom(path.resolve(__dirname, 'resources', 'xpath-packs')),
   ...allFilesFrom(path.resolve(__dirname, 'resources', 'corpus-packs')),
+  ...allFilesFrom(path.resolve(__dirname, 'resources', 'xpath-validator-packs')),
 ]
 
 /**

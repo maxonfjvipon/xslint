@@ -79,7 +79,23 @@ xslint --suppress=monolithic-design --suppress=short-names
 The full list of checks with descriptions and examples is available at
 [maxonfjvipon.github.io/xslint][checks].
 
-Checks come in two kinds:
+xslint runs in two stages. **Validators** first establish that the input is
+valid; **linters** then run over the stylesheets that pass, catching
+stylistic, semantic, and logical problems. A stylesheet that does not parse is
+reported once and skipped, so one broken file never hides the feedback on the
+rest.
+
+Validators:
+
+- **XML well-formedness** — a stylesheet that is not well-formed XML is
+  reported and excluded from linting.
+- **XPath compilability** — every bare XPath expression (in `select`, `test`,
+  `use`, `value`, `group-by`, `group-adjacent`, and the XSLT 3.0 `key`,
+  `initial-value`, `xpath`, `context-item`, `with-params`,
+  `namespace-context`) is parsed; the ones the processor cannot parse are
+  reported.
+
+Linters:
 
 - **Per-file** checks evaluate one stylesheet at a time (most checks).
 - **Cross-file** checks reason across all the stylesheets you lint together.
@@ -98,9 +114,11 @@ before sending us your pull request please make sure all your tests pass:
 npm test
 ```
 
-New checks live in `src/resources/checks/xpath` (per-file) or
-`src/resources/checks/corpus` (cross-file), each with a matching test pack
-in `test/resources`. Regenerate the documentation site with `npx grunt docs`.
+New linter rules live in `src/resources/checks/xpath` (per-file) or
+`src/resources/checks/corpus` (cross-file), each with a matching test pack in
+`test/resources`. The validators in `src/resources/checks/validation` are fixed
+in code; their YAML only tunes severity and message. Regenerate the
+documentation site with `npx grunt docs`.
 
 You will need [npm] and [node] installed
 

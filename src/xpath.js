@@ -4,7 +4,8 @@
  */
 
 const {
-  evaluateXPathToNodes, evaluateXPathToStrings, registerCustomXPathFunction,
+  evaluateXPath, evaluateXPathToNodes, evaluateXPathToStrings,
+  compileXPathToJavaScript, registerCustomXPathFunction,
 } = require('fontoxpath')
 
 /**
@@ -14,11 +15,26 @@ const {
 const FUNCTIONS = 'https://github.com/maxonfjvipon/xslint'
 
 /**
+ * Standard prefixes bound in every Xpath expression. When validating, an
+ * unknown prefix must not be mistaken for a syntax error, so these resolve to
+ * their real URIs and any other prefix resolves to a placeholder.
+ * @type {object}
+ */
+const STANDARD = {
+  'xsl': 'http://www.w3.org/1999/XSL/Transform',
+  'xs': 'http://www.w3.org/2001/XMLSchema',
+  'fn': 'http://www.w3.org/2005/xpath-functions',
+  'map': 'http://www.w3.org/2005/xpath-functions/map',
+  'array': 'http://www.w3.org/2005/xpath-functions/array',
+  'math': 'http://www.w3.org/2005/xpath-functions/math',
+}
+
+/**
  * Prefixes.
  * @type {{xsl: string, xslint: string}}
  */
 const PREFIXES = {
-  'xsl': 'http://www.w3.org/1999/XSL/Transform',
+  'xsl': STANDARD.xsl,
   'xslint': FUNCTIONS,
 }
 
@@ -83,7 +99,29 @@ const strings = function(xsl, xpath) {
   )
 }
 
+/**
+ * Whether given Xpath expression is syntactically valid. The same engine that
+ * runs the rules parses it, so an expression is valid here exactly when the
+ * processor would accept it. Every prefix resolves, isolating syntax from
+ * unresolved-prefix errors.
+ * @param {string} xpath - Xpath expression
+ * @return {boolean} - True when the expression parses
+ */
+const isValid = function(xpath) {
+  let parses = true
+  try {
+    compileXPathToJavaScript(xpath, evaluateXPath.ALL_RESULTS_TYPE, {
+      namespaceResolver: (prefix) =>
+        Object.hasOwn(STANDARD, prefix) ? STANDARD[prefix] : FUNCTIONS,
+    })
+  } catch {
+    parses = false
+  }
+  return parses
+}
+
 module.exports = {
   nodes,
   strings,
+  isValid,
 }
