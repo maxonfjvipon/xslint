@@ -30,7 +30,7 @@ src/index.js (CLI, commander.js)
     VALIDATORS (is it valid?)
     → src/xsl-validator.js (XML well-formedness) builds the corpus from the
         parseable files          → src/resources/checks/validation/malformed-stylesheet.yaml
-    → src/xpath-validator.js (XPath compilability, over the corpus)
+    → src/xpath-validator.js (XPath syntax, over the corpus)
                                  → src/resources/checks/validation/invalid-xpath-expression.yaml
     LINTERS (is it good?)
     → src/xpath-linter.js (per-file rules)    → src/resources/checks/xpath/*.yaml
@@ -63,7 +63,7 @@ A `declaration` node is a defect only when its `@name` appears in no `usage` val
 severity: warning|error
 message: <human-readable explanation>
 ```
-A validator carries no XPath rule — its detection logic lives in code, and the YAML supplies only the defect's `severity` and `message`. Two validators live here: `malformed-stylesheet` (`src/xsl-validator.js`, XML well-formedness) and `invalid-xpath-expression` (`src/xpath-validator.js`, XPath compilability). The latter parses every bare-XPath-expression attribute (`select`, `test`, `use`, `value`, `group-by`, `group-adjacent`, plus the XSLT 3.0 `key`, `initial-value`, `xpath`, `context-item`, `with-params`, `namespace-context`) via `isValid` (`src/xpath.js`), which compiles with fontoxpath (the same engine that runs the rules) under a resolver where every prefix resolves, so only genuine syntax errors fail — unknown prefixes and custom functions do not. Pattern attributes (`match`, `count`, `from`, `group-starting-with`, `group-ending-with`), attribute value templates, and sequence types (`as`) are deliberately not validated as expressions. Each validator reads its own YAML by name (it does not scan the directory), so adding one validator's YAML never feeds another's logic.
+A validator carries no XPath rule — its detection logic lives in code, and the YAML supplies only the defect's `severity` and `message`. Two validators live here: `malformed-stylesheet` (`src/xsl-validator.js`, XML well-formedness) and `invalid-xpath-expression` (`src/xpath-validator.js`, XPath syntax). The latter parses every bare-XPath-expression attribute (`select`, `test`, `use`, `value`, `group-by`, `group-adjacent`, plus the XSLT 3.0 `key`, `initial-value`, `xpath`, `context-item`, `with-params`, `namespace-context`) via `isValid` (`src/xpath.js`), which compiles with fontoxpath (the same engine that runs the rules) under a resolver where every prefix resolves, so only genuine syntax errors fail — unknown prefixes and custom functions do not. Pattern attributes (`match`, `count`, `from`, `group-starting-with`, `group-ending-with`), attribute value templates, and sequence types (`as`) are deliberately not validated as expressions. Each validator reads its own YAML by name (it does not scan the directory), so adding one validator's YAML never feeds another's logic.
 
 XPath uses namespace prefix `xsl:` → `http://www.w3.org/1999/XSL/Transform` and `xslint:` → custom functions (`src/xpath.js`).
 

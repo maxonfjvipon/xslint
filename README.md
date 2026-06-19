@@ -89,7 +89,7 @@ Validators:
 
 - **XML well-formedness** — a stylesheet that is not well-formed XML is
   reported and excluded from linting.
-- **XPath compilability** — every bare XPath expression (in `select`, `test`,
+- **XPath syntax** — every bare XPath expression (in `select`, `test`,
   `use`, `value`, `group-by`, `group-adjacent`, and the XSLT 3.0 `key`,
   `initial-value`, `xpath`, `context-item`, `with-params`,
   `namespace-context`) is parsed; the ones the processor cannot parse are

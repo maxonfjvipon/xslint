@@ -35,7 +35,7 @@ const names = [CHECK]
  * @param {Array.<{file: string, content: string}>} sources - Raw stylesheets
  * @param {Array.<string>} suppressions - Array of suppressed checks
  * @return {{corpus: Array.<{file: string, xsl: Document}>, defects:
- *  Array.<object>}} - Parsed corpus and defects for the unparseable sources
+ *  Array.<object>}} - Parsed corpus and defects for the unparsable sources
  */
 const validate = function(sources, suppressions = []) {
   logger.debug(`Xml validation started`)
