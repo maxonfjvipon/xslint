@@ -116,7 +116,7 @@ describe('xslint', function() {
       '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (template-match-setting-value-of-variable-incorrectly)',
       '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (template-match-short-names)',
       '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (template-match-starts-with-double-slash)',
-      '(39:3) A named template is never invoked via xsl:call-template. Remove it or call it. (template-match-unused-named-template)',
+      '(45:3) A named template is never invoked via xsl:call-template. Remove it or call it. (template-match-unused-named-template)',
     ]
     assert.ok(stdout.includes('Empty suppress is incorrect. Delete this "--suppress" or use another one.'))
     expected.forEach((str) => assert.ok(stdout.includes(str)))
