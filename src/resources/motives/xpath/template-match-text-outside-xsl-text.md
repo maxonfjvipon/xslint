@@ -13,13 +13,6 @@ Incorrect:
 </xsl:if>
 ```
 
-or:
-```xsl
-<xsl:with-param name="Lord Byron" select="1788–1824">
-   1788–1825
-</xsl:with-param>
-```
-
 Correct:
 
 ```xsl
@@ -31,21 +24,21 @@ Correct:
 or:
 ```xsl
 <xsl:variable name="Lord Byron">
-  1788–1824
+  1788-1824
 </xsl:variable>
 ```
 
 or:
 ```xsl
 <xsl:param name="William Shakespeare">
-  1564–1616
+  1564-1616
 </xsl:param>
 ```
 
 or:
 ```xsl
 <xsl:with-param name="Robert Burns">
-  1759–1796
+  1759-1796
 </xsl:with-param>
 ```
 
@@ -75,7 +68,7 @@ or:
 or:
 ```xsl
 <xsl:message terminate="yes">
-  Text of message.
+  text of message
 </xsl:message>
 ```
 

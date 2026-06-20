@@ -10,111 +10,26 @@ input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:if test="position() == 1">
-        <xsl:text>foo</xsl:text>
-      </xsl:if>
-      <xsl:copy-of select="$qw"/>
-    </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:if test="position() == 1">
-        <xsl:text>foo</xsl:text>
-      </xsl:if>
-      <xsl:copy-of select="$qw"/>
-    </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[3]">
-      <xsl:if test="position() == 1">
+      <xsl:if test="position() = 1">
         <xsl:text>foo</xsl:text>
       </xsl:if>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[2]">
-      <xsl:variable name="qw">
+      <xsl:variable name="qw" as="xs:string">
         ooooo
       </xsl:variable>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
+    <xsl:template name="qwerty">
+      <xsl:param name="qw">
+        ooooo
+      </xsl:param>
+      <p>QWERTY: <xsl:value-of select="$qw" /></p>
+    </xsl:template>
+    <xsl:template match="o">
+      <xsl:call-template name="qwerty">
+        <xsl:with-param name="qw">uiop</xsl:with-param>
+      </xsl:call-template>
+    </xsl:template>
   </xsl:stylesheet>
-
-
-Incorrect:
-
-  ```xsl
-  <xsl:if test=".!=''">
-  Hello!
-  </xsl:if>
-  ```
-
-or:
-  ```xsl
-  <xsl:with-param name="Lord Byron" select="1788–1824">
-  1788–1825
-  </xsl:with-param>
-  ```
-
-Correct:
-
-  ```xsl
-  <xsl:if test=".!=''">
-  <xsl:text>Hello!</xsl:text>
-  </xsl:if>
-  ```
-
-or:
-  ```xsl
-  <xsl:variable name="Lord Byron">
-  1788–1824
-  </xsl:variable>
-  ```
-
-or:
-  ```xsl
-  <xsl:param name="William Shakespeare">
-  1564–1616
-  </xsl:param>
-  ```
-
-or:
-  ```xsl
-  <xsl:with-param name="Robert Burns">
-  1759–1796
-  </xsl:with-param>
-  ```
-
-or:
-  ```xsl
-  <xsl:attribute-set name="font">
-  <xsl:attribute name="fname">
-  Arial
-  </xsl:attribute>
-  </xsl:attribute-set>
-  ```
-
-or:
-  ```xsl
-  <xsl:comment>
-  Text of comment.
-  </xsl:comment>
-  ```
-
-or:
-  ```xsl
-  <xsl:processing-instruction name="xml-stylesheet">
-  href="style.css" type="text/css"
-  </xsl:processing-instruction>
-  ```
-
-or:
-  ```xsl
-  <xsl:message terminate="yes">
-  Text of message.
-  </xsl:message>
-  ```
-
-or:
-  ```xsl
-  <ul>
-  <li>William Shakespeare</li>
-  <li>Robert Burns</li>
-  <li>Lord Byron</li>
-  </ul>
-  ```

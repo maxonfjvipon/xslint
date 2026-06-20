@@ -17,7 +17,7 @@ input: |-
       </xsl:attribute-set>
     </xsl:template>
     <xsl:template match="/objects/o/o[2]">
-      <xsl:variable name="qw" select="."/>
+      <xsl:variable name="qw" as="xs:string" select="."/>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>

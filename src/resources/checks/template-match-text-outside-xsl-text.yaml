@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //xsl:*[count(text()[normalize-space()]) > 0 and not(local-name() = ('text','attribute','comment','processing-instruction','message')) and not(local-name() = ('variable','param','with-param') and not(@select))]
-severity: warning
-message: Text element is outside the node. Write it in 'xsl:text'.

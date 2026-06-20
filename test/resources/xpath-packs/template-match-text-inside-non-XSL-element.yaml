@@ -10,13 +10,13 @@ input: |-
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ex=https://example.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
-      <xsl:if test="position() == 1">
+      <xsl:if test="position() = 1">
         <ex:text>foo</ex:text>
       </xsl:if>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[2]">
-      <xsl:variable name="qw" select="."/>
+      <xsl:variable name="qw" as="xs:string" select="."/>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>
