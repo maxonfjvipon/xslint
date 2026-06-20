@@ -11,7 +11,7 @@ Incorrect:
 </xsl:variable>
 ```
 or:
-```
+```xsl
 <xsl:param>
   101
 </xsl:param>
@@ -24,7 +24,7 @@ Correct:
 </xsl:variable>
 ```
 or:
-```
+```xsl
 <xsl:param name="qw">
   101
 </xsl:param>
