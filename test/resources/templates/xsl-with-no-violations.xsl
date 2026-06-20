@@ -49,7 +49,7 @@
       <xsl:with-param name="color" select="'#00ffff'"/>
     </xsl:call-template>
   </xsl:template>
-  <xsl:template >
+  <xsl:template>
     <xsl:param name="name" select="'Unknown'"/>
     <xsl:param name="color" select="'#000000'"/>
     <xsl:value-of select="$name"/>
