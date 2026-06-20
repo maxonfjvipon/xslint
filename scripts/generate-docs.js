@@ -14,6 +14,7 @@ const CHECKS = path.join(__dirname, '..', 'src', 'resources', 'checks')
 const MOTIVES = path.join(__dirname, '..', 'src', 'resources', 'motives')
 const DOCS = path.join(__dirname, '..', 'docs')
 const CHECKS_DIR = path.join(DOCS, 'checks')
+const KINDS = ['xpath', 'corpus', 'validation']
 
 const CSS = `
   * { box-sizing: border-box; }
@@ -98,23 +99,37 @@ const severityBadge = (severity) => {
   return `<span class="severity-${severity}">${severity}</span>`
 }
 
+const escaped = (xpath) => xpath.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+const expressions = (kind, lint) => {
+  if (kind === 'corpus') {
+    return `<code class="xpath">declaration: ${escaped(lint.declaration)}</code>
+    <code class="xpath">usage: ${escaped(lint.usage)}</code>`
+  }
+  if (kind === 'validation') {
+    return `<code class="xpath">verified by the parser, not an XPath rule</code>`
+  }
+  return `<code class="xpath">${escaped(lint.xpath)}</code>`
+}
+
 const generate = function() {
-  const checks = allFilesFrom(CHECKS)
+  const checks = KINDS.flatMap((kind) => allFilesFrom(path.join(CHECKS, kind))
     .filter((f) => f.endsWith('.yaml'))
     .sort()
     .map((yamlFile) => {
       const name = path.basename(yamlFile, '.yaml')
       const lint = yaml.parsedFromFile(yamlFile)
-      const mdFile = path.join(MOTIVES, `${name}.md`)
+      const mdFile = path.join(MOTIVES, kind, `${name}.md`)
       const md = fs.existsSync(mdFile) ? fs.readFileSync(mdFile, 'utf-8') : null
-      return {name, lint, md}
-    })
+      return {name, kind, lint, md}
+    }))
 
   fs.mkdirSync(CHECKS_DIR, {recursive: true})
 
-  const indexRows = checks.map(({name, lint}) => {
+  const indexRows = checks.map(({name, kind, lint}) => {
     return `  <tr>
     <td><a href="checks/${name}.html">${name}</a></td>
+    <td>${kind}</td>
     <td>${severityBadge(lint.severity)}</td>
     <td>${lint.message}</td>
   </tr>`
@@ -126,6 +141,7 @@ const generate = function() {
     <thead>
       <tr>
         <th>Check</th>
+        <th>Type</th>
         <th>Severity</th>
         <th>Description</th>
       </tr>
@@ -137,15 +153,15 @@ ${indexRows}
 
   fs.writeFileSync(
     path.join(DOCS, 'index.html'),
-    page('xslint checks', indexBody, false)
+    page('xslint checks', indexBody, false),
   )
 
-  for (const {name, lint, md} of checks) {
+  for (const {name, kind, lint, md} of checks) {
     const mdHtml = md ? marked(md) : `<h1>${name}</h1><p>${lint.message}</p>`
     const checkBody = `  <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     ${severityBadge(lint.severity)}
-    <code class="xpath">${lint.xpath.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>
+    ${expressions(kind, lint)}
   </div>
   <div class="check-content">
 ${mdHtml}
@@ -153,7 +169,7 @@ ${mdHtml}
 
     fs.writeFileSync(
       path.join(CHECKS_DIR, `${name}.html`),
-      page(name, checkBody, true)
+      page(name, checkBody, true),
     )
   }
 

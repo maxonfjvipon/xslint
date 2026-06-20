@@ -8,16 +8,18 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     eslint: {
-      target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+      target: [
+        'Gruntfile.js', 'src/**/*.js', 'test/**/*.js', 'scripts/**/*.js',
+      ],
     },
     mochacli: {
       test: {
         options: {
           files: ['test/**/*.test.js', '!test/resources/**'],
-          timeout: 10000
-        }
-      }
-    }
+          timeout: 10000,
+        },
+      },
+    },
   })
   grunt.loadNpmTasks('grunt-eslint')
   grunt.loadNpmTasks('grunt-mocha-cli')

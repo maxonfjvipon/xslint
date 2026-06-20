@@ -13,11 +13,16 @@ program
   .name('xslint')
   .usage('path [options]')
   .summary('XSL Linter')
-  .description('XLS Linter (' + version.what + ' built on ' + version.when + ')')
+  .description(
+    'XLS Linter (' + version.what + ' built on ' + version.when + ')',
+  )
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
-  .option('--suppress <check>', 'Suppress some checks', (check, suppressions) => [...suppressions, check], [])
+  .option(
+    '--suppress <check>', 'Suppress some checks',
+    (check, suppressions) => [...suppressions, check], [],
+  )
   .argument('[paths...]', 'paths to file or directory to process', ['.'])
   .action((path) => {
     xslint(path, program.opts())

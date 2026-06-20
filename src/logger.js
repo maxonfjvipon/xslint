@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const stdout = require('./stdout');
+const stdout = require('./stdout')
 
 /**
  * Log levels.
@@ -15,7 +15,7 @@ const LOG_LEVELS = {
   WARNING: 'warning',
   WARN: 'warn',
   ERROR: 'error',
-};
+}
 
 /**
  * Log levels as numbers.
@@ -29,36 +29,36 @@ const LEVELS = {
   [LOG_LEVELS.ERROR]: 3,
 }
 
-let current_level = LEVELS[LOG_LEVELS.INFO]
+let currentLevel = LEVELS[LOG_LEVELS.INFO]
 
 /**
  * Logger.
  * @type {{
- *  debug: function(msg: String, ...args: any)
- *  info: function(msg: String, ...args: any)
- *  warn: function(msg: String, ...args: any)
- *  error: function(msg: String, ...args: any)
- *  setLevel: function(level: string)
+ *  debug: function(string, ...*): void,
+ *  info: function(string, ...*): void,
+ *  warn: function(string, ...*): void,
+ *  error: function(string, ...*): void,
+ *  setLevel: function(string): void
  * }}
  */
 const logger = {
   debug: (msg, ...args) => {
-    if (current_level <= LEVELS[LOG_LEVELS.DEBUG]) {
+    if (currentLevel <= LEVELS[LOG_LEVELS.DEBUG]) {
       stdout.debug(msg, ...args)
     }
   },
   info: (msg, ...args) => {
-    if (current_level <= LEVELS[LOG_LEVELS.INFO]) {
+    if (currentLevel <= LEVELS[LOG_LEVELS.INFO]) {
       stdout.info(msg, ...args)
     }
   },
   warn: (msg, ...args) => {
-    if (current_level <= LEVELS[LOG_LEVELS.WARNING]) {
+    if (currentLevel <= LEVELS[LOG_LEVELS.WARNING]) {
       stdout.warn(msg, ...args)
     }
   },
   error: (msg, ...args) => {
-    if (current_level <= LEVELS[LOG_LEVELS.ERROR]) {
+    if (currentLevel <= LEVELS[LOG_LEVELS.ERROR]) {
       stdout.error(msg, ...args)
     }
   },
@@ -68,16 +68,16 @@ const logger = {
       logger.warn(
         [
           'The incorrect option --log-level provided: "%s".',
-          'Possible options are %s. The default log level "info" is set'
+          'Possible options are %s. The default log level "info" is set',
         ].join(' '),
         level,
-        Object.values(LOG_LEVELS).map((lvl) => `"${lvl}"`).join(', ')
+        Object.values(LOG_LEVELS).map((lvl) => `"${lvl}"`).join(', '),
       )
     } else {
-      current_level = LEVELS[level]
+      currentLevel = LEVELS[level]
       logger.debug(`Log level set to '${level}'`)
     }
-  }
+  },
 }
 
 module.exports = {

@@ -12,7 +12,7 @@ input: |-
     <xsl:template match="/objects/o/o">
       <xsl:for-each select="o/o">
         <xsl:choose>
-          <xsl:when select="o/o/o[1]">
+          <xsl:when test="@ooo = false()">
             <HR STYLE="color:red"/>
           </xsl:when>
           <xsl:otherwise>
@@ -20,7 +20,7 @@ input: |-
           </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
-      <xsl:if s1="o/o">
+      <xsl:if test="@ooo = false()">
         <p>
           <strong>B</strong>
         </p>
