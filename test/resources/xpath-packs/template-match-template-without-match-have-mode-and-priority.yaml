@@ -4,7 +4,7 @@
 pack: template-match-template-with-match-have-mode-or-priority
 found:
   amount: 3
-  positions: [ [ 4, 3 ], [ 8, 3 ], [ 12, 3]]
+  positions: [ [ 4, 3 ], [ 8, 3 ], [ 12, 3 ] ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
