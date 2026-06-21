@@ -3,4 +3,4 @@
 ---
 xpath: //(xsl:variable | xsl:param)[not(@name)]
 severity: error
-message: xsl:variable or xsl:param haven't @name attribute. Add @name attribute or delete node.
+message: xsl:variable and xsl:param require a @name attribute. Add one or remove the element.
