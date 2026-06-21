@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:template[not(@name) and not(@match)]
+severity: error
+message: An xsl:template element must have either a match attribute or a name attribute, or both. Add any of them in xsl:template.
