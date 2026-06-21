@@ -16,4 +16,13 @@ input: |-
       <xsl:variable name="qw" as="xs:string" select="ooo"/>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
+    <xsl:template match="year">
+      <xsl:call-template name="string">
+        <xsl:with-param name="name" select="'Year'"/>
+      </xsl:call-template>
+    </xsl:template>
+    <xsl:template name="string">
+      <xsl:param name="name" select="'Unknown'"/>
+      <p>$name</p>
+    </xsl:template>
   </xsl:stylesheet>
