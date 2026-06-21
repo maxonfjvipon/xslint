@@ -9,28 +9,33 @@ input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:import href="info.xsl"/>
+    <xsl:template name="writer">
+      <xsl:param name="surname"/>
+      <p><xsl:value-of select="$surname"/></p>
+    </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:call-template name="myTemplate">
-        <xsl:with-param name="Shakespeare" select="1564"/>
+      <xsl:call-template name="writer">
+        <xsl:with-param name="surname" select="'Shakespeare'"/>
       </xsl:call-template>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:apply-templates select="node">
-        <xsl:with-param name="Austen" select="1775"/>
+    <xsl:template match="/objects/o/o[1]/o[3]">
+      <xsl:apply-templates select="o/o">
+        <xsl:with-param name="surname" select="'Austen'"/>
       </xsl:apply-templates>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
+    <xsl:template match="/objects/o/o[1]/o[4]">
       <xsl:apply-imports>
-        <xsl:with-param name="Dickens" select="1812"/>
+        <xsl:with-param name="surname" select="'Dickens'"/>
       </xsl:apply-imports>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
+    <xsl:template match="/objects/o/o[1]/o[5]">
       <xsl:next-match>
-        <xsl:with-param name="Carroll" select="1832"/>
+        <xsl:with-param name="surname" select="'Carroll'"/>
       </xsl:next-match>
     </xsl:template>
-    <xsl:template match="/objects/o/o[1]/o[2]">
-      <xsl:variable name="qw" as="xs:string" select="ooo"/>
+    <xsl:template match="/objects/o/o[1]/o[6]">
+      <xsl:variable name="qw" as="xs:string" select="'ooo'"/>
       <xsl:copy-of select="$qw"/>
     </xsl:template>
   </xsl:stylesheet>
