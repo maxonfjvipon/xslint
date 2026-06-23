@@ -1,6 +1,6 @@
 # Template has no @name or @match
 
-AA template without the @name or @match attribute is not allowed.
+A template without the @name or @match attribute is not allowed.
 Add at least one of these arguments, otherwise the template cannot
 be applied.
 
