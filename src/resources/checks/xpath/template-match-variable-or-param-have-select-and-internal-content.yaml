@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-xpath: //(xsl:variable | xsl:param)[count(text()[normalize-space()]) > 0 and (@select)]
+xpath: //(xsl:variable | xsl:param)[@select and (count(* | text()[normalize-space()]) > 0]
 severity: error
-message: xsl:variable and xsl:parameter have both select attribute and internal content. Need to remove one of the ways to set an element.
+message: An xsl:variable or xsl:param has both a select attribute and a non-empty body. Use only one way to set the value.

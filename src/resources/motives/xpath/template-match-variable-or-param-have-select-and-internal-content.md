@@ -8,13 +8,13 @@ becomes ambiguous.
 Incorrect:
 
 ```xsl
-<xsl:variable name="physicist" select="'Isaac Newton'"/>
+<xsl:variable name="physicist" select="'Isaac Newton'">
     Albert Einstein
 </xsl:variable>
 ```
 or:
 ```xsl
-<xsl:param name="physicist" select="'J.J. Thomson'"/>
+<xsl:param name="physicist" select="'J.J. Thomson'">
     Max Planck
 </xsl:param>
 ```
