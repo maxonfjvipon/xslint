@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>template-match-unused-variable</title>
+  <title>template-match-variable-or-param-without-name</title>
   <style>
   * { box-sizing: border-box; }
   body {
@@ -71,20 +71,32 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span>
-    <code class="xpath">//xsl:variable[@name][every $x in (//xsl:variable/../*//@*) satisfies not(contains($x, concat('$', @name)))]</code>
+    <span class="severity-error">error</span>
+    <code class="xpath">//(xsl:variable | xsl:param)[not(@name)]</code>
   </div>
   <div class="check-content">
-<h1>Unused variable</h1>
-<p>A variable that is declared but whose <code>$name</code> never appears in any attribute
-value in the stylesheet is dead code and should be removed.</p>
+<h1>Using <code>xsl:variable</code> or <code>xsl:param</code> without @name</h1>
+<p><code>xsl:variable</code> and <code>xsl:param</code> must have a required @name attribute.
+<code>xsl:variable</code> and <code>xsl:param</code> cannot be used without it.</p>
 <p>Incorrect:</p>
-<pre><code class="language-xsl">&lt;xsl:variable name=&quot;greeting&quot; select=&quot;&#39;Hello&#39;&quot;/&gt;
-&lt;!-- $greeting is never referenced --&gt;
+<pre><code class="language-xsl">&lt;xsl:variable&gt;
+  101
+&lt;/xsl:variable&gt;
+</code></pre>
+<p>or:</p>
+<pre><code class="language-xsl">&lt;xsl:param&gt;
+  101
+&lt;/xsl:param&gt;
 </code></pre>
 <p>Correct:</p>
-<pre><code class="language-xsl">&lt;xsl:variable name=&quot;greeting&quot; select=&quot;&#39;Hello&#39;&quot;/&gt;
-&lt;p&gt;&lt;xsl:value-of select=&quot;$greeting&quot;/&gt;&lt;/p&gt;
+<pre><code class="language-xsl">&lt;xsl:variable name=&quot;qw&quot;&gt;
+  101
+&lt;/xsl:variable&gt;
+</code></pre>
+<p>or:</p>
+<pre><code class="language-xsl">&lt;xsl:param name=&quot;qw&quot;&gt;
+  101
+&lt;/xsl:param&gt;
 </code></pre>
 
   </div>
