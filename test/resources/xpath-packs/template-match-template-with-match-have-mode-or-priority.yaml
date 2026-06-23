@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: template-match-template-with-match-have-mode-or-priority
+pack: template-match-template-without-match-have-mode-or-priority
 found:
   amount: 0
   positions: [ ]

@@ -8,19 +8,19 @@ Incorrect:
 
 ```xsl
 <xsl:template name="oo" priority="2" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo" priority="2">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 
@@ -28,37 +28,37 @@ Correct:
 
 ```xsl
 <xsl:template name="oo" match="oo" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo" match="oo" priority="2">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo" match="oo" priority="2" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template match="oo" priority="2" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template match="oo" priority="2">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template match="oo" mode="qq">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 
