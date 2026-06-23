@@ -8,7 +8,7 @@ Incorrect:
 
 ```xsl
 <xsl:template>
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 
@@ -16,18 +16,18 @@ Correct:
 
 ```xsl
 <xsl:template match="o/o">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
 or:
 ```xsl
 <xsl:template name="oo" match="o/o">
-  <--body-->
+  <!--body-->
 </xsl:template>
 ```
