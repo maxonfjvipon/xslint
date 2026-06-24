@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>39 checks available</p>
+  <p>40 checks available</p>
   <table>
     <thead>
       <tr>
@@ -100,6 +100,12 @@
     <td>xpath</td>
     <td><span class="severity-warning">warning</span></td>
     <td>An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-empty-variable.html">template-match-empty-variable</a></td>
+    <td>xpath</td>
+    <td><span class="severity-warning">warning</span></td>
+    <td>An empty xsl:variable binds the empty string for no reason. Give it a @select or some content, or remove it.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-function-template-complexity.html">template-match-function-template-complexity</a></td>
