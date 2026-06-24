@@ -102,6 +102,11 @@ Linters:
   For example, a named template defined in one file but invoked from another
   (via `xsl:import`/`xsl:include`) is not reported as unused. Lint the whole
   project at once so these checks can see every caller.
+- **Formatting** checks read each XPath expression as a stream of tokens and
+  flag stylistic noise — currently redundant whitespace (a doubled space, or a
+  space leading or trailing the expression). Only expressions that already
+  parse are checked, so a malformed one is reported once by the validator and
+  never nagged about its spacing.
 
 ## How to Contribute
 
@@ -116,9 +121,10 @@ npm test
 
 New linter rules live in `src/resources/checks/xpath` (per-file) or
 `src/resources/checks/corpus` (cross-file), each with a matching test pack in
-`test/resources`. The validators in `src/resources/checks/validation` are fixed
-in code; their YAML only tunes severity and message. Regenerate the
-documentation site with `npx grunt docs`.
+`test/resources`. The validators in `src/resources/checks/validation` and the
+formatting checks in `src/resources/checks/format` are fixed in code; their
+YAML only tunes severity and message. Regenerate the documentation site with
+`npx grunt docs`.
 
 You will need [npm] and [node] installed
 

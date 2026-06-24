@@ -42,34 +42,39 @@ const EXPRESSIONS =
   '"namespace-context")]'
 
 /**
- * Validate every Xpath expression in the corpus. An attribute is a defect when
- * its value cannot be parsed by the engine that would run it.
+ * Validate every Xpath expression in the corpus, splitting the valid ones out
+ * for the linters to consume from the malformed ones, which become defects.
+ * An expression that cannot be parsed by the engine that would run it is
+ * reported and dropped, so no linter ever reasons over broken input.
  * @param {Array.<{file: string, xsl: Document}>} corpus - Parsed stylesheets
  * @param {Array.<string>} suppressions - Array of suppressed checks
- * @return {{name: string, severity: string, message: string, file: string,
- *  line: number, pos: number}[]} - Defects found
+ * @return {{expressions: Array.<{file: string, expression: Node}>, defects:
+ *  {name: string, severity: string, message: string, file: string,
+ *  line: number, pos: number}[]}} - Valid expressions and defects found
  */
 const validate = function(corpus, suppressions = []) {
   logger.debug(`Xpath validation started`)
+  const expressions = []
   const defects = []
-  if (!suppressions.some((sup) => CHECK.includes(sup))) {
-    for (const {file, xsl} of corpus) {
-      for (const expression of nodes(xsl, EXPRESSIONS)) {
-        if (!isValid(expression.nodeValue)) {
-          defects.push({
-            name: CHECK,
-            severity: META.severity,
-            message: META.message,
-            file: file,
-            line: expression.lineNumber,
-            pos: expression.columnNumber,
-          })
-        }
+  const suppressed = suppressions.some((sup) => CHECK.includes(sup))
+  for (const {file, xsl} of corpus) {
+    for (const expression of nodes(xsl, EXPRESSIONS)) {
+      if (isValid(expression.nodeValue)) {
+        expressions.push({file: file, expression: expression})
+      } else if (!suppressed) {
+        defects.push({
+          name: CHECK,
+          severity: META.severity,
+          message: META.message,
+          file: file,
+          line: expression.lineNumber,
+          pos: expression.columnNumber,
+        })
       }
     }
   }
   logger.debug(`Found ${defects.length} invalid expressions`)
-  return defects
+  return {expressions: expressions, defects: defects}
 }
 
 module.exports = {
