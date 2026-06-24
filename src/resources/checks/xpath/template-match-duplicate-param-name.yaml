@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:param[@name = preceding-sibling::xsl:param/@name]
+severity: error
+message: Two xsl:param siblings share a @name. Each parameter of a template, function, or stylesheet must have a distinct name.
