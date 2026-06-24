@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>45 checks available</p>
+  <p>46 checks available</p>
   <table>
     <thead>
       <tr>
@@ -238,6 +238,12 @@
     <td>xpath</td>
     <td><span class="severity-error">error</span></td>
     <td>An 'xsl:template' must have a '@match' or '@name' attribute, or both. Add one of them.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-template-without-match-have-mode-or-priority.html">template-match-template-without-match-have-mode-or-priority</a></td>
+    <td>xpath</td>
+    <td><span class="severity-error">error</span></td>
+    <td>An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-too-many-small-templates.html">template-match-too-many-small-templates</a></td>
