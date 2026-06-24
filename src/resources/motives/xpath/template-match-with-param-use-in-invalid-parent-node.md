@@ -37,3 +37,10 @@ or:
   <xsl:with-param name="Carroll" select="1832"/>
 </xsl:next-match>
 ```
+
+or:
+```xsl
+<xsl:next-iteration>
+  <xsl:with-param name="Christie" select="1890"/>
+<xsl:next-iteration>
+```
