@@ -1,8 +1,8 @@
 # Using internal content and @select to set variable or param
 
-`xsl:variable` and `xsl:parameter` have both select attribute and 
+`xsl:variable` and `xsl:param` have both select attribute and 
 internal content. Need to leave only one of the ways to set the 
-element. Otherwise, the definition of a `xsl:variable` or `xsl:parameter`
+element. Otherwise, the definition of a `xsl:variable` or `xsl:param`
 becomes ambiguous.
 
 Incorrect:

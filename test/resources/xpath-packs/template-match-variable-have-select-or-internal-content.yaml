@@ -17,7 +17,16 @@ input: |-
       <xsl:variable name="chemist" as="xs:string">
         Robert Boyle
       </xsl:variable>
+      <xsl:variable name="physicist" as="xs:string">
+        <name>
+          Albert Einstein 
+        </name>
+        <discovery>
+          Energy and mass are the same thing yet exist in many forms.
+        </discovery>
+      </xsl:variable>
       <xsl:copy-of select="$chemist"/>
+      <xsl:copy-of select="$physicist"/>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[3]">
       <xsl:copy-of select="."/>
