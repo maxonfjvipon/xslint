@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>43 checks available</p>
+  <p>44 checks available</p>
   <table>
     <thead>
       <tr>
@@ -304,6 +304,12 @@
     <td>xpath</td>
     <td><span class="severity-error">error</span></td>
     <td>xsl:stylesheet is nested inside another element. It must be the outermost element of the document.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-variable-or-param-have-select-and-internal-content.html">template-match-variable-or-param-have-select-and-internal-content</a></td>
+    <td>xpath</td>
+    <td><span class="severity-error">error</span></td>
+    <td>An xsl:variable or xsl:param has both a select attribute and a non-empty body. Use only one way to set the value.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-variable-or-param-without-name.html">template-match-variable-or-param-without-name</a></td>
