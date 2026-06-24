@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:with-param[@name = preceding-sibling::xsl:with-param/@name]
+severity: error
+message: A single call passes two xsl:with-param with the same @name. Each parameter can be supplied only once.
