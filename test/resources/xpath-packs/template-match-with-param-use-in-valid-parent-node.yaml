@@ -12,7 +12,9 @@ input: |-
     <xsl:import href="info.xsl"/>
     <xsl:template name="writer">
       <xsl:param name="surname"/>
-      <p><xsl:value-of select="$surname"/></p>
+      <p>
+        <xsl:value-of select="$surname"/>
+      </p>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:call-template name="writer">
@@ -37,5 +39,16 @@ input: |-
     <xsl:template match="/objects/o/o[1]/o[6]">
       <xsl:variable name="qw" as="xs:string" select="'ooo'"/>
       <xsl:copy-of select="$qw"/>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[7]">
+      <xsl:iterate select="1 to 17">
+        <xsl:param name="number" select="1"/>
+        <xsl:message>
+          <xsl:value-of select="$number"/>
+        </xsl:message>
+        <xsl:next-iteration>
+          <xsl:with-param name="number" select="$number + 1"/>
+        </xsl:next-iteration>
+      </xsl:iterate>
     </xsl:template>
   </xsl:stylesheet>
