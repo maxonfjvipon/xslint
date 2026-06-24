@@ -19,7 +19,7 @@ input: |-
       </xsl:variable>
       <xsl:variable name="physicist">
         <name>
-          Albert Einstein 
+          Albert Einstein
         </name>
         <discovery>
           Energy and mass are the same thing yet exist in many forms.
