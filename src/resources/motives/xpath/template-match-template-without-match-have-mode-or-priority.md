@@ -1,8 +1,8 @@
 # Use @mode or @priority in Template without @match
 
 An `xsl:template` that has no `match` attribute must have no `mode` attribute
-and no `priority` attribute. In named templates they have no sense, because it 
-is not selected among several templates, instead it is called by name.
+and no `priority` attribute. In a named template they have no meaning, since
+it is called by name rather than selected among several templates.
 
 Incorrect:
 
@@ -61,4 +61,3 @@ or:
   <!--body-->
 </xsl:template>
 ```
-
