@@ -1,9 +1,8 @@
 # Using internal content and @select to set variable or param
 
-`xsl:variable` and `xsl:param` have both select attribute and 
-internal content. Need to leave only one of the ways to set the 
-element. Otherwise, the definition of a `xsl:variable` or `xsl:param`
-becomes ambiguous.
+An xsl:variable or xsl:param must not set its value both ways.
+When it carries a @select attribute and also has content, the
+binding is ambiguous, so keep only one.
 
 Incorrect:
 
