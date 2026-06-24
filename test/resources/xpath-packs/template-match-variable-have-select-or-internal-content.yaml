@@ -17,7 +17,7 @@ input: |-
       <xsl:variable name="chemist" as="xs:string">
         Robert Boyle
       </xsl:variable>
-      <xsl:variable name="physicist" as="xs:string">
+      <xsl:variable name="physicist">
         <name>
           Albert Einstein 
         </name>
