@@ -3,4 +3,4 @@
 ---
 xpath: //xsl:template[not(@name) and not(@match)]
 severity: error
-message: An xsl:template element must have either a match attribute or a name attribute, or both. Add any of them in xsl:template.
+message: An 'xsl:template' must have a '@match' or '@name' attribute, or both. Add one of them.
