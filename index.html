@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>44 checks available</p>
+  <p>45 checks available</p>
   <table>
     <thead>
       <tr>
@@ -232,6 +232,12 @@
     <td>xpath</td>
     <td><span class="severity-error">error</span></td>
     <td>The stylesheet has no xsl:template elements and produces no output. Add at least one template.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-template-has-no-name-or-match.html">template-match-template-has-no-name-or-match</a></td>
+    <td>xpath</td>
+    <td><span class="severity-error">error</span></td>
+    <td>An 'xsl:template' must have a '@match' or '@name' attribute, or both. Add one of them.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-too-many-small-templates.html">template-match-too-many-small-templates</a></td>
