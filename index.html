@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>40 checks available</p>
+  <p>41 checks available</p>
   <table>
     <thead>
       <tr>
@@ -298,6 +298,12 @@
     <td>xpath</td>
     <td><span class="severity-error">error</span></td>
     <td>xsl:variable and xsl:param require a @name attribute. Add one or remove the element.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-with-param-without-name.html">template-match-with-param-without-name</a></td>
+    <td>xpath</td>
+    <td><span class="severity-error">error</span></td>
+    <td>xsl:with-param requires a @name attribute to bind the parameter it passes. Add one.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-unused-named-template.html">template-match-unused-named-template</a></td>
