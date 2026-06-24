@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>41 checks available</p>
+  <p>42 checks available</p>
   <table>
     <thead>
       <tr>
@@ -94,6 +94,12 @@
     <td>xpath</td>
     <td><span class="severity-warning">warning</span></td>
     <td>Verbose axis specifiers child::, attribute::, or parent::node() are used. Replace them with the node name alone, @, or .. respectively.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-duplicate-param-name.html">template-match-duplicate-param-name</a></td>
+    <td>xpath</td>
+    <td><span class="severity-error">error</span></td>
+    <td>Two xsl:param siblings share a @name. Each parameter of a template, function, or stylesheet must have a distinct name.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-empty-content-in-instructions.html">template-match-empty-content-in-instructions</a></td>
