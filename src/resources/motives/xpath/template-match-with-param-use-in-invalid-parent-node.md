@@ -1,7 +1,7 @@
 # Using `xsl:with-param` in invalid parent node
 
 `xsl:with-param` is allowed within `xsl:call-template`, `xsl:apply-templates`,
-`xsl:apply-imports`, and `xsl:next-match`. `xsl:with-param` is needed to pass values
+`xsl:apply-imports`, `xsl:next-match`, `xsl:next-iteration`. `xsl:with-param` is needed to pass values
 to the called template or to the applied templates. Otherwise it doesn't make sense.
 
 Incorrect:
