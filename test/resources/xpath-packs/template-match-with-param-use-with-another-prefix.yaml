@@ -3,14 +3,15 @@
 ---
 pack: template-match-with-param-use-in-invalid-parent-node
 found:
-  amount: 0
-  positions: [ ]
+  amount: 1
+  positions: [ [ 6, 5 ] ]
 input: |-
   <?xml version="1.0"?>
   <xslt:stylesheet xmlns:xslt="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xslt:output encoding="UTF-8" method="xml"/>
     <xslt:import href="info.xsl"/>
     <xslt:template name="writer">
+      <xslt:with-param name="surname" select="'Shakespeare'"/>
       <xslt:param name="surname"/>
       <p>
         <xslt:value-of select="$surname"/>

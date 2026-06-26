@@ -42,5 +42,5 @@ or:
 ```xsl
 <xsl:next-iteration>
   <xsl:with-param name="Christie" select="1890"/>
-<xsl:next-iteration>
+</xsl:next-iteration>
 ```
