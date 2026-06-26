@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+xpath: //xsl:with-param[not(@name)]
+severity: error
+message: xsl:with-param requires a @name attribute to bind the parameter it passes. Add one.

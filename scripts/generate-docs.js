@@ -14,7 +14,7 @@ const CHECKS = path.join(__dirname, '..', 'src', 'resources', 'checks')
 const MOTIVES = path.join(__dirname, '..', 'src', 'resources', 'motives')
 const DOCS = path.join(__dirname, '..', 'docs')
 const CHECKS_DIR = path.join(DOCS, 'checks')
-const KINDS = ['xpath', 'corpus', 'validation']
+const KINDS = ['xpath', 'corpus', 'validation', 'format']
 
 const CSS = `
   * { box-sizing: border-box; }
@@ -108,6 +108,9 @@ const expressions = (kind, lint) => {
   }
   if (kind === 'validation') {
     return `<code class="xpath">verified by the parser, not an XPath rule</code>`
+  }
+  if (kind === 'format') {
+    return `<code class="xpath">checked over the tokens, not an XPath rule</code>`
   }
   return `<code class="xpath">${escaped(lint.xpath)}</code>`
 }

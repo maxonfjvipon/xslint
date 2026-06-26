@@ -12,18 +12,9 @@ const {
 } = require('./xpath-validator')
 const {lintByXpath, names: xpathChecks} = require('./xpath-linter')
 const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
+const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
-
-/**
- * Validators, each given the corpus of well-formed stylesheets, run before the
- * linters so the linters reason only over input known to be valid.
- * @type {Array.<function(Array.<{file: string, xsl: Document}>,
- *  Array.<string>): Array.<object>>}
- */
-const VALIDATORS = [
-  validateXpaths,
-]
 
 /**
  * Linters, each given the corpus of well-formed stylesheets.
@@ -36,12 +27,23 @@ const LINTERS = [
 ]
 
 /**
+ * Expression linters, each given the valid Xpath expressions the validator kept
+ * so they never reason over malformed input.
+ * @type {Array.<function(Array.<{file: string, expression: Node}>,
+ *  Array.<string>): Array.<object>>}
+ */
+const EXPRESSION_LINTERS = [
+  lintByFormat,
+]
+
+/**
  * Names of every check across all validators and linters, that suppressions
  * match against.
  * @type {Array.<string>}
  */
 const CHECKS = [
-  ...xslChecks, ...xpathValidatorChecks, ...xpathChecks, ...corpusChecks,
+  ...xslChecks, ...xpathValidatorChecks,
+  ...xpathChecks, ...corpusChecks, ...formatChecks,
 ]
 
 /**
@@ -119,11 +121,13 @@ const xslint = function(pths, options) {
     content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
   const {corpus, defects} = validateXsls(sources, suppressions)
-  for (const validate of VALIDATORS) {
-    defects.push(...validate(corpus, suppressions))
-  }
+  const {expressions, defects: invalid} = validateXpaths(corpus, suppressions)
+  defects.push(...invalid)
   for (const lint of LINTERS) {
     defects.push(...lint(corpus, suppressions))
+  }
+  for (const lint of EXPRESSION_LINTERS) {
+    defects.push(...lint(expressions, suppressions))
   }
   logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {
