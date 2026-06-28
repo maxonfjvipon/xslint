@@ -4,7 +4,7 @@ Literal text (other than whitespace) must not sit directly inside an `xsl:`
 instruction. Wrap it in `xsl:text`. The text can also be wrapped in
 `xsl:variable`, `xsl:param`, `xsl:with-param`, `xsl:attribute`,`xsl:comment`,
 `xsl:processing-instruction` and `xsl:message`. You can also use text inside
-html-tags or in another non-xsl elements.
+html-tags or in other non-XSL elements.
 
 Incorrect:
 
@@ -84,7 +84,7 @@ or:
 
 or:
 ```xsl
-<xsl:msg>
+<ex:note xmlns:ex="https://example.com">
   some text
-</xsl:msg>
+</ex:note>
 ```
