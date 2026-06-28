@@ -3,17 +3,20 @@
 ---
 pack: template-match-text-outside-xsl-text
 found:
-  amount: 1
-  positions: [ [ 5, 5 ] ]
+  amount: 3
+  positions: [ [ 4, 3 ], [ 6, 5 ], [ 9, 5 ] ]
 input: |-
   <?xml version="1.0"?>
   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
     <xsl:output encoding="UTF-8" method="xml"/>
     <xsl:template match="/objects/o/o[1]/o[1]">
+      some text
       <xsl:if test=".!=''">
         Hello!
       </xsl:if>
-      <xsl:copy-of select="$qw"/>
+      <xsl:for-each select="writer">
+        it's writer!!!
+      </xsl:for-each>
     </xsl:template>
     <xsl:template match="/objects/o/o[1]/o[2]">
       <xsl:variable name="qw" as="xs:string" select="ooo" />

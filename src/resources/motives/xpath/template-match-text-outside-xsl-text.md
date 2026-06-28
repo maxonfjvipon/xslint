@@ -1,9 +1,10 @@
 # Literal text outside `xsl:text`
 
-Text element can't be outside the node. Any text (except spaces) must be written 
-in `xsl:text` or in `xsl:variable`/`xsl:param`/`xsl:with-param` without 
-`@select`, `xsl:attribute`, `xsl:comment`, `xsl:processing-instruction` 
-and `xsl:message`. You can also use text inside HTML-tags.
+Literal text (other than whitespace) must not sit directly inside an `xsl:`
+instruction. Wrap it in `xsl:text`. The text can also be wrapped in
+`xsl:variable`, `xsl:param`, `xsl:with-param`, `xsl:attribute`,`xsl:comment`,
+`xsl:processing-instruction` and `xsl:message`. You can also use text inside
+html-tags or in another non-xsl elements.
 
 Incorrect:
 
@@ -79,4 +80,11 @@ or:
   <li>Robert Burns</li>
   <li>Lord Byron</li>
 </ul>
+```
+
+or:
+```xsl
+<xsl:msg>
+  some text
+</xsl:msg>
 ```
