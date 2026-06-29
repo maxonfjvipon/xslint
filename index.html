@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1>xslint checks</h1>
-  <p>48 checks available</p>
+  <p>49 checks available</p>
   <table>
     <thead>
       <tr>
@@ -244,6 +244,12 @@
     <td>xpath</td>
     <td><span class="severity-error">error</span></td>
     <td>An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/template-match-text-outside-xsl-text.html">template-match-text-outside-xsl-text</a></td>
+    <td>xpath</td>
+    <td><span class="severity-warning">warning</span></td>
+    <td>Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'.</td>
   </tr>
   <tr>
     <td><a href="checks/template-match-too-many-small-templates.html">template-match-too-many-small-templates</a></td>
