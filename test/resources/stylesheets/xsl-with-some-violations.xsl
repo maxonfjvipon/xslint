@@ -29,15 +29,24 @@
     </p>
   </xsl:template>
   <xsl:template match="//title">
-    Title: <span style="color:#ff0000"><xsl:value-of select="."/></span>
+    <xsl:text>Title: </xsl:text>
+    <span style="color:#ff0000">
+      <xsl:value-of select="."/>
+    </span>
     <br/>
   </xsl:template>
   <xsl:template match="artist">
-    Artist: <span style="color:#00ff00"><xsl:value-of select="."/></span>
+    <xsl:text>Artist:</xsl:text>
+    <span style="color:#00ff00">
+      <xsl:value-of select="."/>
+    </span>
     <br/>
   </xsl:template>
   <xsl:template name="year">
-    Artist: <span style="color:#0000ff"><xsl:value-of select="."/></span>
+    <xsl:text>Artist:</xsl:text>
+    <span style="color:#0000ff">
+      <xsl:value-of select="."/>
+    </span>
     <br/>
   </xsl:template>
 </xsl:stylesheet>
