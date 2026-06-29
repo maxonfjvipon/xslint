@@ -22,7 +22,7 @@ release:
     echo "xslint dry run:"
     npm publish --dry-run --userconfig=../npmrc || exit 1
     echo "Check if xslint exists:"
-    npm view @maxonfjvion/xslint@${tag} && exit 1
+    npm view @maxonfjvipon/xslint@${tag} && exit 1
     echo "Publishing xslint:"
     npm publish --userconfig=../npmrc --access=public
 merge:
