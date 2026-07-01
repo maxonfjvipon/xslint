@@ -5,7 +5,13 @@
 
 /**
  * Token types a lexed expression is made of.
- * @type {{STRING: string, COMMENT: string, WHITESPACE: string, NUMBER: string, OTHER: string}}
+ * @type {
+ * {STRING: string,
+ * COMMENT: string,
+ * WHITESPACE: string,
+ * NUMBER: string,
+ * OTHER: string}
+ * }
  */
 const TOKENS = {
   STRING: 'string',
@@ -119,16 +125,13 @@ const afterNumber = function(xpath, start) {
       e+=1
       if (DIGIT.includes(xpath[at+1])) {
         at += 2
-      }
-      else if (xpath[at+1] ==='+' || xpath[at+1] === '-') {
+      } else if (xpath[at+1] ==='+' || xpath[at+1] === '-') {
         if (DIGIT.includes(xpath[at+2])) {
           at += 3
-        }
-        else{
+        } else {
           break
         }
-      }
-      else{
+      } else {
         break
       }
     } else {
