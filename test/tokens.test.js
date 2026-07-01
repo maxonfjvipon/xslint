@@ -71,7 +71,7 @@ describe('tokens', function() {
   it('checks the count of numbers', function() {
     assert.equal(
         tokenized('1e10+1E10 + 1.5e10-1.5E10 - 1e+10*1e-3 * 124 / 12.2/12e').filter((token) => token.type === TOKENS.NUMBER).length,
-        6,
+        9,
     )
   })
   it('checks the value of decimal with more than 1 point', function() {
