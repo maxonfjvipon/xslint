@@ -11,6 +11,10 @@ const TOKENS = {
   STRING: 'string',
   COMMENT: 'comment',
   WHITESPACE: 'whitespace',
+  LPAREN: '(',
+  RPAREN: ')',
+  LBRACKET: '[',
+  RBRACKET: ']',
   OTHER: 'other',
 }
 
@@ -118,6 +122,13 @@ const afterWhitespace = function(xpath, start) {
   return at
 }
 
+const SINGLE = {
+  '(': TOKENS.LPAREN,
+  ')': TOKENS.RPAREN,
+  '[': TOKENS.LBRACKET,
+  ']': TOKENS.RBRACKET,
+}
+
 /**
  * Split an XPath expression into positioned tokens, preserving whitespace and
  * comments so formatting checks can reason over the original text. Each token
@@ -140,7 +151,11 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
-    } else {
+    } else if (SINGLE[xpath[at]]) {
+      type = SINGLE[xpath[at]]
+      at++
+    }
+    else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
     }

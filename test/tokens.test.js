@@ -32,4 +32,26 @@ describe('tokens', function() {
   it('treats doubled quotes inside a literal as an escape', function() {
     assert.equal(tokenized('"a""b"').length, 1)
   })
+  it('treats doubled quotes inside a literal as an escape', function() {
+    assert.equal(tokenized('"a""b"').length, 1)
+  })
+  it('treats', function() {
+    const FULL = [
+      'w ( e',
+      'w ) e',
+      'w [ e',
+      't ] t',
+    ]
+    const ACTUAL = [
+      TOKENS.LPAREN,
+      TOKENS.RPAREN,
+      TOKENS.LBRACKET,
+      TOKENS.RBRACKET,
+    ]
+    FULL.forEach((string, index) => {
+      assert.ok(
+          tokenized(string).filter((token) => token.type === ACTUAL[index]).length === 1
+      )
+    })
+  })
 })
