@@ -64,14 +64,14 @@ describe('tokens', function() {
   })
   it('checks the number with point and "e"', function() {
     assert.equal(
-        tokenized('w 1.5e10 q').find((token) => token.type === TOKENS.NUMBER).value,
-        '1.5e10',
+      tokenized('w 1.5e10 q').find((token) => token.type === TOKENS.NUMBER).value,
+      '1.5e10',
     )
   })
   it('checks the value of decimal with "-" or "+" point after "e" or "E"', function() {
     assert.equal(
-        tokenized('123e-45').find((token) => token.type === TOKENS.NUMBER).value,
-        '123e-45',
+      tokenized('123e-45').find((token) => token.type === TOKENS.NUMBER).value,
+      '123e-45',
     )
   })
   it('checks the value of decimal with more than 1 point', function() {
