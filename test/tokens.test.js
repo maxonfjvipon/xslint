@@ -57,8 +57,8 @@ describe('tokens', function() {
     ]
     FULL.forEach((string, index) => {
       assert.equal(
-          tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
-          ACTUAL[index],
+        tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+        ACTUAL[index],
       )
     })
   })
@@ -75,8 +75,8 @@ describe('tokens', function() {
     ]
     FULL.forEach((string, index) => {
       assert.equal(
-          tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
-          ACTUAL[index],
+        tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+        ACTUAL[index],
       )
     })
   })
