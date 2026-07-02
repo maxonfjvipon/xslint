@@ -38,58 +38,46 @@ describe('tokens', function() {
       5,
     )
   })
-  it('checks the value of integer', function() {
-    assert.equal(
-      tokenized('w 123 q').find((token) => token.type === TOKENS.NUMBER).value,
+  it('checks the correct value of number with whitespaces around', function() {
+    const FULL = [
+      'w 123 q',
+      'w 123.1 q',
+      'w .1 q',
+      'w 123. q',
+      'w 1.5e10 q',
+      'w 123e-45 q'
+    ]
+    const ACTUAL = [
       '123',
-    )
-  })
-  it('checks the value of decimal', function() {
-    assert.equal(
-      tokenized('w 123.1 q').find((token) => token.type === TOKENS.NUMBER).value,
       '123.1',
-    )
-  })
-  it('checks the value of decimal without the digits at the beginning', function() {
-    assert.equal(
-      tokenized('w .1 q').find((token) => token.type === TOKENS.NUMBER).value,
       '.1',
-    )
-  })
-  it('checks the value of decimal without the digits at the end', function() {
-    assert.equal(
-      tokenized('w 123. q').find((token) => token.type === TOKENS.NUMBER).value,
       '123.',
-    )
-  })
-  it('checks the number with point and "e"', function() {
-    assert.equal(
-      tokenized('w 1.5e10 q').find((token) => token.type === TOKENS.NUMBER).value,
       '1.5e10',
-    )
+      '123e-45'
+    ]
+    FULL.forEach((string, index) => {
+      assert.equal(
+          tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+          ACTUAL[index],
+      )
+    })
   })
-  it('checks the value of decimal with "-" or "+" point after "e" or "E"', function() {
-    assert.equal(
-      tokenized('123e-45').find((token) => token.type === TOKENS.NUMBER).value,
-      '123e-45',
-    )
-  })
-  it('checks the value of decimal with more than 1 point', function() {
-    assert.equal(
-      tokenized('123.45.6').find((token) => token.type === TOKENS.NUMBER).value,
+  it('checks the incorrect value of number with no whitespaces around', function() {
+    const FULL = [
+      '123.45.6',
+      '123e45E6',
+      '123e45.6'
+    ]
+    const ACTUAL = [
       '123.45',
-    )
-  })
-  it('checks the value of decimal with more than 1 "e" or "E"', function() {
-    assert.equal(
-      tokenized('123e45E6').find((token) => token.type === TOKENS.NUMBER).value,
       '123e45',
-    )
-  })
-  it('checks the value of decimal with point after "e"', function() {
-    assert.equal(
-      tokenized('123e45.6').find((token) => token.type === TOKENS.NUMBER).value,
-      '123e45',
-    )
+      '123e45'
+    ]
+    FULL.forEach((string, index) => {
+      assert.equal(
+          tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+          ACTUAL[index],
+      )
+    })
   })
 })
