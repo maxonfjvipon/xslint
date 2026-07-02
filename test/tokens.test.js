@@ -45,7 +45,7 @@ describe('tokens', function() {
       'w .1 q',
       'w 123. q',
       'w 1.5e10 q',
-      'w 123e-45 q'
+      'w 123e-45 q',
     ]
     const ACTUAL = [
       '123',
@@ -53,7 +53,7 @@ describe('tokens', function() {
       '.1',
       '123.',
       '1.5e10',
-      '123e-45'
+      '123e-45',
     ]
     FULL.forEach((string, index) => {
       assert.equal(
@@ -66,12 +66,12 @@ describe('tokens', function() {
     const FULL = [
       '123.45.6',
       '123e45E6',
-      '123e45.6'
+      '123e45.6',
     ]
     const ACTUAL = [
       '123.45',
       '123e45',
-      '123e45'
+      '123e45',
     ]
     FULL.forEach((string, index) => {
       assert.equal(
