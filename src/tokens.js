@@ -5,7 +5,16 @@
 
 /**
  * Token types a lexed expression is made of.
- * @type {{STRING: string, COMMENT: string, WHITESPACE: string, OTHER: string}}
+ * @type {
+ * {STRING: string,
+ * COMMENT: string,
+ * WHITESPACE: string,
+ * LPAREN: string,
+ * RPAREN: string,
+ * LBRACKET: string,
+ * RBRACKET: string,
+ * OTHER: string}
+ * }
  */
 const TOKENS = {
   STRING: 'string',
@@ -29,6 +38,17 @@ const WHITESPACE = ' \t\r\n'
  * @type {string}
  */
 const QUOTES = '"\''
+
+/**
+ * Map single characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const SINGLE = {
+  '(': TOKENS.LPAREN,
+  ')': TOKENS.RPAREN,
+  '[': TOKENS.LBRACKET,
+  ']': TOKENS.RBRACKET,
+}
 
 /**
  * Whether a comment opens at given offset.
@@ -122,13 +142,6 @@ const afterWhitespace = function(xpath, start) {
   return at
 }
 
-const SINGLE = {
-  '(': TOKENS.LPAREN,
-  ')': TOKENS.RPAREN,
-  '[': TOKENS.LBRACKET,
-  ']': TOKENS.RBRACKET,
-}
-
 /**
  * Split an XPath expression into positioned tokens, preserving whitespace and
  * comments so formatting checks can reason over the original text. Each token
@@ -154,8 +167,7 @@ const tokenized = function(xpath) {
     } else if (SINGLE[xpath[at]]) {
       type = SINGLE[xpath[at]]
       at++
-    }
-    else {
+    } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
     }
