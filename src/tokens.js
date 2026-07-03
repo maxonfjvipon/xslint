@@ -11,11 +11,71 @@ const TOKENS = {
   STRING: 'string',
   COMMENT: 'comment',
   WHITESPACE: 'whitespace',
+  OPERATOR: 'operator',
   LPAREN: '(',
   RPAREN: ')',
   LBRACKET: '[',
   RBRACKET: ']',
+  MULTI: '*',
+  PLUS: '+',
+  MINUS: '-',
+  DIV: 'div',
+  MOD: 'mod',
+  PIPE: 'pipe',
+  EQ: 'eq',
+  NE: 'ne',
+  LT: 'lt',
+  GT: 'gt',
+  LE: 'le',
+  GE: 'ge',
+  OR: 'or',
+  AND: 'and',
+  IDIV: 'idiv',
+  UNION: 'union',
+  INSTANCE_OF: 'instance of',
+  INTERSECT: 'intersect',
+  EXCEPT: 'except',
   OTHER: 'other',
+  CONCAT: '||',
+}
+
+
+const SINGLE = {
+  '(': TOKENS.LPAREN,
+  ')': TOKENS.RPAREN,
+  '[': TOKENS.LBRACKET,
+  ']': TOKENS.RBRACKET,
+  '+': TOKENS.PLUS,
+  '-': TOKENS.MINUS,
+  '*': TOKENS.MULTI,
+  '=': TOKENS.EQ,
+  '<': TOKENS.LT,
+  '>': TOKENS.GT,
+  '|': TOKENS.PIPE,
+}
+const DOUBLE = {
+  '!=': TOKENS.NE,
+  '<=': TOKENS.LE,
+  '>=': TOKENS.GE,
+  'eq': TOKENS.EQ,
+  'ne': TOKENS.NE,
+  'lt': TOKENS.LT,
+  'le': TOKENS.LE,
+  'gt': TOKENS.GT,
+  'ge': TOKENS.GE,
+  '||': TOKENS.CONCAT,
+  'or': TOKENS.OR,
+}
+const TRIPLE = {
+  'and': TOKENS.AND,
+  'div': TOKENS.DIV,
+  'mod': TOKENS.MOD,
+}
+const MORE = {
+  'union': TOKENS.UNION,
+  'except': TOKENS.EXCEPT,
+  'intersect': TOKENS.INTERSECT,
+  'instance of': TOKENS.INSTANCE_OF,
 }
 
 /**
@@ -34,10 +94,21 @@ const QUOTES = '"\''
  * Whether a comment opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
- * @return {boolean} - True when "(:" starts here
+ * @string {boolean} - True when "(:" starts here
  */
 const opensComment = function(xpath, at) {
   return xpath[at] === '(' && xpath[at + 1] === ':'
+}
+
+const opensMore = function(xpath, at) {
+
+  Object.keys(MORE).forEach(elem => {
+    let length = elem.length
+    if (xpath.slice(at, at + length) === elem){
+      return elem
+    }
+  });
+  return ''
 }
 
 /**
@@ -101,6 +172,10 @@ const afterOther = function(xpath, start) {
     at < xpath.length &&
     !QUOTES.includes(xpath[at]) &&
     !WHITESPACE.includes(xpath[at]) &&
+    !SINGLE[xpath[at]] &&
+    !DOUBLE[xpath.slice(at, at+2)] &&
+    !TRIPLE[xpath.slice(at, at+3)] &&
+    !opensMore(xpath, at) &&
     !opensComment(xpath, at)
   ) {
     at += 1
@@ -120,13 +195,6 @@ const afterWhitespace = function(xpath, start) {
     at += 1
   }
   return at
-}
-
-const SINGLE = {
-  '(': TOKENS.LPAREN,
-  ')': TOKENS.RPAREN,
-  '[': TOKENS.LBRACKET,
-  ']': TOKENS.RBRACKET,
 }
 
 /**
@@ -151,11 +219,19 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
+    } else if (opensMore(xpath, at)) {
+      type = MORE[opensMore(xpath, at)]
+      at+=opensMore(xpath, at).length
+    } else if (TRIPLE[xpath.slice(at, at+3)]) {
+      type = TRIPLE[xpath.slice(at, at+3)]
+      at+=3
+    } else if (DOUBLE[xpath.slice(at, at+2)]) {
+      type = DOUBLE[xpath.slice(at, at+2)]
+      at+=2
     } else if (SINGLE[xpath[at]]) {
       type = SINGLE[xpath[at]]
       at++
-    }
-    else {
+    } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
     }
