@@ -83,6 +83,11 @@ const SINGLE = {
   '>': TOKENS.GREATER,
   '|': TOKENS.PIPE,
 }
+
+/**
+ * Map double characters to a token.
+ * @type {{[key: string]: string}}
+ */
 const DOUBLE = {
   '!=': TOKENS.NOT_EQUAL,
   '<=': TOKENS.LESS_EQUAL,
@@ -96,36 +101,52 @@ const DOUBLE = {
   '||': TOKENS.CONCAT,
   'or': TOKENS.OR,
 }
+
+/**
+ * Map triple characters to a token.
+ * @type {{[key: string]: string}}
+ */
 const TRIPLE = {
   'and': TOKENS.AND,
   'div': TOKENS.DIV,
   'mod': TOKENS.MOD,
 }
+
+/**
+ * Map characters with more than 3 symbols to a token.
+ * @type {{[key: string]: string}}
+ */
 const MORE = {
-  'union': TOKENS.UNION,
-  'except': TOKENS.EXCEPT,
-  'intersect': TOKENS.INTERSECT,
   'instance of': TOKENS.INSTANCE_OF,
+  'intersect': TOKENS.INTERSECT,
+  'except': TOKENS.EXCEPT,
+  'union': TOKENS.UNION,
+  'idiv': TOKENS.IDIV,
 }
 
 /**
  * Whether a comment opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
- * @string {boolean} - True when "(:" starts here
+ * @return {boolean} - True when "(:" starts here
  */
 const opensComment = function(xpath, at) {
   return xpath[at] === '(' && xpath[at + 1] === ':'
 }
 
+/**
+ * Whether an element opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - token
+ */
 const opensMore = function(xpath, at) {
   let token = ''
-  Object.keys(MORE).forEach(elem => {
-    let length = elem.length
-    if (xpath.slice(at, at + length) === elem){
+  Object.keys(MORE).forEach((elem) => {
+    if (xpath.slice(at, at + elem.length) === elem) {
       token = elem
     }
-  });
+  })
   return token
 }
 

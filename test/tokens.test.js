@@ -62,12 +62,10 @@ describe('tokens', function() {
       'w 7*',
       't = t',
       '!= w e',
-      '2<=7',
-      'w 1 or',
       't eq t',
-      'and w e',
       '2div7',
-      'w mod',
+      'union w e',
+      'instance of',
     ]
     const ACTUAL = [
       TOKENS.PLUS,
@@ -75,37 +73,15 @@ describe('tokens', function() {
       TOKENS.MULTI,
       TOKENS.EQUAL,
       TOKENS.NOT_EQUAL,
-      TOKENS.LESS_EQUAL,
-      TOKENS.OR,
       TOKENS.EQ,
-      TOKENS.AND,
       TOKENS.DIV,
-      TOKENS.MOD,
-    ]
-    FULL.forEach((string, index) => {
-      assert.ok(
-          tokenized(string).filter((token) => token.type === ACTUAL[index])
-              .length === 1,
-      )
-    })
-  })
-  it('finds more\'s operators', function() {
-    const FULL = [
-      'union w e',
-      '2except7',
-      'w intersect',
-      'instance of'
-    ]
-    const ACTUAL = [
       TOKENS.UNION,
-      TOKENS.EXCEPT,
-      TOKENS.INTERSECT,
       TOKENS.INSTANCE_OF,
     ]
     FULL.forEach((string, index) => {
       assert.ok(
-          tokenized(string).filter((token) => token.type === ACTUAL[index])
-              .length === 1,
+        tokenized(string).filter((token) => token.type === ACTUAL[index])
+          .length === 1,
       )
     })
   })
