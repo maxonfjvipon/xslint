@@ -38,6 +38,12 @@ const TOKENS = {
   LE: 'le',
   GE: 'ge',
   OR: 'or',
+  LESS: '<',
+  GREATER: '>',
+  EQUAL: '=',
+  NOT_EQUAL: '!=',
+  LESS_EQUAL: '<=',
+  GREAT_EQUAL: '>=',
   AND: 'and',
   IDIV: 'idiv',
   UNION: 'union',
@@ -46,45 +52,6 @@ const TOKENS = {
   EXCEPT: 'except',
   OTHER: 'other',
   CONCAT: '||',
-}
-
-
-const SINGLE = {
-  '(': TOKENS.LPAREN,
-  ')': TOKENS.RPAREN,
-  '[': TOKENS.LBRACKET,
-  ']': TOKENS.RBRACKET,
-  '+': TOKENS.PLUS,
-  '-': TOKENS.MINUS,
-  '*': TOKENS.MULTI,
-  '=': TOKENS.EQ,
-  '<': TOKENS.LT,
-  '>': TOKENS.GT,
-  '|': TOKENS.PIPE,
-}
-const DOUBLE = {
-  '!=': TOKENS.NE,
-  '<=': TOKENS.LE,
-  '>=': TOKENS.GE,
-  'eq': TOKENS.EQ,
-  'ne': TOKENS.NE,
-  'lt': TOKENS.LT,
-  'le': TOKENS.LE,
-  'gt': TOKENS.GT,
-  'ge': TOKENS.GE,
-  '||': TOKENS.CONCAT,
-  'or': TOKENS.OR,
-}
-const TRIPLE = {
-  'and': TOKENS.AND,
-  'div': TOKENS.DIV,
-  'mod': TOKENS.MOD,
-}
-const MORE = {
-  'union': TOKENS.UNION,
-  'except': TOKENS.EXCEPT,
-  'intersect': TOKENS.INTERSECT,
-  'instance of': TOKENS.INSTANCE_OF,
 }
 
 /**
@@ -108,6 +75,37 @@ const SINGLE = {
   ')': TOKENS.RPAREN,
   '[': TOKENS.LBRACKET,
   ']': TOKENS.RBRACKET,
+  '+': TOKENS.PLUS,
+  '-': TOKENS.MINUS,
+  '*': TOKENS.MULTI,
+  '=': TOKENS.EQUAL,
+  '<': TOKENS.LESS,
+  '>': TOKENS.GREATER,
+  '|': TOKENS.PIPE,
+}
+const DOUBLE = {
+  '!=': TOKENS.NOT_EQUAL,
+  '<=': TOKENS.LESS_EQUAL,
+  '>=': TOKENS.GREAT_EQUAL,
+  'eq': TOKENS.EQ,
+  'ne': TOKENS.NE,
+  'lt': TOKENS.LT,
+  'le': TOKENS.LE,
+  'gt': TOKENS.GT,
+  'ge': TOKENS.GE,
+  '||': TOKENS.CONCAT,
+  'or': TOKENS.OR,
+}
+const TRIPLE = {
+  'and': TOKENS.AND,
+  'div': TOKENS.DIV,
+  'mod': TOKENS.MOD,
+}
+const MORE = {
+  'union': TOKENS.UNION,
+  'except': TOKENS.EXCEPT,
+  'intersect': TOKENS.INTERSECT,
+  'instance of': TOKENS.INSTANCE_OF,
 }
 
 /**
