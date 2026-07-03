@@ -10,6 +10,10 @@
  * COMMENT: string,
  * WHITESPACE: string,
  * NUMBER: string,
+ * LPAREN: string,
+ * RPAREN: string,
+ * LBRACKET: string,
+ * RBRACKET: string,
  * OTHER: string}
  * }
  */
@@ -18,6 +22,37 @@ const TOKENS = {
   COMMENT: 'comment',
   WHITESPACE: 'whitespace',
   NUMBER: 'number',
+  OPERATOR: 'operator',
+  LPAREN: '(',
+  RPAREN: ')',
+  LBRACKET: '[',
+  RBRACKET: ']',
+  MULTI: '*',
+  PLUS: '+',
+  MINUS: '-',
+  DIV: 'div',
+  MOD: 'mod',
+  PIPE: 'pipe',
+  EQ: 'eq',
+  NE: 'ne',
+  LT: 'lt',
+  GT: 'gt',
+  LE: 'le',
+  GE: 'ge',
+  OR: 'or',
+  LESS: '<',
+  GREATER: '>',
+  EQUAL: '=',
+  NOT_EQUAL: '!=',
+  LESS_EQUAL: '<=',
+  GREAT_EQUAL: '>=',
+  AND: 'and',
+  IDIV: 'idiv',
+  UNION: 'union',
+  INSTANCE_OF: 'instance of',
+  INTERSECT: 'intersect',
+  EXCEPT: 'except',
+  CONCAT: '||',
   OTHER: 'other',
 }
 
@@ -39,6 +74,64 @@ const QUOTES = '"\''
  */
 const DIGIT = '0123456789'
 /**
+ * Map single characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const SINGLE = {
+  '(': TOKENS.LPAREN,
+  ')': TOKENS.RPAREN,
+  '[': TOKENS.LBRACKET,
+  ']': TOKENS.RBRACKET,
+  '+': TOKENS.PLUS,
+  '-': TOKENS.MINUS,
+  '*': TOKENS.MULTI,
+  '=': TOKENS.EQUAL,
+  '<': TOKENS.LESS,
+  '>': TOKENS.GREATER,
+  '|': TOKENS.PIPE,
+}
+
+/**
+ * Map double characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const DOUBLE = {
+  '!=': TOKENS.NOT_EQUAL,
+  '<=': TOKENS.LESS_EQUAL,
+  '>=': TOKENS.GREAT_EQUAL,
+  'eq': TOKENS.EQ,
+  'ne': TOKENS.NE,
+  'lt': TOKENS.LT,
+  'le': TOKENS.LE,
+  'gt': TOKENS.GT,
+  'ge': TOKENS.GE,
+  '||': TOKENS.CONCAT,
+  'or': TOKENS.OR,
+}
+
+/**
+ * Map triple characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const TRIPLE = {
+  'and': TOKENS.AND,
+  'div': TOKENS.DIV,
+  'mod': TOKENS.MOD,
+}
+
+/**
+ * Map characters with more than 3 symbols to a token.
+ * @type {{[key: string]: string}}
+ */
+const MORE = {
+  'instance of': TOKENS.INSTANCE_OF,
+  'intersect': TOKENS.INTERSECT,
+  'except': TOKENS.EXCEPT,
+  'union': TOKENS.UNION,
+  'idiv': TOKENS.IDIV,
+}
+
+/**
  * Whether a comment opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
@@ -56,6 +149,22 @@ const opensComment = function(xpath, at) {
  */
 const opensNumber = function(xpath, at) {
   return DIGIT.includes(xpath[at]) || (xpath[at] === '.' && DIGIT.includes(xpath[at+1]))
+}
+
+/**
+ * Whether an element opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - token
+ */
+const opensMore = function(xpath, at) {
+  let token = ''
+  Object.keys(MORE).forEach((elem) => {
+    if (xpath.slice(at, at + elem.length) === elem) {
+      token = elem
+    }
+  })
+  return token
 }
 
 /**
@@ -106,42 +215,6 @@ const afterComment = function(xpath, start) {
 }
 
 /**
- * Offset just past the number literal opening at given offset.
- * @param {string} xpath - Xpath expression
- * @param {number} start - Offset of the first character of the number literal
- * @return {number} - Offset just past the closing digit
- */
-const afterNumber = function(xpath, start) {
-  let at = start +1
-  let point = 0
-  let e = 0
-  while (at < xpath.length) {
-    if (xpath[at] === '.' && point === 0 && e === 0 ) {
-      point += 1
-      at += 1
-    } else if (DIGIT.includes(xpath[at])) {
-      at += 1
-    } else if ((xpath[at] === 'e' || xpath[at] === 'E') && e === 0) {
-      e+=1
-      if (DIGIT.includes(xpath[at+1])) {
-        at += 2
-      } else if (xpath[at+1] ==='+' || xpath[at+1] === '-') {
-        if (DIGIT.includes(xpath[at+2])) {
-          at += 3
-        } else {
-          break
-        }
-      } else {
-        break
-      }
-    } else {
-      break
-    }
-  }
-  return at
-}
-
-/**
  * Offset just past the run of non-delimiter characters at given offset. The run
  * stops at a quote, whitespace, or comment opener so those start their own
  * token.
@@ -155,6 +228,10 @@ const afterOther = function(xpath, start) {
     at < xpath.length &&
     !QUOTES.includes(xpath[at]) &&
     !WHITESPACE.includes(xpath[at]) &&
+    !SINGLE[xpath[at]] &&
+    !DOUBLE[xpath.slice(at, at+2)] &&
+    !TRIPLE[xpath.slice(at, at+3)] &&
+    !opensMore(xpath, at) &&
     !opensComment(xpath, at) &&
     !opensNumber(xpath, at)
   ) {
@@ -202,6 +279,18 @@ const tokenized = function(xpath) {
     } else if (opensNumber(xpath, at)) {
       type = TOKENS.NUMBER
       at = afterNumber(xpath, at)
+    } else if (opensMore(xpath, at)) {
+      type = MORE[opensMore(xpath, at)]
+      at+=opensMore(xpath, at).length
+    } else if (TRIPLE[xpath.slice(at, at+3)]) {
+      type = TRIPLE[xpath.slice(at, at+3)]
+      at+=3
+    } else if (DOUBLE[xpath.slice(at, at+2)]) {
+      type = DOUBLE[xpath.slice(at, at+2)]
+      at+=2
+    } else if (SINGLE[xpath[at]]) {
+      type = SINGLE[xpath[at]]
+      at++
     } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
