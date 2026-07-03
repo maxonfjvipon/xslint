@@ -5,12 +5,25 @@
 
 /**
  * Token types a lexed expression is made of.
- * @type {{STRING: string, COMMENT: string, WHITESPACE: string, OTHER: string}}
+ * @type {
+ * {STRING: string,
+ * COMMENT: string,
+ * WHITESPACE: string,
+ * LPAREN: string,
+ * RPAREN: string,
+ * LBRACKET: string,
+ * RBRACKET: string,
+ * OTHER: string}
+ * }
  */
 const TOKENS = {
   STRING: 'string',
   COMMENT: 'comment',
   WHITESPACE: 'whitespace',
+  LPAREN: '(',
+  RPAREN: ')',
+  LBRACKET: '[',
+  RBRACKET: ']',
   OTHER: 'other',
 }
 
@@ -25,6 +38,17 @@ const WHITESPACE = ' \t\r\n'
  * @type {string}
  */
 const QUOTES = '"\''
+
+/**
+ * Map single characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const SINGLE = {
+  '(': TOKENS.LPAREN,
+  ')': TOKENS.RPAREN,
+  '[': TOKENS.LBRACKET,
+  ']': TOKENS.RBRACKET,
+}
 
 /**
  * Whether a comment opens at given offset.
@@ -140,6 +164,9 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
+    } else if (SINGLE[xpath[at]]) {
+      type = SINGLE[xpath[at]]
+      at++
     } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
