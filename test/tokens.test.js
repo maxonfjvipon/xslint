@@ -35,7 +35,7 @@ describe('tokens', function() {
   it('treats doubled quotes inside a literal as an escape', function() {
     assert.equal(tokenized('"a""b"').length, 1)
   })
-  it('treats', function() {
+  it('finds brackets and parentheses', function() {
     const FULL = [
       'w ( e',
       'w ) e',
@@ -50,7 +50,8 @@ describe('tokens', function() {
     ]
     FULL.forEach((string, index) => {
       assert.ok(
-          tokenized(string).filter((token) => token.type === ACTUAL[index]).length === 1
+        tokenized(string).filter((token) => token.type === ACTUAL[index])
+          .length === 1,
       )
     })
   })
