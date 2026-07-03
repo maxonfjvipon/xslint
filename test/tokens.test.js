@@ -37,10 +37,10 @@ describe('tokens', function() {
   })
   it('finds brackets and parentheses', function() {
     const FULL = [
-      'w ( e',
+      '( w e',
       'w ) e',
       'w [ e',
-      't ] t',
+      't t ]',
     ]
     const ACTUAL = [
       TOKENS.LPAREN,
