@@ -215,6 +215,42 @@ const afterComment = function(xpath, start) {
 }
 
 /**
+ * Offset just past the number literal opening at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} start - Offset of the first character of the number literal
+ * @return {number} - Offset just past the closing digit
+ */
+const afterNumber = function(xpath, start) {
+  let at = start +1
+  let point = 0
+  let e = 0
+  while (at < xpath.length) {
+    if (xpath[at] === '.' && point === 0 && e === 0 ) {
+      point += 1
+      at += 1
+    } else if (DIGIT.includes(xpath[at])) {
+      at += 1
+    } else if ((xpath[at] === 'e' || xpath[at] === 'E') && e === 0) {
+      e+=1
+      if (DIGIT.includes(xpath[at+1])) {
+        at += 2
+      } else if (xpath[at+1] ==='+' || xpath[at+1] === '-') {
+        if (DIGIT.includes(xpath[at+2])) {
+          at += 3
+        } else {
+          break
+        }
+      } else {
+        break
+      }
+    } else {
+      break
+    }
+  }
+  return at
+}
+
+/**
  * Offset just past the run of non-delimiter characters at given offset. The run
  * stops at a quote, whitespace, or comment opener so those start their own
  * token.
