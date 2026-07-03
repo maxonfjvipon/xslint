@@ -119,14 +119,14 @@ const opensComment = function(xpath, at) {
 }
 
 const opensMore = function(xpath, at) {
-
+  let token = ''
   Object.keys(MORE).forEach(elem => {
     let length = elem.length
     if (xpath.slice(at, at + length) === elem){
-      return elem
+      token = elem
     }
   });
-  return ''
+  return token
 }
 
 /**
