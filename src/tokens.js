@@ -13,6 +13,7 @@
  * RPAREN: string,
  * LBRACKET: string,
  * RBRACKET: string,
+ * USER_FUNCTION: string,
  * OTHER: string}
  * }
  */
@@ -50,6 +51,7 @@ const TOKENS = {
   INSTANCE_OF: 'instance of',
   INTERSECT: 'intersect',
   EXCEPT: 'except',
+  USER_FUNCTION: 'user_function',
   OTHER: 'other',
   CONCAT: '||',
 }
@@ -135,6 +137,38 @@ const opensComment = function(xpath, at) {
 }
 
 /**
+ * Whether a user function opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - User function
+ */
+const opensUserFunction = function(xpath, at) {
+  let func=''
+  let colon = 0
+  if (at<xpath.length && xpath[at].match(/[a-zA-Z]/)) {
+    func += xpath[at]
+    at++
+    while (at<xpath.length && xpath[at].match(/[a-zA-Z0-9_:]/)) {
+      if (xpath[at].match(/[a-zA-Z0-9_]/)) {
+        func = func + xpath[at]
+        at++
+      } else {
+        if (colon === 0) {
+          func += xpath[at]
+          at++
+          colon++
+        } else {
+          func = ''
+          break
+        }
+      }
+    }
+  }
+  if (xpath[at] !== '(' || colon !== 1) func = ''
+  return func
+}
+
+/**
  * Whether an element opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
@@ -215,7 +249,8 @@ const afterOther = function(xpath, start) {
     !DOUBLE[xpath.slice(at, at+2)] &&
     !TRIPLE[xpath.slice(at, at+3)] &&
     !opensMore(xpath, at) &&
-    !opensComment(xpath, at)
+    !opensComment(xpath, at) &&
+    !opensUserFunction(xpath, at)
   ) {
     at += 1
   }
@@ -270,6 +305,9 @@ const tokenized = function(xpath) {
     } else if (SINGLE[xpath[at]]) {
       type = SINGLE[xpath[at]]
       at++
+    } else if (opensUserFunction(xpath, at)) {
+      type = TOKENS.USER_FUNCTION
+      at+=opensUserFunction(xpath, at).length
     } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)

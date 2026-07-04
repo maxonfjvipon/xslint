@@ -85,4 +85,23 @@ describe('tokens', function() {
       )
     })
   })
+  it('finds any user functions', function() {
+    const VALUE = [
+      'my:funct',
+      'my3:funct',
+      'w:foo',
+      'q1r:function',
+    ]
+    const tokens = tokenized('my:funct() my3:funct() w:foo(e) q1r:function()')
+      .filter((token) => token.type === TOKENS.USER_FUNCTION)
+    tokens.forEach((token, index) => {
+      assert.equal(token.value, VALUE[index])
+    })
+  })
+  it('finds no user functions', function() {
+    assert.ok(
+      tokenized('foo(e) q1r:function q1r::function 3:funct()').filter((token) => token.type === TOKENS.USER_FUNCTION)
+        .length === 0,
+    )
+  })
 })
