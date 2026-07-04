@@ -9,34 +9,27 @@ const os = require('os')
 
 /**
  * Run the console command
- *
- * @param {String} command - Console Command
- * @param {Array.<String>} args - Arguments
+ * @param {string} command - Console Command
+ * @param {Array.<string>} args - Arguments
  * @param {boolean} print - Capture logs or not
  * @return {string} Stdout
  */
 const execCmd = function(command, args, print) {
-  try {
-    return execSync(
-      `${command} ${args.join(' ')}`,
-      {
-        timeout: 120000,
-        windowsHide: true,
-        stdio: print ? null : 'ignore'
-      }
-    ).toString()
-  } catch (ex) {
-    console.error(ex.stdout.toString())
-    throw ex
-  }
+  return execSync(
+    `${command} ${args.join(' ')}`,
+    {
+      timeout: 120000,
+      windowsHide: true,
+      stdio: print ? null : 'ignore',
+    },
+  ).toString()
 }
 
 /**
  * Helper to run xslint command line tool.
- *
  * @param {Array.<string>} args - Array of args
- * @param {Boolean} print - Capture logs
- * @return {String} Stdout
+ * @param {boolean} print - Capture logs
+ * @return {string} Stdout
  */
 const runXslint = function(args, print = true) {
   try {
@@ -44,24 +37,22 @@ const runXslint = function(args, print = true) {
   } catch (ex) {
     return ex.stdout.toString()
   }
-};
+}
 
 /**
  * Helper to run xcop command line tool.
- *
- * @param {String} arg - arg
- * @param {Boolean} print - Capture logs
- * @return {String} Stdout
+ * @param {string} arg - arg
+ * @param {boolean} print - Capture logs
+ * @return {string} Stdout
  */
 const runXcop = function(arg, print = true) {
   return execCmd('xcop', [arg], print)
-};
+}
 
 /**
  * Helper to check if command is available in the system.
- *
- * @param {String} cmd - Command
- * @param {Boolean} print - Capture logs
+ * @param {string} cmd - Command
+ * @param {boolean} print - Capture logs
  * @return {boolean} - Result
  */
 const cmdAvailable = function(cmd, print = true) {
@@ -72,7 +63,7 @@ const cmdAvailable = function(cmd, print = true) {
   } catch {
     return false
   }
-};
+}
 
 module.exports = {
   runXslint,

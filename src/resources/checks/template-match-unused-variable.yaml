@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
-# SPDX-License-Identifier: MIT
----
-xpath: //xsl:variable[every $x in (//xsl:variable/../*//@*) satisfies not(contains($x, concat('$', @name)))]
-severity: warning
-message: A variable is declared but never referenced by $name in the stylesheet. Remove it or use it.

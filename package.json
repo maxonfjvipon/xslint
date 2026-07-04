@@ -20,15 +20,18 @@
   "author": "maxonfjvipon",
   "license": "MIT",
   "dependencies": {
+    "@xmldom/xmldom": "^0.9.9",
     "colors": "1.4.0",
     "commander": "^15.0.0",
     "fontoxpath": "^3.34.0",
-    "@xmldom/xmldom": "^0.9.9",
-    "yaml": "^2.7.0",
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
+    "eslint": "^10.5.0",
     "eslint-config-google": "^0.14.0",
+    "eslint-plugin-jsdoc": "^63.0.5",
+    "globals": "^17.6.0",
     "grunt": "^1.6.1",
     "grunt-cli": "^1.5.0",
     "grunt-eslint": "^26.0.0",

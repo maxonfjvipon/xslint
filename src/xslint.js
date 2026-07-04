@@ -5,23 +5,75 @@
 
 const path = require('path')
 const fs = require('fs')
-const {allFilesFrom, xml} = require('./helpers')
-const {lint_by_xpath, validated_suppressions} = require('./xpath-linter')
+const {allFilesFrom} = require('./helpers')
+const {validate: validateXsls, names: xslChecks} = require('./xsl-validator')
+const {
+  validate: validateXpaths, names: xpathValidatorChecks,
+} = require('./xpath-validator')
+const {lintByXpath, names: xpathChecks} = require('./xpath-linter')
+const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
+const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
 const {logger} = require('./logger')
 const stdout = require('./stdout')
 
 /**
- * Linters.
- * @type {Array.<function(xsl: String): Array.<Object>>}
+ * Linters, each given the corpus of well-formed stylesheets.
+ * @type {Array.<function(Array.<{file: string, xsl: Document}>,
+ *  Array.<string>): Array.<object>>}
  */
 const LINTERS = [
-  lint_by_xpath,
+  lintByXpath,
+  lintByCorpus,
 ]
 
 /**
+ * Expression linters, each given the valid Xpath expressions the validator kept
+ * so they never reason over malformed input.
+ * @type {Array.<function(Array.<{file: string, expression: Node}>,
+ *  Array.<string>): Array.<object>>}
+ */
+const EXPRESSION_LINTERS = [
+  lintByFormat,
+]
+
+/**
+ * Names of every check across all validators and linters, that suppressions
+ * match against.
+ * @type {Array.<string>}
+ */
+const CHECKS = [
+  ...xslChecks, ...xpathValidatorChecks,
+  ...xpathChecks, ...corpusChecks, ...formatChecks,
+]
+
+/**
+ * Deleting incorrect substring-suppressions from array of arguments
+ * @param {Array.<string>} suppressions - Array of suppressed checks
+ * @return {Array.<string>} - Normalizing list of suppressions
+ */
+const validatedSuppressions = function(suppressions) {
+  for (const sup of suppressions) {
+    if (!CHECKS.some((check) => check.includes(sup))) {
+      logger.warn(
+        `Check with substring '${sup}' does not exist. ` +
+        `Delete this '--suppress' or use another one.`,
+      )
+    }
+  }
+  if (suppressions.some((sup) => sup === '')) {
+    logger.warn(
+      'Empty suppress is incorrect. ' +
+      'Delete this "--suppress" or use another one.',
+    )
+    suppressions = suppressions.filter((sup) => (sup) !== '')
+  }
+  return suppressions
+}
+
+/**
  * Returns all .xsl files paths depending on provided path.
- * @param {String} pth - Path to certain file or directory where .xsl should be placed
- * @return {Array.<String>} - Array of .xsl files paths
+ * @param {string} pth - Path to a file or directory holding .xsl files
+ * @return {Array.<string>} - Array of .xsl files paths
  */
 const xsls = function(pth) {
   let files
@@ -39,22 +91,22 @@ const xsls = function(pth) {
  *  logLevel: string
  * }} options - CLI options
  */
-const process_options = function(options) {
+const processOptions = function(options) {
   logger.setLevel(options.logLevel)
 }
 
 /**
  * Entry point.
- * @param {Array.<String>} pths - Path to file or directory with .xsl files to lint
+ * @param {Array.<string>} pths - Files or directories with .xsl to lint
  * @param {{
  *  logLevel: string
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
-  const suppressions = validated_suppressions(options.suppress)
-  process_options(options)
+  const suppressions = validatedSuppressions(options.suppress)
+  processOptions(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
-  pths = pths.map((pth) => path.resolve(process.cwd(), pth));
+  pths = pths.map((pth) => path.resolve(process.cwd(), pth))
   let stylesheets = []
   for (const pth of pths) {
     if (!fs.existsSync(pth)) {
@@ -64,25 +116,18 @@ const xslint = function(pths, options) {
     }
   }
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
-  const defects = []
-  for (const stylesheet of stylesheets) {
-    let xsl
-    try {
-      xsl = xml.parsedFromFile(stylesheet)
-    } catch (err) {
-      throw err
-    }
-    logger.debug(`Linting ${stylesheet}...`)
-    for (const lint of LINTERS) {
-      defects.push(
-        ...lint(xsl, suppressions).map(
-          (defect) => ({
-            ...defect,
-            file: stylesheet
-          })
-        )
-      )
-    }
+  const sources = stylesheets.map((stylesheet) => ({
+    file: stylesheet,
+    content: fs.readFileSync(stylesheet, 'utf-8'),
+  }))
+  const {corpus, defects} = validateXsls(sources, suppressions)
+  const {expressions, defects: invalid} = validateXpaths(corpus, suppressions)
+  defects.push(...invalid)
+  for (const lint of LINTERS) {
+    defects.push(...lint(corpus, suppressions))
+  }
+  for (const lint of EXPRESSION_LINTERS) {
+    defects.push(...lint(expressions, suppressions))
   }
   logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {
@@ -103,4 +148,4 @@ const xslint = function(pths, options) {
   }
 }
 
-module.exports = xslint;
+module.exports = xslint
