@@ -100,7 +100,7 @@ describe('tokens', function() {
   })
   it('finds no user functions', function() {
     assert.ok(
-      tokenized('foo(e) q1r:function q1r::function 3:funct()').filter((token) => token.type === TOKENS.USER_FUNCTION)
+      tokenized('foo(e) q1r:function q1r::function 3:funct() funct:()').filter((token) => token.type === TOKENS.USER_FUNCTION)
         .length === 0,
     )
   })

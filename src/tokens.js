@@ -163,8 +163,8 @@ const opensUserFunction = function(xpath, at) {
         }
       }
     }
+    if (xpath[at-1] === ':' || xpath[at] !== '(' || colon !== 1) func = ''
   }
-  if (xpath[at] !== '(' || colon !== 1) func = ''
   return func
 }
 
