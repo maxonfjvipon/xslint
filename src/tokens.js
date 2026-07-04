@@ -13,6 +13,19 @@
  * RPAREN: string,
  * LBRACKET: string,
  * RBRACKET: string,
+ * CHILD: string,
+ * PARENT: string,
+ * SELF: string,
+ * ATTRIBUTE: string,
+ * DESCENDANT: string,
+ * DESCENDANT_OR_SELF: string,
+ * FOLLOWING: string,
+ * FOLLOWING_SIBLING: string,
+ * PRECEDING: string,
+ * PRECEDING_SIBLING: string,
+ * ANCESTOR: string,
+ * ANCESTOR_OR_SELF: string,
+ * NAMESPACE: string,
  * OTHER: string}
  * }
  */
@@ -50,6 +63,19 @@ const TOKENS = {
   INSTANCE_OF: 'instance of',
   INTERSECT: 'intersect',
   EXCEPT: 'except',
+  CHILD: 'child',
+  PARENT: 'parent',
+  SELF: 'self',
+  ATTRIBUTE: 'attribute',
+  DESCENDANT: 'descendant',
+  DESCENDANT_OR_SELF: 'descendant-or-self',
+  FOLLOWING: 'following',
+  FOLLOWING_SIBLING: 'following-sibling',
+  PRECEDING: 'preceding',
+  PRECEDING_SIBLING: 'preceding-sibling',
+  ANCESTOR: 'ancestor',
+  ANCESTOR_OR_SELF: 'ancestor-or-self',
+  NAMESPACE: 'namespace',
   OTHER: 'other',
   CONCAT: '||',
 }
@@ -65,6 +91,27 @@ const WHITESPACE = ' \t\r\n'
  * @type {string}
  */
 const QUOTES = '"\''
+
+/**
+ * List of literal part of axes.
+ * @type {array}
+ */
+const AXES = [
+  'except',
+  'child',
+  'parent',
+  'self',
+  'attribute',
+  'descendant',
+  'descendant-or-self',
+  'following',
+  'following-sibling',
+  'preceding',
+  'preceding-sibling',
+  'ancestor',
+  'ancestor-or-self',
+  'namespace',
+]
 
 /**
  * Map single characters to a token.
@@ -132,6 +179,37 @@ const MORE = {
  */
 const opensComment = function(xpath, at) {
   return xpath[at] === '(' && xpath[at + 1] === ':'
+}
+
+/**
+ * Whether an axis opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - Axis
+ */
+const opensAxis = function(xpath, at) {
+  let start = at
+  let axis = ''
+  if (at<xpath.length && xpath[at].match(/[a-zA-Z]/)) {
+    do {
+      axis += xpath[at]
+      at++
+      if (xpath[at] === ':'){
+        if (xpath[at+1] === ':'){
+          axis += xpath[at]
+          at++
+          break
+        }
+        else{
+          axis = ''
+        }
+      }
+    } while (at<xpath.length && xpath[at].match(/[a-zA-Z\-:]/))
+  }
+  if (!AXES.includes(xpath.slice(start, at - 1))){
+    axis=''
+  }
+  return axis
 }
 
 /**
@@ -215,6 +293,7 @@ const afterOther = function(xpath, start) {
     !DOUBLE[xpath.slice(at, at+2)] &&
     !TRIPLE[xpath.slice(at, at+3)] &&
     !opensMore(xpath, at) &&
+    !opensAxis(xpath, at) &&
     !opensComment(xpath, at)
   ) {
     at += 1
@@ -258,6 +337,9 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
+    } else if (opensMore(xpath, at)) {
+      type = AXIS[opensMore(xpath, at)]
+      at += opensMore(xpath, at).length
     } else if (opensMore(xpath, at)) {
       type = MORE[opensMore(xpath, at)]
       at+=opensMore(xpath, at).length
