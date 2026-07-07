@@ -8,7 +8,7 @@ Incorrect:
 
 ```xsl
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <!-- stylesheet logic -->
+  <!-- stylesheet logic -->
 </xsl:stylesheet>
 ```
 
@@ -16,6 +16,6 @@ Correct:
 
 ```xsl
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-    <!-- stylesheet logic -->
+  <!-- stylesheet logic -->
 </xsl:stylesheet>
 ```

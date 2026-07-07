@@ -7,7 +7,7 @@ to the called template or to the applied templates. Otherwise it doesn't make se
 Incorrect:
 
 ```xsl
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:with-param name="Kipling" select="1865"/>
 </xsl:stylesheet>
 ```

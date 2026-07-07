@@ -7,14 +7,16 @@ where temporary trees can be queried directly.
 Incorrect:
 
 ```xsl
-<xsl:stylesheet version="2.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:exsl="http://exslt.org/common">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" version="2.0">
   <xsl:output method="html"/>
   <xsl:template match="/">
-    <xsl:variable name="nodes"><item>A</item></xsl:variable>
+    <xsl:variable name="nodes">
+      <item>A</item>
+    </xsl:variable>
     <xsl:for-each select="exsl:node-set($nodes)/item">
-      <p><xsl:value-of select="."/></p>
+      <p>
+        <xsl:value-of select="."/>
+      </p>
     </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>
@@ -23,13 +25,16 @@ Incorrect:
 Correct:
 
 ```xsl
-<xsl:stylesheet version="2.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:output method="html"/>
   <xsl:template match="/">
-    <xsl:variable name="nodes"><item>A</item></xsl:variable>
+    <xsl:variable name="nodes">
+      <item>A</item>
+    </xsl:variable>
     <xsl:for-each select="$nodes/item">
-      <p><xsl:value-of select="."/></p>
+      <p>
+        <xsl:value-of select="."/>
+      </p>
     </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>

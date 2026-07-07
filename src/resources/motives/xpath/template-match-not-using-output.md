@@ -7,9 +7,13 @@ leads to inconsistent results across processors.
 Incorrect:
 
 ```xsl
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:template match="/">
-    <html><body><xsl:value-of select="."/></body></html>
+    <html>
+      <body>
+        <xsl:value-of select="."/>
+      </body>
+    </html>
   </xsl:template>
 </xsl:stylesheet>
 ```
@@ -17,10 +21,14 @@ Incorrect:
 Correct:
 
 ```xsl
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="html" encoding="UTF-8"/>
   <xsl:template match="/">
-    <html><body><xsl:value-of select="."/></body></html>
+    <html>
+      <body>
+        <xsl:value-of select="."/>
+      </body>
+    </html>
   </xsl:template>
 </xsl:stylesheet>
 ```
