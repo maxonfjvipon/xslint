@@ -91,6 +91,7 @@ const TOKENS = {
   UNION: 'union',
   INSTANCE_OF: 'instance of',
   INTERSECT: 'intersect',
+  EXCEPT: 'except',
   CHILD: 'child',
   PARENT: 'parent',
   SELF: 'self',
