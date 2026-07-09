@@ -9,6 +9,7 @@
  * {STRING: string,
  * COMMENT: string,
  * WHITESPACE: string,
+ * NUMBER: string,
  * LPAREN: string,
  * RPAREN: string,
  * LBRACKET: string,
@@ -26,6 +27,33 @@
  * ANCESTOR: string,
  * ANCESTOR_OR_SELF: string,
  * NAMESPACE: string,
+ * USER_FUNCTION: string,
+ * MULTI: string,
+ * PLUS: string,
+ * MINUS: string,
+ * DIV: string,
+ * MOD: string,
+ * PIPE: string,
+ * EQ: string,
+ * NE: string,
+ * LT: string,
+ * GT: string,
+ * LE: string,
+ * GE: string,
+ * OR: string,
+ * LESS: string,
+ * GREATER: string,
+ * EQUAL: string,
+ * NOT_EQUAL: string,
+ * LESS_EQUAL: string,
+ * GREAT_EQUAL: string,
+ * AND: string,
+ * IDIV: string,
+ * UNION: string,
+ * INSTANCE_OF: string,
+ * INTERSECT: string,
+ * EXCEPT: string,
+ * CONCAT: string,
  * OTHER: string}
  * }
  */
@@ -33,6 +61,7 @@ const TOKENS = {
   STRING: 'string',
   COMMENT: 'comment',
   WHITESPACE: 'whitespace',
+  NUMBER: 'number',
   OPERATOR: 'operator',
   LPAREN: '(',
   RPAREN: ')',
@@ -76,8 +105,10 @@ const TOKENS = {
   ANCESTOR: 'ancestor',
   ANCESTOR_OR_SELF: 'ancestor-or-self',
   NAMESPACE: 'namespace',
-  OTHER: 'other',
+  USER_FUNCTION: 'user_function',
   CONCAT: '||',
+  FUNCTION: 'function',
+  OTHER: 'other',
 }
 
 /**
@@ -91,6 +122,12 @@ const WHITESPACE = ' \t\r\n'
  * @type {string}
  */
 const QUOTES = '"\''
+
+/**
+ * Numeric characters that are included in the numeric literal.
+ * @type {string}
+ */
+const DIGIT = '0123456789'
 
 /**
  * List of literal part of axes.
@@ -213,6 +250,48 @@ const opensAxis = function(xpath, at) {
 }
 
 /**
+ * Whether a number opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {boolean} - True when digit or "." with digit starts here
+ */
+const opensNumber = function(xpath, at) {
+  return DIGIT.includes(xpath[at]) || (xpath[at] === '.' && DIGIT.includes(xpath[at+1]))
+}
+
+/**
+ * Whether a user function opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - User function
+ */
+const opensUserFunction = function(xpath, at) {
+  let func=''
+  let colon = 0
+  if (at<xpath.length && xpath[at].match(/[a-zA-Z]/)) {
+    func += xpath[at]
+    at++
+    while (at<xpath.length && xpath[at].match(/[a-zA-Z0-9_:]/)) {
+      if (xpath[at].match(/[a-zA-Z0-9_]/)) {
+        func = func + xpath[at]
+        at++
+      } else {
+        if (colon === 0) {
+          func += xpath[at]
+          at++
+          colon++
+        } else {
+          func = ''
+          break
+        }
+      }
+    }
+    if (xpath[at-1] === ':' || xpath[at] !== '(' || colon !== 1) func = ''
+  }
+  return func
+}
+
+/**
  * Whether an element opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
@@ -276,6 +355,42 @@ const afterComment = function(xpath, start) {
 }
 
 /**
+ * Offset just past the number literal opening at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} start - Offset of the first character of the number literal
+ * @return {number} - Offset just past the closing digit
+ */
+const afterNumber = function(xpath, start) {
+  let at = start +1
+  let point = 0
+  let e = 0
+  while (at < xpath.length) {
+    if (xpath[at] === '.' && point === 0 && e === 0 ) {
+      point += 1
+      at += 1
+    } else if (DIGIT.includes(xpath[at])) {
+      at += 1
+    } else if ((xpath[at] === 'e' || xpath[at] === 'E') && e === 0) {
+      e+=1
+      if (DIGIT.includes(xpath[at+1])) {
+        at += 2
+      } else if (xpath[at+1] ==='+' || xpath[at+1] === '-') {
+        if (DIGIT.includes(xpath[at+2])) {
+          at += 3
+        } else {
+          break
+        }
+      } else {
+        break
+      }
+    } else {
+      break
+    }
+  }
+  return at
+}
+
+/**
  * Offset just past the run of non-delimiter characters at given offset. The run
  * stops at a quote, whitespace, or comment opener so those start their own
  * token.
@@ -293,8 +408,10 @@ const afterOther = function(xpath, start) {
     !DOUBLE[xpath.slice(at, at+2)] &&
     !TRIPLE[xpath.slice(at, at+3)] &&
     !opensMore(xpath, at) &&
-    !opensAxis(xpath, at) &&
-    !opensComment(xpath, at)
+    !opensComment(xpath, at) &&
+    !opensUserFunction(xpath, at) &&
+    !opensNumber(xpath, at) &&
+    !opensAxis(xpath, at)
   ) {
     at += 1
   }
@@ -340,6 +457,9 @@ const tokenized = function(xpath) {
     } else if (opensMore(xpath, at)) {
       type = AXIS[opensMore(xpath, at)]
       at += opensMore(xpath, at).length
+    } else if (opensNumber(xpath, at)) {
+      type = TOKENS.NUMBER
+      at = afterNumber(xpath, at)
     } else if (opensMore(xpath, at)) {
       type = MORE[opensMore(xpath, at)]
       at+=opensMore(xpath, at).length
@@ -352,6 +472,9 @@ const tokenized = function(xpath) {
     } else if (SINGLE[xpath[at]]) {
       type = SINGLE[xpath[at]]
       at++
+    } else if (opensUserFunction(xpath, at)) {
+      type = TOKENS.USER_FUNCTION
+      at+=opensUserFunction(xpath, at).length
     } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)

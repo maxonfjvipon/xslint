@@ -32,6 +32,54 @@ describe('tokens', function() {
   it('treats doubled quotes inside a literal as an escape', function() {
     assert.equal(tokenized('"a""b"').length, 1)
   })
+  it('records the offset where a number starts', function() {
+    assert.equal(
+      tokenized('$a + 12').find((token) => token.type === TOKENS.NUMBER).start,
+      5,
+    )
+  })
+  it('checks the correct value of number with whitespaces around', function() {
+    const FULL = [
+      'w 123 q',
+      'w 123.1 q',
+      'w .1 q',
+      'w 123. q',
+      'w 1.5e10 q',
+      'w 123e-45 q',
+    ]
+    const ACTUAL = [
+      '123',
+      '123.1',
+      '.1',
+      '123.',
+      '1.5e10',
+      '123e-45',
+    ]
+    FULL.forEach((string, index) => {
+      assert.equal(
+        tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+        ACTUAL[index],
+      )
+    })
+  })
+  it('checks the incorrect value of number with no whitespaces around', function() {
+    const FULL = [
+      '123.45.6',
+      '123e45E6',
+      '123e45.6',
+    ]
+    const ACTUAL = [
+      '123.45',
+      '123e45',
+      '123e45',
+    ]
+    FULL.forEach((string, index) => {
+      assert.equal(
+        tokenized(string).find((token) => token.type === TOKENS.NUMBER).value,
+        ACTUAL[index],
+      )
+    })
+  })
   it('treats doubled quotes inside a literal as an escape', function() {
     assert.equal(tokenized('"a""b"').length, 1)
   })
@@ -84,5 +132,24 @@ describe('tokens', function() {
           .length === 1,
       )
     })
+  })
+  it('finds any user functions', function() {
+    const VALUE = [
+      'my:funct',
+      'my3:funct',
+      'w:foo',
+      'q1r:function',
+    ]
+    const tokens = tokenized('my:funct() my3:funct() w:foo(e) q1r:function()')
+      .filter((token) => token.type === TOKENS.USER_FUNCTION)
+    tokens.forEach((token, index) => {
+      assert.equal(token.value, VALUE[index])
+    })
+  })
+  it('finds no user functions', function() {
+    assert.ok(
+      tokenized('foo(e) q1r:function q1r::function 3:funct() funct:()').filter((token) => token.type === TOKENS.USER_FUNCTION)
+        .length === 0,
+    )
   })
 })
