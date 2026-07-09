@@ -91,7 +91,6 @@ const TOKENS = {
   UNION: 'union',
   INSTANCE_OF: 'instance of',
   INTERSECT: 'intersect',
-  EXCEPT: 'except',
   CHILD: 'child',
   PARENT: 'parent',
   SELF: 'self',
@@ -130,25 +129,24 @@ const QUOTES = '"\''
 const DIGIT = '0123456789'
 
 /**
- * List of literal part of axes.
- * @type {array}
+ * Map axes to a token.
+ * @type {{[key: string]: string}}
  */
-const AXES = [
-  'except',
-  'child',
-  'parent',
-  'self',
-  'attribute',
-  'descendant',
-  'descendant-or-self',
-  'following',
-  'following-sibling',
-  'preceding',
-  'preceding-sibling',
-  'ancestor',
-  'ancestor-or-self',
-  'namespace',
-]
+const AXES = {
+  'child::': TOKENS.CHILD,
+  'parent::': TOKENS.PARENT,
+  'self::': TOKENS.SELF,
+  'attribute::': TOKENS.ATTRIBUTE,
+  'descendant::': TOKENS.DESCENDANT,
+  'descendant-or-self::': TOKENS.DESCENDANT_OR_SELF,
+  'following::': TOKENS.FOLLOWING,
+  'following-sibling::': TOKENS.FOLLOWING_SIBLING,
+  'preceding::': TOKENS.PRECEDING,
+  'preceding-sibling::': TOKENS.PRECEDING_SIBLING,
+  'ancestor::': TOKENS.ANCESTOR,
+  'ancestor-or-self::': TOKENS.ANCESTOR_OR_SELF,
+  'namespace::': TOKENS.NAMESPACE,
+}
 
 /**
  * Map single characters to a token.
@@ -225,25 +223,23 @@ const opensComment = function(xpath, at) {
  * @return {string} - Axis
  */
 const opensAxis = function(xpath, at) {
-  let start = at
   let axis = ''
   if (at<xpath.length && xpath[at].match(/[a-zA-Z]/)) {
     do {
       axis += xpath[at]
       at++
-      if (xpath[at] === ':'){
-        if (xpath[at+1] === ':'){
-          axis += xpath[at]
+      if (xpath[at] === ':') {
+        if (xpath[at+1] === ':') {
+          axis += xpath.slice(at, at+2)
           at++
-          break
-        }
-        else{
+        } else {
           axis = ''
         }
+        break
       }
     } while (at<xpath.length && xpath[at].match(/[a-zA-Z\-:]/))
   }
-  if (!AXES.includes(xpath.slice(start, at - 1))){
+  if (!AXES[axis]) {
     axis=''
   }
   return axis
@@ -454,9 +450,9 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
-    } else if (opensMore(xpath, at)) {
-      type = AXIS[opensMore(xpath, at)]
-      at += opensMore(xpath, at).length
+    } else if (opensAxis(xpath, at)) {
+      type = AXES[opensAxis(xpath, at)]
+      at += opensAxis(xpath, at).length
     } else if (opensNumber(xpath, at)) {
       type = TOKENS.NUMBER
       at = afterNumber(xpath, at)
