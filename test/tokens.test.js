@@ -152,4 +152,38 @@ describe('tokens', function() {
         .length === 0,
     )
   })
+  it('finds axes', function() {
+    const FULL = [
+      'child::abc',
+      'descendant-or-self::def',
+      'attribute::ghi',
+    ]
+    const ACTUAL = [
+      TOKENS.CHILD,
+      TOKENS.DESCENDANT_OR_SELF,
+      TOKENS.ATTRIBUTE,
+    ]
+    FULL.forEach((string, index) => {
+      assert.ok(
+        tokenized(string).filter((token) => token.type === ACTUAL[index])
+          .length === 1,
+      )
+    })
+  })
+  it('finds no axes', function() {
+    const FULL = [
+      'child:abc',
+      'descendant-or-self',
+    ]
+    const ACTUAL = [
+      TOKENS.CHILD,
+      TOKENS.DESCENDANT_OR_SELF,
+    ]
+    FULL.forEach((string, index) => {
+      assert.ok(
+        tokenized(string).filter((token) => token.type === ACTUAL[index])
+          .length === 0,
+      )
+    })
+  })
 })
