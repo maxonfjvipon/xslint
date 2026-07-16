@@ -6,8 +6,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="style">
   <xsl:output encoding="UTF-8" method="html"/>
   <xsl:template match="/">
-    <xsl:template match="/">
-    </xsl:template>
     <html>
       <body>
         <h2>My CD Collection</h2>
