@@ -105,15 +105,15 @@ describe('tokens', function() {
   })
   it('finds operators', function() {
     const FULL = [
-      '+ w e',
+      '3 + w',
       'w -e',
       'w 7*',
       't = t',
-      '!= w e',
+      'w != e',
       't eq t',
       '2div7',
-      'union w e',
-      'instance of',
+      'e union w',
+      'a instance of b',
     ]
     const ACTUAL = [
       TOKENS.PLUS,
@@ -183,6 +183,41 @@ describe('tokens', function() {
       assert.ok(
         tokenized(string).filter((token) => token.type === ACTUAL[index])
           .length === 0,
+      )
+    })
+  })
+  it('finds nametests', function() {
+    const FULL = [
+      'adc',
+      'ab4',
+      'ab-3_2',
+      'ab:cd',
+      '*',
+      '*:cd',
+      '[*]',
+      'Q{http://ab}cd',
+      'Q{}*',
+    ]
+    const ACTUAL = [
+      'adc',
+      'ab4',
+      'ab-3_2',
+      'ab:cd',
+      '*',
+      '*:cd',
+      '*',
+      'Q{http://ab}cd',
+      'Q{}*',
+    ]
+    FULL.forEach((string, index) => {
+      assert.equal(
+        tokenized(string).find((token) => token.type === TOKENS.NAME_TEST)
+          .value,
+        ACTUAL[index],
+      )
+      assert.ok(
+        tokenized(string).filter((token) => token.type === TOKENS.NAME_TEST)
+          .length === 1,
       )
     })
   })

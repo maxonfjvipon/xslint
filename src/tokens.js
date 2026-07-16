@@ -54,6 +54,7 @@
  * INTERSECT: string,
  * EXCEPT: string,
  * CONCAT: string,
+ * NAME_TEST: string,
  * OTHER: string}
  * }
  */
@@ -108,6 +109,7 @@ const TOKENS = {
   USER_FUNCTION: 'user_function',
   CONCAT: '||',
   FUNCTION: 'function',
+  NAME_TEST: 'name-test',
   OTHER: 'other',
 }
 
@@ -150,14 +152,21 @@ const AXES = {
 }
 
 /**
- * Map single characters to a token.
+ * Map bracket and paren characters to a token.
  * @type {{[key: string]: string}}
  */
-const SINGLE = {
+const BRACKETS = {
   '(': TOKENS.LPAREN,
   ')': TOKENS.RPAREN,
   '[': TOKENS.LBRACKET,
   ']': TOKENS.RBRACKET,
+}
+
+/**
+ * Map single characters to a token.
+ * @type {{[key: string]: string}}
+ */
+const SINGLE = {
   '+': TOKENS.PLUS,
   '-': TOKENS.MINUS,
   '*': TOKENS.MULTI,
@@ -289,6 +298,86 @@ const opensUserFunction = function(xpath, at) {
 }
 
 /**
+ * Whether a nametest opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - Nametest
+ */
+const opensNameTest = function(xpath, at) {
+  let name=''
+  if (at<xpath.length && xpath.slice(at, at + 2) === 'Q{') {
+    name += xpath.slice(at, at + 2)
+    at += 2
+    while (at < xpath.length && xpath[at] !== '{' && xpath[at] !== '}') {
+      name = name + xpath[at]
+      at++
+    }
+    if (xpath[at]==='{') {
+      name=''
+    } else {
+      name += xpath[at]
+      at++
+      const ncname = collectNCName(xpath, at)
+      if (ncname !== '') {
+        name += ncname
+        at += ncname.length
+      } else if (at < xpath.length && xpath[at] === '*') {
+        name += xpath[at]
+        at++
+      } else {
+        name=''
+      }
+    }
+  } else if (at < xpath.length && xpath[at].match(/[a-zA-Z_]/)) {
+    const ncname = collectNCName(xpath, at)
+    name+= ncname
+    at+=ncname.length
+    if (xpath[at] === ':') {
+      name += xpath[at]
+      at++
+      const ncname = collectNCName(xpath, at)
+      if (ncname!=='') {
+        name += ncname
+        at += ncname.length
+      } else if (at < xpath.length && xpath[at]==='*') {
+        name += xpath[at]
+        at++
+      }
+    }
+  } else if (at < xpath.length && xpath[at]==='*') {
+    name += xpath[at]
+    at++
+    if (xpath[at]===':') {
+      name += xpath[at]
+      at++
+      const ncname = collectNCName(xpath, at)
+      name+= ncname
+      at+=ncname.length
+    }
+  }
+  return name
+}
+
+/**
+ * Whether a part of nametest (NCName) opens at given offset.
+ * @param {string} xpath - Xpath expression
+ * @param {number} at - Offset to test
+ * @return {string} - NCName
+ */
+const collectNCName = function(xpath, at) {
+  let ncname=''
+  if (at < xpath.length && xpath[at].match(/[a-zA-Z_]/)) {
+    ncname += xpath[at]
+    at++
+    while (at < xpath.length && xpath[at].match(/[a-zA-Z0-9_.-]/)) {
+      ncname = ncname + xpath[at]
+      at++
+    }
+  }
+  return ncname
+}
+
+/**
  * Whether an element opens at given offset.
  * @param {string} xpath - Xpath expression
  * @param {number} at - Offset to test
@@ -393,22 +482,25 @@ const afterNumber = function(xpath, start) {
  * token.
  * @param {string} xpath - Xpath expression
  * @param {number} start - Offset of the first character
+ * @param {number} tokens - Array of found tokens.
  * @return {number} - Offset just past the run
  */
-const afterOther = function(xpath, start) {
+const afterOther = function(xpath, start, tokens) {
   let at = start
   while (
     at < xpath.length &&
     !QUOTES.includes(xpath[at]) &&
     !WHITESPACE.includes(xpath[at]) &&
-    !SINGLE[xpath[at]] &&
-    !DOUBLE[xpath.slice(at, at+2)] &&
-    !TRIPLE[xpath.slice(at, at+3)] &&
+    !BRACKETS[xpath[at]] &&
+    !(SINGLE[xpath[at]] && isOperator(tokens))&&
+    !(DOUBLE[xpath.slice(at, at+2)] && isOperator(tokens)) &&
+    !(TRIPLE[xpath.slice(at, at+3)] && isOperator(tokens)) &&
     !opensMore(xpath, at) &&
     !opensComment(xpath, at) &&
     !opensUserFunction(xpath, at) &&
     !opensNumber(xpath, at) &&
-    !opensAxis(xpath, at)
+    !opensAxis(xpath, at) &&
+    !opensNameTest(xpath, at)
   ) {
     at += 1
   }
@@ -427,6 +519,31 @@ const afterWhitespace = function(xpath, start) {
     at += 1
   }
   return at
+}
+
+/**
+ * Offset just past the whitespace run at given offset.
+ * @param {Array.<{type: string, value: string, start: number}>} tokens -
+ * Array of found tokens.
+ * @return {number} - The found token is operator?
+ */
+const isOperator = function(tokens) {
+  if (tokens.length >=1 &&
+    (tokens.at(-1).type===TOKENS.NUMBER ||
+      tokens.at(-1).type===TOKENS.NAME_TEST ||
+      tokens.at(-1).type===TOKENS.RPAREN)
+  ) {
+    return true
+  } else if (tokens.length >=2 &&
+    (tokens.at(-1).type===TOKENS.WHITESPACE &&
+      (tokens.at(-2).type===TOKENS.NUMBER ||
+        tokens.at(-2).type===TOKENS.NAME_TEST ||
+        tokens.at(-2).type===TOKENS.RPAREN)
+    )
+  ) {
+    return true
+  }
+  return false
 }
 
 /**
@@ -457,24 +574,30 @@ const tokenized = function(xpath) {
     } else if (opensNumber(xpath, at)) {
       type = TOKENS.NUMBER
       at = afterNumber(xpath, at)
-    } else if (opensMore(xpath, at)) {
+    } else if (opensMore(xpath, at) && isOperator(tokens)) {
       type = MORE[opensMore(xpath, at)]
       at+=opensMore(xpath, at).length
-    } else if (TRIPLE[xpath.slice(at, at+3)]) {
+    } else if (TRIPLE[xpath.slice(at, at+3)] && isOperator(tokens)) {
       type = TRIPLE[xpath.slice(at, at+3)]
       at+=3
-    } else if (DOUBLE[xpath.slice(at, at+2)]) {
+    } else if (DOUBLE[xpath.slice(at, at+2)] && isOperator(tokens)) {
       type = DOUBLE[xpath.slice(at, at+2)]
       at+=2
-    } else if (SINGLE[xpath[at]]) {
+    } else if (BRACKETS[xpath[at]]) {
+      type = BRACKETS[xpath[at]]
+      at++
+    } else if (SINGLE[xpath[at]] && isOperator(tokens)) {
       type = SINGLE[xpath[at]]
       at++
     } else if (opensUserFunction(xpath, at)) {
       type = TOKENS.USER_FUNCTION
       at+=opensUserFunction(xpath, at).length
+    } else if (opensNameTest(xpath, at)) {
+      type = TOKENS.NAME_TEST
+      at+=opensNameTest(xpath, at).length
     } else {
       type = TOKENS.OTHER
-      at = afterOther(xpath, at)
+      at = afterOther(xpath, at, tokens)
     }
     tokens.push({type: type, value: xpath.slice(start, at), start: start})
   }
