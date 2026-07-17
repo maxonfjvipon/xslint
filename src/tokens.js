@@ -482,7 +482,8 @@ const afterNumber = function(xpath, start) {
  * token.
  * @param {string} xpath - Xpath expression
  * @param {number} start - Offset of the first character
- * @param {number} tokens - Array of found tokens.
+ * @param {Array.<{type: string, value: string, start: number}>} tokens -
+ * Array of found tokens.
  * @return {number} - Offset just past the run
  */
 const afterOther = function(xpath, start, tokens) {
@@ -522,7 +523,7 @@ const afterWhitespace = function(xpath, start) {
 }
 
 /**
- * Offset just past the whitespace run at given offset.
+ * Determines whether the token is an operator.
  * @param {Array.<{type: string, value: string, start: number}>} tokens -
  * Array of found tokens.
  * @return {number} - The found token is operator?
@@ -531,14 +532,20 @@ const isOperator = function(tokens) {
   if (tokens.length >=1 &&
     (tokens.at(-1).type===TOKENS.NUMBER ||
       tokens.at(-1).type===TOKENS.NAME_TEST ||
-      tokens.at(-1).type===TOKENS.RPAREN)
+      tokens.at(-1).type===TOKENS.RPAREN ||
+      tokens.at(-1).type===TOKENS.RBRACKET ||
+      tokens.at(-1).type===TOKENS.STRING
+    )
   ) {
     return true
   } else if (tokens.length >=2 &&
     (tokens.at(-1).type===TOKENS.WHITESPACE &&
       (tokens.at(-2).type===TOKENS.NUMBER ||
         tokens.at(-2).type===TOKENS.NAME_TEST ||
-        tokens.at(-2).type===TOKENS.RPAREN)
+        tokens.at(-2).type===TOKENS.RPAREN ||
+        tokens.at(-2).type===TOKENS.RBRACKET ||
+        tokens.at(-2).type===TOKENS.STRING
+      )
     )
   ) {
     return true

@@ -116,18 +116,18 @@ A change that leaves any of these describing the old behavior is not done.
 
 ## Key Files
 
-| File | Role |
-|------|------|
-| `src/xslint.js` | Orchestrates file discovery and suppression, runs validators then linters, formats output |
-| `src/xsl-validator.js` | Builds the corpus from raw sources; reports each stylesheet that is not well-formed XML and leaves it out |
+| File | Role                                                                                                                  |
+|------|-----------------------------------------------------------------------------------------------------------------------|
+| `src/xslint.js` | Orchestrates file discovery and suppression, runs validators then linters, formats output                             |
+| `src/xsl-validator.js` | Builds the corpus from raw sources; reports each stylesheet that is not well-formed XML and leaves it out             |
 | `src/xpath-validator.js` | Splits each corpus expression into the valid ones (kept for the expression linters) and the malformed ones (reported) |
-| `src/xpath-linter.js` | Loads `checks/xpath/*.yaml`, applies per-file XPath rules |
-| `src/corpus-linter.js` | Loads `checks/corpus/*.yaml`, applies cross-file rules over the corpus |
-| `src/xpath-format-linter.js` | Tokenizes the validator's valid expressions and flags formatting noise (`redundant-whitespace`) |
-| `src/tokens.js` | XPath lexer: positioned token stream (`TOKENS`: string, comment, whitespace, other) preserving whitespace |
-| `src/xpath.js` | Shared fontoxpath environment: prefixes, custom functions, node/string evaluators, expression validator (`isValid`) |
-| `src/helpers.js` | XML parsing (`@xmldom/xmldom`), YAML parsing, file recursion |
-| `src/logger.js` | 4-level logger (debug/info/warning/error) |
-| `scripts/generate-docs.js` | Builds the `docs/` site from checks + motives (`npx grunt docs`) |
-| `test/helpers.js` | `runXslint` / `runXcop` test utilities |
-| `test/xcop.test.js` | Runs xcop over the inline XSL of every pack directory; register new pack dirs here |
+| `src/xpath-linter.js` | Loads `checks/xpath/*.yaml`, applies per-file XPath rules                                                             |
+| `src/corpus-linter.js` | Loads `checks/corpus/*.yaml`, applies cross-file rules over the corpus                                                |
+| `src/xpath-format-linter.js` | Tokenizes the validator's valid expressions and flags formatting noise (`redundant-whitespace`)                       |
+| `src/tokens.js` | XPath lexer: positioned token stream (`TOKENS`: string, comment, whitespace, number, lparen, rparen, lbracket, rbracket, child, parent, self, attribute, descendant, descendant_or_self, following, following_sibling, preceding, preceding_sibling, ancestor, ancestor_or_self, namespace, user_function, multi, plus, minus, div, mod, pipe, eq, ne, lt, gt, le, ge, or, less, greater, equal, not_equal, less_equal, great_equal, and, idiv, union, instance_of, intersect, except, concat, name_test, other) preserving whitespace            |
+| `src/xpath.js` | Shared fontoxpath environment: prefixes, custom functions, node/string evaluators, expression validator (`isValid`)   |
+| `src/helpers.js` | XML parsing (`@xmldom/xmldom`), YAML parsing, file recursion                                                          |
+| `src/logger.js` | 4-level logger (debug/info/warning/error)                                                                             |
+| `scripts/generate-docs.js` | Builds the `docs/` site from checks + motives (`npx grunt docs`)                                                      |
+| `test/helpers.js` | `runXslint` / `runXcop` test utilities                                                                                |
+| `test/xcop.test.js` | Runs xcop over the inline XSL of every pack directory; register new pack dirs here                                    |
