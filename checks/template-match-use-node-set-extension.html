@@ -72,13 +72,13 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">/xsl:stylesheet[@version = "2.0"]//*[contains(@select, ":node-set")]</code>
+    <code class="xpath">/xsl:stylesheet[@version = ('2.0', '3.0')]//*[contains(@select, ":node-set")]</code>
   </div>
   <div class="check-content">
 <h1>Use node-set extension</h1>
 <p>The <code>exsl:node-set()</code> extension function is an XSLT 1.0 workaround for
 converting result tree fragments into node-sets. It is unnecessary in XSLT 2.0
-where temporary trees can be queried directly.</p>
+and later, where temporary trees can be queried directly.</p>
 <p>Incorrect:</p>
 <pre><code class="language-xsl">&lt;xsl:stylesheet version=&quot;2.0&quot;
   xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;

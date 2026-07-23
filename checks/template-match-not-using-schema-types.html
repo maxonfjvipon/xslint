@@ -72,13 +72,14 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">/xsl:stylesheet[@version = '2.0'][not(some $x in .//@* satisfies contains($x, 'xs:'))]</code>
+    <code class="xpath">/xsl:stylesheet[@version = ('2.0', '3.0')][not(some $x in .//@* satisfies contains($x, 'xs:'))]</code>
   </div>
   <div class="check-content">
 <h1>Not using schema types</h1>
-<p>XSLT 2.0 provides built-in XML Schema types (<code>xs:string</code>, <code>xs:integer</code>, etc.)
-that make type expectations explicit and enable stronger compile-time
-validation. Not using them when working in XSLT 2.0 mode misses this benefit.</p>
+<p>XSLT 2.0 and 3.0 provide built-in XML Schema types (<code>xs:string</code>, <code>xs:integer</code>,
+etc.) that make type expectations explicit and enable stronger compile-time
+validation. Not using them when working in XSLT 2.0 or 3.0 mode misses this
+benefit.</p>
 <p>Incorrect:</p>
 <pre><code class="language-xsl">&lt;xsl:stylesheet version=&quot;2.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
   &lt;xsl:output method=&quot;html&quot;/&gt;
