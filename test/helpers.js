@@ -4,7 +4,7 @@
  */
 
 const path = require('path')
-const {execSync} = require('child_process')
+const {execSync, spawnSync} = require('child_process')
 const os = require('os')
 
 /**
@@ -26,32 +26,51 @@ const execCmd = function(command, args, print) {
 }
 
 /**
- * Helper to run xslint command line tool.
+ * Run xslint in a child process, node warnings silenced so only the tool's own
+ * output remains.
  * @param {Array.<string>} args - Array of args
- * @param {boolean} print - Capture logs
- * @return {string} Stdout
+ * @return {import('child_process').SpawnSyncReturns<string>} - Result
  */
-const runXslint = function(args, print = true) {
-  try {
-    return execCmd(`node ${path.resolve('./src/index.js')}`, args, print)
-  } catch (ex) {
-    return ex.stdout.toString()
-  }
+const spawnXslint = function(args) {
+  return spawnSync(
+    'node',
+    [path.resolve('./src/index.js'), ...args],
+    {
+      timeout: 120000,
+      windowsHide: true,
+      encoding: 'utf-8',
+      env: {...process.env, NODE_NO_WARNINGS: '1'},
+    },
+  )
 }
 
 /**
- * Helper to run xslint and report its exit code instead of its output.
+ * Helper to run xslint, returning its stdout and stderr together.
+ * @param {Array.<string>} args - Array of args
+ * @return {string} Combined stdout and stderr
+ */
+const runXslint = function(args) {
+  const result = spawnXslint(args)
+  return `${result.stdout}${result.stderr}`
+}
+
+/**
+ * Helper to run xslint and report its exit code.
  * @param {Array.<string>} args - Array of args
  * @return {number} Exit code
  */
 const xslintStatus = function(args) {
-  let status = 0
-  try {
-    execCmd(`node ${path.resolve('./src/index.js')}`, args, true)
-  } catch (ex) {
-    status = ex.status
-  }
-  return status
+  return spawnXslint(args).status
+}
+
+/**
+ * Helper to run xslint, keeping stdout and stderr apart.
+ * @param {Array.<string>} args - Array of args
+ * @return {{stdout: string, stderr: string}} Streams
+ */
+const xslintStreams = function(args) {
+  const result = spawnXslint(args)
+  return {stdout: result.stdout, stderr: result.stderr}
 }
 
 /**
@@ -83,6 +102,7 @@ const cmdAvailable = function(cmd, print = true) {
 module.exports = {
   runXslint,
   xslintStatus,
+  xslintStreams,
   runXcop,
   cmdAvailable,
 }

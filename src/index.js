@@ -19,6 +19,7 @@ program
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
+  .option('--quiet', 'Suppress informational logs, printing only defects', false)
   .option(
     '--max-warnings <n>',
     'Number of warnings to allow before the exit code becomes non-zero ' +

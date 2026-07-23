@@ -26,7 +26,8 @@ npx mocha test/xslint.test.js --grep "sentence"  # Run tests matching a pattern
 Flow:
 ```text
 src/index.js (CLI, commander.js)
-  → src/xslint.js (file discovery, suppression, run order, stdout output)
+  → src/xslint.js (file discovery, suppression, run order, output: defects to
+      stdout, logs to stderr)
     VALIDATORS (is it valid?) — each partitions its input, reporting the bad
     → src/xsl-validator.js (XML well-formedness) builds the corpus of
         parseable files          → src/resources/checks/validation/malformed-stylesheet.yaml

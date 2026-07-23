@@ -74,6 +74,16 @@ If you want to suppress many checks, use `--suppress` as many times as you need:
 xslint --suppress=monolithic-design --suppress=short-names
 ```
 
+## Output
+
+Defects are written to stdout; progress and diagnostic logs go to stderr, so
+`xslint path/to/dir > report.txt` captures only the findings. Pass `--quiet` to
+drop the informational log lines:
+
+```bash
+xslint --quiet
+```
+
 ## Exit code
 
 `xslint` exits non-zero when any `error`-severity defect is found. Warnings do

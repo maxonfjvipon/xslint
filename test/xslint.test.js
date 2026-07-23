@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {runXslint, xslintStatus} = require('./helpers')
+const {runXslint, xslintStatus, xslintStreams} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -216,5 +216,30 @@ describe('xslint', function() {
     const status = xslintStatus([dir, '--max-warnings=100'])
     fs.rmSync(dir, {recursive: true, force: true})
     assert.equal(status, 1)
+  })
+  it('should print defects to stdout', function() {
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+    ])
+    assert.ok(streams.stdout.includes('template-match-short-names'))
+  })
+  it('should print progress logs to stderr', function() {
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+    ])
+    assert.ok(streams.stderr.includes('Processed files: 1'))
+  })
+  it('should keep progress logs out of stdout', function() {
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+    ])
+    assert.ok(!streams.stdout.includes('Processed files'))
+  })
+  it('should suppress informational logs when quiet', function() {
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      '--quiet',
+    ])
+    assert.ok(!streams.stderr.includes('Processed files'))
   })
 })

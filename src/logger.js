@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const stdout = require('./stdout')
+const {err} = require('./output')
 
 /**
  * Log levels.
@@ -44,22 +44,22 @@ let currentLevel = LEVELS[LOG_LEVELS.INFO]
 const logger = {
   debug: (msg, ...args) => {
     if (currentLevel <= LEVELS[LOG_LEVELS.DEBUG]) {
-      stdout.debug(msg, ...args)
+      err.debug(msg, ...args)
     }
   },
   info: (msg, ...args) => {
     if (currentLevel <= LEVELS[LOG_LEVELS.INFO]) {
-      stdout.info(msg, ...args)
+      err.info(msg, ...args)
     }
   },
   warn: (msg, ...args) => {
     if (currentLevel <= LEVELS[LOG_LEVELS.WARNING]) {
-      stdout.warn(msg, ...args)
+      err.warn(msg, ...args)
     }
   },
   error: (msg, ...args) => {
     if (currentLevel <= LEVELS[LOG_LEVELS.ERROR]) {
-      stdout.error(msg, ...args)
+      err.error(msg, ...args)
     }
   },
   setLevel: (level) => {

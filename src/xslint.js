@@ -13,8 +13,8 @@ const {
 const {lintByXpath, names: xpathChecks} = require('./xpath-linter')
 const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
 const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
-const {logger} = require('./logger')
-const stdout = require('./stdout')
+const {logger, levels} = require('./logger')
+const {out} = require('./output')
 
 /**
  * Linters, each given the corpus of well-formed stylesheets.
@@ -88,11 +88,12 @@ const xsls = function(pth) {
 /**
  * Process cli options.
  * @param {{
- *  logLevel: string
+ *  logLevel: string,
+ *  quiet: boolean
  * }} options - CLI options
  */
 const processOptions = function(options) {
-  logger.setLevel(options.logLevel)
+  logger.setLevel(options.quiet ? levels.WARNING : options.logLevel)
 }
 
 /**
@@ -133,7 +134,7 @@ const xslint = function(pths, options) {
   if (defects.length > 0) {
     logger.info(`Defects found: ${defects.length}`)
     for (const defect of defects) {
-      stdout[defect.severity](
+      out[defect.severity](
         '%s(%d:%d) %s (%s)',
         defect.file,
         defect.line,
