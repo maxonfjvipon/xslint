@@ -16,6 +16,7 @@ const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
 const {logger, levels} = require('./logger')
 const {out} = require('./output')
 const {configFrom} = require('./config')
+const {directivesFrom, suppresses} = require('./directives')
 const {minimatch} = require('minimatch')
 
 /**
@@ -176,10 +177,27 @@ const xslint = function(pths, options) {
       defect.severity = overrides[defect.name]
     }
   }
+  const directives = new Map(
+    sources.map((source) => [source.file, directivesFrom(source.content)]),
+  )
+  for (const [, list] of directives) {
+    for (const directive of list) {
+      for (const name of directive.names) {
+        if (!CHECKS.includes(name)) {
+          logger.warn(
+            `Rule '${name}' in an xslint-disable directive does not exist`,
+          )
+        }
+      }
+    }
+  }
+  const reported = defects.filter(
+    (defect) => !suppresses(directives.get(defect.file), defect),
+  )
   logger.info(`Processed files: ${stylesheets.length}`)
-  if (defects.length > 0) {
-    logger.info(`Defects found: ${defects.length}`)
-    for (const defect of defects) {
+  if (reported.length > 0) {
+    logger.info(`Defects found: ${reported.length}`)
+    for (const defect of reported) {
       out[defect.severity](
         '%s(%d:%d) %s (%s)',
         defect.file,
@@ -189,8 +207,8 @@ const xslint = function(pths, options) {
         defect.name,
       )
     }
-    const errors = defects.filter((defect) => defect.severity === 'error')
-    const warnings = defects.filter((defect) => defect.severity === 'warning')
+    const errors = reported.filter((defect) => defect.severity === 'error')
+    const warnings = reported.filter((defect) => defect.severity === 'warning')
     if (
       errors.length > 0 ||
       (maxWarnings >= 0 && warnings.length > maxWarnings)

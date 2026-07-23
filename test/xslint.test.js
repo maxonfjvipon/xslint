@@ -350,4 +350,70 @@ describe('xslint', function() {
     fs.rmSync(dir, {recursive: true, force: true})
     assert.ok(!streams.stderr.includes('Processed files'))
   })
+  it('should suppress a defect with an inline disable-next-line', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const file = path.join(dir, 'sheet.xsl')
+    fs.writeFileSync(file, [
+      '<?xml version="1.0"?>',
+      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" ' +
+        'version="2.0" id="s">',
+      '  <xsl:template match="/">',
+      '    <!-- xslint-disable-next-line short-names -->',
+      '    <xsl:variable name="x" select="1"/>',
+      '  </xsl:template>',
+      '</xsl:stylesheet>',
+    ].join('\n'))
+    const streams = xslintStreams([file])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(!streams.stdout.includes('short-names'))
+  })
+  it('should leave other defects when a disable-next-line is targeted', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const file = path.join(dir, 'sheet.xsl')
+    fs.writeFileSync(file, [
+      '<?xml version="1.0"?>',
+      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" ' +
+        'version="2.0" id="s">',
+      '  <xsl:template match="/">',
+      '    <!-- xslint-disable-next-line short-names -->',
+      '    <xsl:variable name="x" select="1"/>',
+      '  </xsl:template>',
+      '</xsl:stylesheet>',
+    ].join('\n'))
+    const streams = xslintStreams([file])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(streams.stdout.includes('not-using-schema-types'))
+  })
+  it('should suppress across the file with an inline disable-file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const file = path.join(dir, 'sheet.xsl')
+    fs.writeFileSync(file, [
+      '<?xml version="1.0"?>',
+      '<!-- xslint-disable-file short-names -->',
+      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" ' +
+        'version="2.0" id="s">',
+      '  <xsl:template match="/">',
+      '    <xsl:variable name="x" select="1"/>',
+      '  </xsl:template>',
+      '</xsl:stylesheet>',
+    ].join('\n'))
+    const streams = xslintStreams([file])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(!streams.stdout.includes('short-names'))
+  })
+  it('should warn about an unknown rule in a disable directive', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const file = path.join(dir, 'sheet.xsl')
+    fs.writeFileSync(file, [
+      '<?xml version="1.0"?>',
+      '<!-- xslint-disable-file bogus-rule -->',
+      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" ' +
+        'version="2.0" id="s">',
+      '  <xsl:template match="/"><out/></xsl:template>',
+      '</xsl:stylesheet>',
+    ].join('\n'))
+    const streams = xslintStreams([file])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(streams.stderr.includes('Rule \'bogus-rule\' in an xslint-disable'))
+  })
 })

@@ -107,7 +107,9 @@ Then: add a rationale (required) at `src/resources/motives/{xpath,corpus,validat
 
 Suppression by users: `xslint --suppress=<rule-substring>` (matches names from all validators and linters).
 
-Configuration by users: a `.xslint.yml` file (discovered by walking up from the working directory, or passed with `--config <path>`) can disable rules (`rules: {<name-or-glob>: off}`), re-grade severity (`warning`/`error`), skip files (`exclude:` globs, resolved relative to the config file's own directory), and set defaults for `max-warnings`, `log-level`, and `quiet`. Unknown top-level keys and rule patterns that match no check are reported. Command-line flags override the file; the file overrides the built-in defaults. Resolution lives in `src/config.js` (which also exposes the config's `base` directory); `src/xslint.js` expands each rule pattern against the check names, folds `off` rules into the suppression list, filters excluded files against `base`, applies severity overrides to the collected defects, and resolves the effective `max-warnings`/`log-level`/`quiet`.
+Configuration by users: a `.xslint.yml` file (discovered by walking up from the working directory, or passed with `--config <path>`) can disable rules (`rules: {<name-or-glob>: off}`), re-grade severity (`warning`/`error`), skip files (`exclude:` globs, resolved relative to the config file's own directory), and set defaults for `max-warnings`, `log-level`, and `quiet`. Unknown top-level keys and rule patterns that match no check are reported. Inline suppression by users: XML-comment directives — `<!-- xslint-disable-next-line [rules] -->` (line after the comment), `<!-- xslint-disable-line [rules] -->` (the comment's line), `<!-- xslint-disable-file [rules] -->` (the whole file); rule names are optional and space-separated, and none means all. `src/directives.js` scans the raw text for them and `src/xslint.js` drops matching defects after collecting them (so it covers every kind, and warns on an unknown rule name).
+
+Command-line flags override the file; the file overrides the built-in defaults. Resolution lives in `src/config.js` (which also exposes the config's `base` directory); `src/xslint.js` expands each rule pattern against the check names, folds `off` rules into the suppression list, filters excluded files against `base`, applies severity overrides to the collected defects, and resolves the effective `max-warnings`/`log-level`/`quiet`.
 
 ## Keeping Docs in Sync
 
@@ -125,6 +127,7 @@ A change that leaves any of these describing the old behavior is not done.
 |------|------|
 | `src/xslint.js` | Orchestrates file discovery, configuration, and suppression, runs validators then linters, formats output |
 | `src/config.js` | Resolves `.xslint.yml` (rule severities/`off`, exclude globs, `max-warnings`), found by walking up from the cwd or via `--config` |
+| `src/directives.js` | Parses inline `xslint-disable-*` comment directives and tests whether one suppresses a defect |
 | `src/xsl-validator.js` | Builds the corpus from raw sources; reports each stylesheet that is not well-formed XML and leaves it out |
 | `src/xpath-validator.js` | Splits each corpus expression into the valid ones (kept for the expression linters) and the malformed ones (reported) |
 | `src/xpath-linter.js` | Loads `checks/xpath/*.yaml`, applies per-file XPath rules |

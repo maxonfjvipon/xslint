@@ -104,6 +104,23 @@ quiet: false                            # default for --quiet
 Unknown top-level keys and rule names that match no check are reported so typos
 do not pass silently.
 
+## Inline suppression
+
+Silence a rule in one place with an XML-comment directive. Rule names are
+optional and space-separated; with none, every rule at that location is
+suppressed.
+
+```xml
+<!-- xslint-disable-next-line short-names -->
+<xsl:variable name="x" select="1"/>
+
+<!-- xslint-disable-file not-using-schema-types -->
+```
+
+- **`xslint-disable-next-line [rules]`** — the line after the comment.
+- **`xslint-disable-line [rules]`** — the comment's own line.
+- **`xslint-disable-file [rules]`** — the whole file (put it near the top).
+
 ## Output
 
 Defects are written to stdout; progress and diagnostic logs go to stderr, so
