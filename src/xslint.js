@@ -15,6 +15,8 @@ const {lintByCorpus, names: corpusChecks} = require('./corpus-linter')
 const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
 const {logger, levels} = require('./logger')
 const {out} = require('./output')
+const {configFrom} = require('./config')
+const {minimatch} = require('minimatch')
 
 /**
  * Linters, each given the corpus of well-formed stylesheets.
@@ -86,6 +88,18 @@ const xsls = function(pth) {
 }
 
 /**
+ * Whether a file matches any exclusion glob, compared as a path relative to the
+ * working directory in posix form so the patterns stay portable.
+ * @param {string} file - Absolute path of a stylesheet
+ * @param {Array.<string>} patterns - Exclusion globs from the configuration
+ * @return {boolean} - True when the file is excluded
+ */
+const excluded = function(file, patterns) {
+  const relative = path.relative(process.cwd(), file).split(path.sep).join('/')
+  return patterns.some((pattern) => minimatch(relative, pattern))
+}
+
+/**
  * Process cli options.
  * @param {{
  *  logLevel: string,
@@ -100,11 +114,25 @@ const processOptions = function(options) {
  * Entry point.
  * @param {Array.<string>} pths - Files or directories with .xsl to lint
  * @param {{
- *  logLevel: string
+ *  logLevel: string,
+ *  quiet: boolean,
+ *  suppress: Array.<string>,
+ *  maxWarnings: number|undefined,
+ *  config: string|undefined
  * }} options - CLI options
  */
 const xslint = function(pths, options) {
-  const suppressions = validatedSuppressions(options.suppress)
+  const config = configFrom(options.config)
+  for (const name of Object.keys(config.rules)) {
+    if (!CHECKS.includes(name)) {
+      logger.warn(`Rule '${name}' in configuration does not exist`)
+    }
+  }
+  const suppressions = [
+    ...validatedSuppressions(options.suppress),
+    ...Object.keys(config.rules).filter((name) => config.rules[name] === 'off'),
+  ]
+  const maxWarnings = options.maxWarnings ?? config.maxWarnings ?? -1
   processOptions(options)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
   pths = pths.map((pth) => path.resolve(process.cwd(), pth))
@@ -116,6 +144,7 @@ const xslint = function(pths, options) {
       stylesheets = [...stylesheets, ...xsls(pth)]
     }
   }
+  stylesheets = stylesheets.filter((file) => !excluded(file, config.exclude))
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const sources = stylesheets.map((stylesheet) => ({
     file: stylesheet,
@@ -129,6 +158,12 @@ const xslint = function(pths, options) {
   }
   for (const lint of EXPRESSION_LINTERS) {
     defects.push(...lint(expressions, suppressions))
+  }
+  for (const defect of defects) {
+    const override = config.rules[defect.name]
+    if (override === 'warning' || override === 'error') {
+      defect.severity = override
+    }
   }
   logger.info(`Processed files: ${stylesheets.length}`)
   if (defects.length > 0) {
@@ -147,7 +182,7 @@ const xslint = function(pths, options) {
     const warnings = defects.filter((defect) => defect.severity === 'warning')
     if (
       errors.length > 0 ||
-      (options.maxWarnings >= 0 && warnings.length > options.maxWarnings)
+      (maxWarnings >= 0 && warnings.length > maxWarnings)
     ) {
       process.exit(1)
     }

@@ -242,4 +242,60 @@ describe('xslint', function() {
     ])
     assert.ok(!streams.stderr.includes('Processed files'))
   })
+  it('should disable a rule named off in the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'rules:\n  template-match-short-names: off\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(!streams.stdout.includes('template-match-short-names'))
+  })
+  it('should fail when the config promotes a warning to an error', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'rules:\n  template-match-short-names: error\n')
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(status, 1)
+  })
+  it('should skip files matched by a config exclude glob', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'exclude:\n  - "test/resources/**"\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(streams.stderr.includes('Processed files: 0'))
+  })
+  it('should apply max-warnings from the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'max-warnings: 0\n')
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(status, 1)
+  })
+  it('should let a command-line max-warnings override the config', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'max-warnings: 0\n')
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+      '--max-warnings=100',
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(status, 0)
+  })
 })

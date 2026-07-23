@@ -105,6 +105,8 @@ Then: optionally add a rationale at `src/resources/motives/{xpath,corpus,validat
 
 Suppression by users: `xslint --suppress=<rule-substring>` (matches names from all validators and linters).
 
+Configuration by users: a `.xslint.yml` file (discovered by walking up from the working directory, or passed with `--config <path>`) can disable rules (`rules: {<exact-name>: off}`), re-grade severity (`warning`/`error`), skip files (`exclude:` globs), and set `max-warnings`. Command-line flags override the file; the file overrides the built-in defaults. Resolution lives in `src/config.js`; `src/xslint.js` folds `off` rules into the suppression list, filters excluded files, applies severity overrides to the collected defects, and resolves the effective `max-warnings`.
+
 ## Keeping Docs in Sync
 
 Any change to behavior — new logic, a new check or validator, a rename, a moved file, a changed flag or output — must update the documentation in the same change. Before finishing, check all three and fix whichever went stale:
@@ -119,7 +121,8 @@ A change that leaves any of these describing the old behavior is not done.
 
 | File | Role |
 |------|------|
-| `src/xslint.js` | Orchestrates file discovery and suppression, runs validators then linters, formats output |
+| `src/xslint.js` | Orchestrates file discovery, configuration, and suppression, runs validators then linters, formats output |
+| `src/config.js` | Resolves `.xslint.yml` (rule severities/`off`, exclude globs, `max-warnings`), found by walking up from the cwd or via `--config` |
 | `src/xsl-validator.js` | Builds the corpus from raw sources; reports each stylesheet that is not well-formed XML and leaves it out |
 | `src/xpath-validator.js` | Splits each corpus expression into the valid ones (kept for the expression linters) and the malformed ones (reported) |
 | `src/xpath-linter.js` | Loads `checks/xpath/*.yaml`, applies per-file XPath rules |

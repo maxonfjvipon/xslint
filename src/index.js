@@ -20,11 +20,12 @@ program
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
   .option('--quiet', 'Suppress informational logs, printing only defects', false)
+  .option('--config <path>', 'Path to a configuration file')
   .option(
     '--max-warnings <n>',
     'Number of warnings to allow before the exit code becomes non-zero ' +
     '(-1 allows any number)',
-    (value) => parseInt(value, 10), -1,
+    (value) => parseInt(value, 10),
   )
   .option(
     '--suppress <check>', 'Suppress some checks',

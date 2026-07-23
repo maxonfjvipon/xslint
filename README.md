@@ -75,6 +75,29 @@ If you want to suppress many checks, use `--suppress` as many times as you need:
 xslint --suppress=monolithic-design --suppress=short-names
 ```
 
+## Configuration
+
+Project-wide settings live in a `.xslint.yml` file, discovered by walking up
+from the current directory (or passed with `--config <path>`). Command-line
+flags override the file, and the file overrides the built-in defaults.
+
+```yaml
+# .xslint.yml
+rules:
+  template-match-short-names: off          # turn a check off
+  template-match-monolithic-design: error  # promote a warning to an error
+exclude:
+  - "test/resources/**"                     # globs to skip, relative to cwd
+max-warnings: 10                            # default for --max-warnings
+```
+
+- **`rules`** maps a check name to `off`, `warning`, or `error`. `off` disables
+  the check (like `--suppress`, but by exact name); `warning` and `error`
+  re-grade its severity.
+- **`exclude`** lists globs, relative to the working directory, whose matching
+  files are not linted.
+- **`max-warnings`** sets the default for the `--max-warnings` flag.
+
 ## Output
 
 Defects are written to stdout; progress and diagnostic logs go to stderr, so
