@@ -4,13 +4,29 @@
  */
 
 /**
- * Inline suppression directives, written as XML comments, and the scope each
- * one covers. Rule names are optional and space-separated; with none, the
- * directive covers every rule at its location.
+ * Directive keywords and the scope each one covers: the whole file, the line
+ * after the comment, or the comment's own line.
+ * @type {{FILE: string, NEXT_LINE: string, LINE: string}}
+ */
+const TYPES = {
+  FILE: 'disable-file',
+  NEXT_LINE: 'disable-next-line',
+  LINE: 'disable-line',
+}
+
+/**
+ * Inline suppression directives, written as XML comments. Rule names are
+ * optional and space-separated; with none, the directive covers every rule at
+ * its location. NEXT_LINE precedes LINE in the alternation so the longer
+ * keyword wins.
  * @type {RegExp}
  */
-const DIRECTIVE =
-  /<!--\s*xslint-(disable-file|disable-next-line|disable-line)([a-z0-9\s-]*)-->/g
+const DIRECTIVE = new RegExp(
+  '<!--\\s*xslint-(' +
+  [TYPES.FILE, TYPES.NEXT_LINE, TYPES.LINE].join('|') +
+  ')([a-z0-9\\s-]*)-->',
+  'g',
+)
 
 /**
  * Inline directives found in a stylesheet's raw text, each with the line it
@@ -33,9 +49,7 @@ const directivesFrom = function(content) {
 
 /**
  * Whether any directive suppresses given defect. A directive with no names
- * covers every rule; otherwise it covers only the ones it names. 'disable-file'
- * covers the whole file, 'disable-next-line' the line after the comment, and
- * 'disable-line' the comment's own line.
+ * covers every rule; otherwise it covers only the ones it names.
  * @param {Array.<{type: string, line: number, names: Array.<string>}>}
  *  directives - Directives from the defect's file
  * @param {{name: string, line: number}} defect - Defect to test
@@ -46,10 +60,10 @@ const suppresses = function(directives, defect) {
     if (directive.names.length > 0 && !directive.names.includes(defect.name)) {
       return false
     }
-    if (directive.type === 'disable-file') {
+    if (directive.type === TYPES.FILE) {
       return true
     }
-    if (directive.type === 'disable-next-line') {
+    if (directive.type === TYPES.NEXT_LINE) {
       return defect.line === directive.line + 1
     }
     return defect.line === directive.line
