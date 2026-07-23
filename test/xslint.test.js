@@ -100,7 +100,7 @@ describe('xslint', function() {
   it('should test default directory', function() {
     const stdout = runXslint([])
     assert.ok(stdout.includes('Directories and files to process: .'))
-    assert.ok(stdout.includes('Processed files: 6'))
+    assert.ok(stdout.includes('Processed files: 8'))
   })
   it('should test empty suppress', function() {
     const stdout = runXslint([
@@ -415,5 +415,13 @@ describe('xslint', function() {
     const streams = xslintStreams([file])
     fs.rmSync(dir, {recursive: true, force: true})
     assert.ok(streams.stderr.includes('Rule \'bogus-rule\' in an xslint-disable'))
+  })
+  it('should warn about an unused inline directive', function() {
+    const streams = xslintStreams(['test/resources/directives/unused.xsl'])
+    assert.ok(streams.stderr.includes('Unused xslint-disable directive'))
+  })
+  it('should not warn when an inline directive is used', function() {
+    const streams = xslintStreams(['test/resources/directives/used.xsl'])
+    assert.ok(!streams.stderr.includes('Unused xslint-disable directive'))
   })
 })

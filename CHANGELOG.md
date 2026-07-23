@@ -10,7 +10,8 @@ publication date only; detailed notes begin with the Unreleased section.
 ## Unreleased
 
 - Add inline suppression directives — `xslint-disable-next-line`,
-  `xslint-disable-line`, and `xslint-disable-file` (#262).
+  `xslint-disable-line`, and `xslint-disable-file` (#262), and report a
+  directive that suppresses nothing as unused (#288).
 - **Breaking:** drop the `template-match-` prefix from every rule name and
   rationalize a few awkward ones, so `--suppress` strings and config `rules`
   keys change accordingly; add a conformance test that enforces rule naming,

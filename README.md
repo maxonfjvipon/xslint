@@ -121,6 +121,9 @@ suppressed.
 - **`xslint-disable-line [rules]`** — the comment's own line.
 - **`xslint-disable-file [rules]`** — the whole file (put it near the top).
 
+A directive that suppresses nothing is reported as unused, so stale ones can be
+found and removed.
+
 ## Output
 
 Defects are written to stdout; progress and diagnostic logs go to stderr, so

@@ -16,7 +16,7 @@ const {lintByFormat, names: formatChecks} = require('./xpath-format-linter')
 const {logger, levels} = require('./logger')
 const {out} = require('./output')
 const {configFrom} = require('./config')
-const {directivesFrom, suppresses} = require('./directives')
+const {directivesFrom, suppresses, unused} = require('./directives')
 const {minimatch} = require('minimatch')
 
 /**
@@ -180,7 +180,7 @@ const xslint = function(pths, options) {
   const directives = new Map(
     sources.map((source) => [source.file, directivesFrom(source.content)]),
   )
-  for (const [, list] of directives) {
+  for (const [file, list] of directives) {
     for (const directive of list) {
       for (const name of directive.names) {
         if (!CHECKS.includes(name)) {
@@ -189,6 +189,9 @@ const xslint = function(pths, options) {
           )
         }
       }
+    }
+    for (const stale of unused(list, defects.filter((d) => d.file === file))) {
+      logger.warn(`Unused xslint-disable directive at ${file}:${stale.line}`)
     }
   }
   const reported = defects.filter(

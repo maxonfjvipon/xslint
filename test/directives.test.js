@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {directivesFrom, suppresses} = require('../src/directives')
+const {directivesFrom, suppresses, unused} = require('../src/directives')
 const assert = require('assert')
 
 describe('directives', function() {
@@ -49,6 +49,24 @@ describe('directives', function() {
         [{type: 'disable-line', line: 5, names: []}],
         {name: 'short-names', line: 6},
       ),
+    )
+  })
+  it('reports a directive that covers no defect as unused', function() {
+    assert.deepStrictEqual(
+      unused(
+        [{type: 'disable-next-line', line: 3, names: ['short-names']}],
+        [{name: 'short-names', line: 9}],
+      ),
+      [{type: 'disable-next-line', line: 3, names: ['short-names']}],
+    )
+  })
+  it('does not report a directive that covers a defect as unused', function() {
+    assert.deepStrictEqual(
+      unused(
+        [{type: 'disable-next-line', line: 3, names: ['short-names']}],
+        [{name: 'short-names', line: 4}],
+      ),
+      [],
     )
   })
 })

@@ -48,29 +48,54 @@ const directivesFrom = function(content) {
 }
 
 /**
- * Whether any directive suppresses given defect. A directive with no names
- * covers every rule; otherwise it covers only the ones it names.
+ * Whether a single directive covers given defect. A directive with no names
+ * covers every rule; otherwise only the ones it names.
+ * @param {{type: string, line: number, names: Array.<string>}} directive -
+ *  Directive to test
+ * @param {{name: string, line: number}} defect - Defect to test
+ * @return {boolean} - True when the directive covers the defect
+ */
+const covers = function(directive, defect) {
+  if (directive.names.length > 0 && !directive.names.includes(defect.name)) {
+    return false
+  }
+  if (directive.type === TYPES.FILE) {
+    return true
+  }
+  if (directive.type === TYPES.NEXT_LINE) {
+    return defect.line === directive.line + 1
+  }
+  return defect.line === directive.line
+}
+
+/**
+ * Whether any directive suppresses given defect.
  * @param {Array.<{type: string, line: number, names: Array.<string>}>}
  *  directives - Directives from the defect's file
  * @param {{name: string, line: number}} defect - Defect to test
  * @return {boolean} - True when a directive suppresses the defect
  */
 const suppresses = function(directives, defect) {
-  return directives.some((directive) => {
-    if (directive.names.length > 0 && !directive.names.includes(defect.name)) {
-      return false
-    }
-    if (directive.type === TYPES.FILE) {
-      return true
-    }
-    if (directive.type === TYPES.NEXT_LINE) {
-      return defect.line === directive.line + 1
-    }
-    return defect.line === directive.line
-  })
+  return directives.some((directive) => covers(directive, defect))
+}
+
+/**
+ * Directives that suppressed none of given defects, so they sit over code that
+ * no longer triggers what they silence.
+ * @param {Array.<{type: string, line: number, names: Array.<string>}>}
+ *  directives - Directives from a file
+ * @param {Array.<{name: string, line: number}>} defects - Defects of that file
+ * @return {Array.<{type: string, line: number, names: Array.<string>}>} -
+ *  The directives that covered nothing
+ */
+const unused = function(directives, defects) {
+  return directives.filter(
+    (directive) => !defects.some((defect) => covers(directive, defect)),
+  )
 }
 
 module.exports = {
   directivesFrom,
   suppresses,
+  unused,
 }
