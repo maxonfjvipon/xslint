@@ -9,8 +9,10 @@ const path = require('node:path')
 const {logger} = require('./logger')
 
 /**
- * Xpath packs, each identified by the name suppressions match against.
- * @type {Array.<{name: string, path: string}>}
+ * Xpath packs, each parsed once at load: the name suppressions match against
+ * and the rule the linter applies.
+ * @type {Array.<{name: string, xpath: string, severity: string,
+ *  message: string}>}
  */
 const PACKS = allFilesFrom(
   path.join(__dirname, 'resources', 'checks', 'xpath'),
@@ -18,7 +20,7 @@ const PACKS = allFilesFrom(
   name: pack.substring(
     pack.lastIndexOf(path.sep) + 1, pack.lastIndexOf('.yaml'),
   ),
-  path: pack,
+  ...yaml.parsedFromFile(pack),
 }))
 
 /**
@@ -57,12 +59,11 @@ const lintByXpath = function(corpus, suppressions = []) {
       if (suppressions.some((sup) => pack.name.includes(sup))) {
         continue
       }
-      const yml = yaml.parsedFromFile(pack.path)
-      for (const node of evaluateXpath(xsl, yml.xpath)) {
+      for (const node of evaluateXpath(xsl, pack.xpath)) {
         defects.push({
           name: pack.name,
-          severity: yml.severity,
-          message: yml.message,
+          severity: pack.severity,
+          message: pack.message,
           file: file,
           line: node.line,
           pos: node.pos,
