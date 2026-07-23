@@ -89,6 +89,8 @@ XPath uses namespace prefix `xsl:` → `http://www.w3.org/1999/XSL/Transform` an
 
 **xcop formatting** — `test/xcop.test.js` extracts the inline XSL from every pack directory holding *well-formed* fixtures (`xpath-packs`, `corpus-packs`, `xpath-validator-packs`, `xpath-format-packs`), re-serializes it, and runs [xcop](https://github.com/yegor256/xcop) over it to verify the fixtures are well-formatted XML (skipped when `xcop` is not installed). The XML validator's malformed fixtures are deliberately not xcop-checked. A new pack directory of well-formed fixtures must be added to its `PACKS` list, or it goes unchecked.
 
+**Stylesheet fixtures in tests** — build them from committed `.xsl` resources (under `test/resources/`, linted by path) or the pack `input:` block scalar, never from JavaScript string concatenation like `[...].join('\n')`. The `fixtures` CI job complains (a warning annotation) when a test does. Two exceptions stay inline as template literals: malformed stylesheets (xcop cannot accept them as committed files) and trivial one-to-five-line snippets. Note that a committed `.xsl` is counted by the `should test default directory` test, so adding one bumps its `Processed files: N`.
+
 ## Adding a New Rule
 
 Rule names are kebab-case with no `template-match-` (or other noise) prefix. Every rule needs a motive and at least one test pack. `test/conformance.test.js` enforces all three across `xpath` and `corpus` (naming and motives are enforced for `validation` and `format` too), so a rule that misnames itself, drops its motive, or ships without a pack fails the build.

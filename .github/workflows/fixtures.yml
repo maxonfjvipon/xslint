@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+name: fixtures
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  fixtures:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complain about concatenated stylesheet fixtures
+        run: |
+          matches=$(grep -rn "]\.join(" test/ --include='*.test.js' || true)
+          if [ -n "${matches}" ]; then
+            echo "${matches}"
+            echo "::warning::Build test stylesheet fixtures from .xsl resources or the pack input: block, not string concatenation"
+          fi
