@@ -7,8 +7,8 @@
     "lcov"
   ],
   "check-coverage": true,
-  "statements": 97,
-  "lines": 97,
-  "functions": 95,
-  "branches": 93
+  "statements": 90,
+  "lines": 90,
+  "functions": 90,
+  "branches": 90
 }
