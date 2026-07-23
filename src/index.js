@@ -20,6 +20,12 @@ program
   .helpOption('-?, --help', 'Print this help information')
   .option('--log-level <level>', 'Set log level', levels.INFO)
   .option(
+    '--max-warnings <n>',
+    'Number of warnings to allow before the exit code becomes non-zero ' +
+    '(-1 allows any number)',
+    (value) => parseInt(value, 10), -1,
+  )
+  .option(
     '--suppress <check>', 'Suppress some checks',
     (check, suppressions) => [...suppressions, check], [],
   )

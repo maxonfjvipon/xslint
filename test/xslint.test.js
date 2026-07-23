@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {runXslint} = require('./helpers')
+const {runXslint, xslintStatus} = require('./helpers')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -179,5 +179,42 @@ describe('xslint', function() {
       'good.xsl',
       'invalid-xpath-expression',
     ].forEach((str) => assert.ok(stdout.includes(str)))
+  })
+  it('should exit zero when only warnings are found', function() {
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+    ])
+    assert.equal(status, 0)
+  })
+  it('should exit one when warnings exceed the budget', function() {
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      '--max-warnings=0',
+    ])
+    assert.equal(status, 1)
+  })
+  it('should exit zero when warnings stay within the budget', function() {
+    const status = xslintStatus([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      '--max-warnings=10',
+    ])
+    assert.equal(status, 0)
+  })
+  it('should exit one when an error is found', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    fs.writeFileSync(
+      path.join(dir, 'broken.xsl'),
+      [
+        '<?xml version="1.0"?>',
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">',
+        '  <xsl:template match="/">',
+        '    <result>',
+        '  </xsl:template>',
+        '</xsl:stylesheet>',
+      ].join('\n'),
+    )
+    const status = xslintStatus([dir, '--max-warnings=100'])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(status, 1)
   })
 })

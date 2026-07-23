@@ -40,6 +40,21 @@ const runXslint = function(args, print = true) {
 }
 
 /**
+ * Helper to run xslint and report its exit code instead of its output.
+ * @param {Array.<string>} args - Array of args
+ * @return {number} Exit code
+ */
+const xslintStatus = function(args) {
+  let status = 0
+  try {
+    execCmd(`node ${path.resolve('./src/index.js')}`, args, true)
+  } catch (ex) {
+    status = ex.status
+  }
+  return status
+}
+
+/**
  * Helper to run xcop command line tool.
  * @param {string} arg - arg
  * @param {boolean} print - Capture logs
@@ -67,6 +82,7 @@ const cmdAvailable = function(cmd, print = true) {
 
 module.exports = {
   runXslint,
+  xslintStatus,
   runXcop,
   cmdAvailable,
 }

@@ -142,7 +142,14 @@ const xslint = function(pths, options) {
         defect.name,
       )
     }
-    process.exit(1)
+    const errors = defects.filter((defect) => defect.severity === 'error')
+    const warnings = defects.filter((defect) => defect.severity === 'warning')
+    if (
+      errors.length > 0 ||
+      (options.maxWarnings >= 0 && warnings.length > options.maxWarnings)
+    ) {
+      process.exit(1)
+    }
   } else {
     logger.info(`No defects found`)
   }

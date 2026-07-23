@@ -74,6 +74,17 @@ If you want to suppress many checks, use `--suppress` as many times as you need:
 xslint --suppress=monolithic-design --suppress=short-names
 ```
 
+## Exit code
+
+`xslint` exits non-zero when any `error`-severity defect is found. Warnings do
+not fail the run by default; to make them count, cap the allowed number with
+`--max-warnings`:
+
+```bash
+xslint --max-warnings=0    # any warning fails the run
+xslint --max-warnings=10   # more than ten warnings fails the run
+```
+
 ## Checks
 
 The full list of checks with descriptions and examples is available at
