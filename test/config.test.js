@@ -14,9 +14,14 @@ describe('config', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-cfg-'))
     const config = configFrom(undefined, dir)
     fs.rmSync(dir, {recursive: true, force: true})
-    assert.deepStrictEqual(
-      config, {rules: {}, exclude: [], maxWarnings: null},
-    )
+    assert.deepStrictEqual(config, {
+      rules: {},
+      exclude: [],
+      maxWarnings: null,
+      logLevel: null,
+      quiet: null,
+      base: dir,
+    })
   })
   it('reads the rules from a file named explicitly', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-cfg-'))
@@ -34,6 +39,21 @@ describe('config', function() {
     const config = configFrom(undefined, nested)
     fs.rmSync(root, {recursive: true, force: true})
     assert.equal(config.maxWarnings, 5)
+  })
+  it('resolves the base to the directory of the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-cfg-'))
+    const file = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(file, 'exclude:\n  - "x"\n')
+    const config = configFrom(file)
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(config.base, dir)
+  })
+  it('reads the log level from the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-cfg-'))
+    fs.writeFileSync(path.join(dir, '.xslint.yml'), 'log-level: debug\n')
+    const config = configFrom(undefined, dir)
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.equal(config.logLevel, 'debug')
   })
   it('parses the exclude globs into a list', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-cfg-'))

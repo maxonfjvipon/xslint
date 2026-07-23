@@ -89,25 +89,28 @@ const xsls = function(pth) {
 
 /**
  * Whether a file matches any exclusion glob, compared as a path relative to the
- * working directory in posix form so the patterns stay portable.
+ * configuration's base directory in posix form so the patterns stay portable.
  * @param {string} file - Absolute path of a stylesheet
  * @param {Array.<string>} patterns - Exclusion globs from the configuration
+ * @param {string} base - Directory the globs resolve against
  * @return {boolean} - True when the file is excluded
  */
-const excluded = function(file, patterns) {
-  const relative = path.relative(process.cwd(), file).split(path.sep).join('/')
+const excluded = function(file, patterns, base) {
+  const relative = path.relative(base, file).split(path.sep).join('/')
   return patterns.some((pattern) => minimatch(relative, pattern))
 }
 
 /**
- * Process cli options.
- * @param {{
- *  logLevel: string,
- *  quiet: boolean
- * }} options - CLI options
+ * Set the log level, taking the command line first, then the configuration,
+ * then the default.
+ * @param {{logLevel: string|undefined, quiet: boolean|undefined}} options - CLI
+ *  options
+ * @param {{logLevel: string|null, quiet: boolean|null}} config - Configuration
  */
-const processOptions = function(options) {
-  logger.setLevel(options.quiet ? levels.WARNING : options.logLevel)
+const processOptions = function(options, config) {
+  const quiet = options.quiet ?? config.quiet ?? false
+  const level = options.logLevel ?? config.logLevel ?? levels.INFO
+  logger.setLevel(quiet ? levels.WARNING : level)
 }
 
 /**
@@ -123,17 +126,24 @@ const processOptions = function(options) {
  */
 const xslint = function(pths, options) {
   const config = configFrom(options.config)
-  for (const name of Object.keys(config.rules)) {
-    if (!CHECKS.includes(name)) {
-      logger.warn(`Rule '${name}' in configuration does not exist`)
+  const disabled = []
+  const overrides = {}
+  for (const [pattern, severity] of Object.entries(config.rules)) {
+    const matched = CHECKS.filter((check) => minimatch(check, pattern))
+    if (matched.length === 0) {
+      logger.warn(`Rule '${pattern}' in configuration does not exist`)
+    }
+    for (const check of matched) {
+      if (severity === 'off') {
+        disabled.push(check)
+      } else {
+        overrides[check] = severity
+      }
     }
   }
-  const suppressions = [
-    ...validatedSuppressions(options.suppress),
-    ...Object.keys(config.rules).filter((name) => config.rules[name] === 'off'),
-  ]
+  const suppressions = [...validatedSuppressions(options.suppress), ...disabled]
   const maxWarnings = options.maxWarnings ?? config.maxWarnings ?? -1
-  processOptions(options)
+  processOptions(options, config)
   logger.info(`Directories and files to process: ${pths.join(', ')}`)
   pths = pths.map((pth) => path.resolve(process.cwd(), pth))
   let stylesheets = []
@@ -144,7 +154,9 @@ const xslint = function(pths, options) {
       stylesheets = [...stylesheets, ...xsls(pth)]
     }
   }
-  stylesheets = stylesheets.filter((file) => !excluded(file, config.exclude))
+  stylesheets = stylesheets.filter(
+    (file) => !excluded(file, config.exclude, config.base),
+  )
   logger.debug(`Found ${stylesheets.length} .xsl files to process`)
   const sources = stylesheets.map((stylesheet) => ({
     file: stylesheet,
@@ -160,9 +172,8 @@ const xslint = function(pths, options) {
     defects.push(...lint(expressions, suppressions))
   }
   for (const defect of defects) {
-    const override = config.rules[defect.name]
-    if (override === 'warning' || override === 'error') {
-      defect.severity = override
+    if (overrides[defect.name]) {
+      defect.severity = overrides[defect.name]
     }
   }
   logger.info(`Processed files: ${stylesheets.length}`)

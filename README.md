@@ -84,19 +84,25 @@ flags override the file, and the file overrides the built-in defaults.
 ```yaml
 # .xslint.yml
 rules:
-  template-match-short-names: off          # turn a check off
-  template-match-monolithic-design: error  # promote a warning to an error
+  template-match-short-names: off       # turn one check off
+  "template-match-unused-*": error      # or a family, by glob
 exclude:
-  - "test/resources/**"                     # globs to skip, relative to cwd
-max-warnings: 10                            # default for --max-warnings
+  - "test/**"                           # globs to skip, relative to this file
+max-warnings: 10                        # default for --max-warnings
+log-level: info                         # default for --log-level
+quiet: false                            # default for --quiet
 ```
 
-- **`rules`** maps a check name to `off`, `warning`, or `error`. `off` disables
-  the check (like `--suppress`, but by exact name); `warning` and `error`
-  re-grade its severity.
-- **`exclude`** lists globs, relative to the working directory, whose matching
-  files are not linted.
-- **`max-warnings`** sets the default for the `--max-warnings` flag.
+- **`rules`** maps a check name — or a glob such as `template-match-*` — to
+  `off`, `warning`, or `error`. `off` disables the check (like `--suppress`);
+  `warning` and `error` re-grade its severity.
+- **`exclude`** lists globs, relative to the config file's own directory, whose
+  matching files are not linted.
+- **`max-warnings`**, **`log-level`**, and **`quiet`** set the defaults for the
+  matching command-line flags.
+
+Unknown top-level keys and rule names that match no check are reported so typos
+do not pass silently.
 
 ## Output
 

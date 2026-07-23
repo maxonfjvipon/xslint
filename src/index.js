@@ -7,7 +7,6 @@
 const {program} = require('commander')
 const version = require('./version')
 const xslint = require('./xslint')
-const {levels} = require('./logger')
 
 program
   .name('xslint')
@@ -18,8 +17,8 @@ program
   )
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information')
-  .option('--log-level <level>', 'Set log level', levels.INFO)
-  .option('--quiet', 'Suppress informational logs, printing only defects', false)
+  .option('--log-level <level>', 'Set log level')
+  .option('--quiet', 'Suppress informational logs, printing only defects')
   .option('--config <path>', 'Path to a configuration file')
   .option(
     '--max-warnings <n>',

@@ -105,7 +105,7 @@ Then: optionally add a rationale at `src/resources/motives/{xpath,corpus,validat
 
 Suppression by users: `xslint --suppress=<rule-substring>` (matches names from all validators and linters).
 
-Configuration by users: a `.xslint.yml` file (discovered by walking up from the working directory, or passed with `--config <path>`) can disable rules (`rules: {<exact-name>: off}`), re-grade severity (`warning`/`error`), skip files (`exclude:` globs), and set `max-warnings`. Command-line flags override the file; the file overrides the built-in defaults. Resolution lives in `src/config.js`; `src/xslint.js` folds `off` rules into the suppression list, filters excluded files, applies severity overrides to the collected defects, and resolves the effective `max-warnings`.
+Configuration by users: a `.xslint.yml` file (discovered by walking up from the working directory, or passed with `--config <path>`) can disable rules (`rules: {<name-or-glob>: off}`), re-grade severity (`warning`/`error`), skip files (`exclude:` globs, resolved relative to the config file's own directory), and set defaults for `max-warnings`, `log-level`, and `quiet`. Unknown top-level keys and rule patterns that match no check are reported. Command-line flags override the file; the file overrides the built-in defaults. Resolution lives in `src/config.js` (which also exposes the config's `base` directory); `src/xslint.js` expands each rule pattern against the check names, folds `off` rules into the suppression list, filters excluded files against `base`, applies severity overrides to the collected defects, and resolves the effective `max-warnings`/`log-level`/`quiet`.
 
 ## Keeping Docs in Sync
 

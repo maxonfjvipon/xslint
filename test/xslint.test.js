@@ -266,11 +266,19 @@ describe('xslint', function() {
   })
   it('should skip files matched by a config exclude glob', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
-    const cfg = path.join(dir, '.xslint.yml')
-    fs.writeFileSync(cfg, 'exclude:\n  - "test/resources/**"\n')
+    fs.writeFileSync(path.join(dir, '.xslint.yml'), 'exclude:\n  - "*.xsl"\n')
+    fs.writeFileSync(
+      path.join(dir, 'sheet.xsl'),
+      [
+        '<?xml version="1.0"?>',
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" ' +
+          'version="2.0">',
+        '  <xsl:template match="/"><out/></xsl:template>',
+        '</xsl:stylesheet>',
+      ].join('\n'),
+    )
     const streams = xslintStreams([
-      'test/resources/stylesheets/xsl-with-some-violations.xsl',
-      `--config=${cfg}`,
+      dir, `--config=${path.join(dir, '.xslint.yml')}`,
     ])
     fs.rmSync(dir, {recursive: true, force: true})
     assert.ok(streams.stderr.includes('Processed files: 0'))
@@ -297,5 +305,49 @@ describe('xslint', function() {
     ])
     fs.rmSync(dir, {recursive: true, force: true})
     assert.equal(status, 0)
+  })
+  it('should disable a family of rules by glob in the config', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'rules:\n  "template-match-*": off\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(!streams.stdout.includes('template-match'))
+  })
+  it('should warn about an unknown key in the config', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'excludes:\n  - "x"\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(streams.stderr.includes('Unknown key \'excludes\''))
+  })
+  it('should read the log level from the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'log-level: debug\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(streams.stderr.includes('Log level set to \'debug\''))
+  })
+  it('should read quiet from the config file', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'quiet: true\n')
+    const streams = xslintStreams([
+      'test/resources/stylesheets/xsl-with-some-violations.xsl',
+      `--config=${cfg}`,
+    ])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(!streams.stderr.includes('Processed files'))
   })
 })
