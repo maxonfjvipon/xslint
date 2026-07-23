@@ -441,6 +441,9 @@ const tokenized = function(xpath) {
   let at = 0
   while (at < xpath.length) {
     const start = at
+    const axis = opensAxis(xpath, at)
+    const more = opensMore(xpath, at)
+    const func = opensUserFunction(xpath, at)
     let type
     if (QUOTES.includes(xpath[at])) {
       type = TOKENS.STRING
@@ -451,15 +454,15 @@ const tokenized = function(xpath) {
     } else if (WHITESPACE.includes(xpath[at])) {
       type = TOKENS.WHITESPACE
       at = afterWhitespace(xpath, at)
-    } else if (opensAxis(xpath, at)) {
-      type = AXES[opensAxis(xpath, at)]
-      at += opensAxis(xpath, at).length
+    } else if (axis) {
+      type = AXES[axis]
+      at += axis.length
     } else if (opensNumber(xpath, at)) {
       type = TOKENS.NUMBER
       at = afterNumber(xpath, at)
-    } else if (opensMore(xpath, at)) {
-      type = MORE[opensMore(xpath, at)]
-      at+=opensMore(xpath, at).length
+    } else if (more) {
+      type = MORE[more]
+      at += more.length
     } else if (TRIPLE[xpath.slice(at, at+3)]) {
       type = TRIPLE[xpath.slice(at, at+3)]
       at+=3
@@ -469,9 +472,9 @@ const tokenized = function(xpath) {
     } else if (SINGLE[xpath[at]]) {
       type = SINGLE[xpath[at]]
       at++
-    } else if (opensUserFunction(xpath, at)) {
+    } else if (func) {
       type = TOKENS.USER_FUNCTION
-      at+=opensUserFunction(xpath, at).length
+      at += func.length
     } else {
       type = TOKENS.OTHER
       at = afterOther(xpath, at)
