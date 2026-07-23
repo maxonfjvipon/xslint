@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-xpath: /xsl:stylesheet[@version = '2.0'][not(some $x in .//@* satisfies contains($x, 'xs:'))]
+xpath: /xsl:stylesheet[@version = ('2.0', '3.0')][not(some $x in .//@* satisfies contains($x, 'xs:'))]
 severity: warning
-message: No built-in Schema types are used in XSLT 2.0 mode. Declare variable types with xs:string, xs:integer, or similar.
+message: No built-in Schema types are used in XSLT 2.0 or 3.0 mode. Declare variable types with xs:string, xs:integer, or similar.

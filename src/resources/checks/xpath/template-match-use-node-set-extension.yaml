@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-xpath: /xsl:stylesheet[@version = "2.0"]//*[contains(@select, ":node-set")]
+xpath: /xsl:stylesheet[@version = ('2.0', '3.0')]//*[contains(@select, ":node-set")]
 severity: warning
-message: The node-set() extension function is unnecessary in XSLT 2.0. Query the variable directly without it.
+message: The node-set() extension function is unnecessary in XSLT 2.0 and later. Query the variable directly without it.

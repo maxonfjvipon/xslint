@@ -2,7 +2,7 @@
 
 The `exsl:node-set()` extension function is an XSLT 1.0 workaround for
 converting result tree fragments into node-sets. It is unnecessary in XSLT 2.0
-where temporary trees can be queried directly.
+and later, where temporary trees can be queried directly.
 
 Incorrect:
 
