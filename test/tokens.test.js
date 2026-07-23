@@ -186,4 +186,44 @@ describe('tokens', function() {
       )
     })
   })
+  it('reconstructs every generated expression from its tokens', function() {
+    const pieces = [
+      'a', 'ns:n', '"x"', '\'a\'\'b\'', '(: c :)', '(: (:n:) :)', '123', '4.5',
+      '.5', '1e3', 'child::', 'descendant-or-self::', '@', ' ', '  ', '\t',
+      '\n', '//', '/', '(', ')', '[', ']', '*', '+', '-', '=', '!=', '<=',
+      '>=', '|', '||', 'and', 'or', 'div', 'mod', 'instance of', '$v', ',', ':',
+    ]
+    for (let count = 0; count < 500; count += 1) {
+      let expression = ''
+      const parts = 1 + Math.floor(Math.random() * 12)
+      for (let part = 0; part < parts; part += 1) {
+        expression += pieces[Math.floor(Math.random() * pieces.length)]
+      }
+      assert.equal(
+        tokenized(expression).map((token) => token.value).join(''),
+        expression,
+      )
+    }
+  })
+  it('positions generated expression tokens at contiguous offsets', function() {
+    const pieces = [
+      'a', 'ns:n', '"x"', '\'a\'\'b\'', '(: c :)', '(: (:n:) :)', '123', '4.5',
+      '.5', '1e3', 'child::', 'descendant-or-self::', '@', ' ', '  ', '\t',
+      '\n', '//', '/', '(', ')', '[', ']', '*', '+', '-', '=', '!=', '<=',
+      '>=', '|', '||', 'and', 'or', 'div', 'mod', 'instance of', '$v', ',', ':',
+    ]
+    for (let count = 0; count < 500; count += 1) {
+      let expression = ''
+      const parts = 1 + Math.floor(Math.random() * 12)
+      for (let part = 0; part < parts; part += 1) {
+        expression += pieces[Math.floor(Math.random() * pieces.length)]
+      }
+      let offset = 0
+      for (const token of tokenized(expression)) {
+        assert.equal(token.start, offset)
+        assert.ok(token.value.length > 0)
+        offset += token.value.length
+      }
+    }
+  })
 })
