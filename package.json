@@ -29,6 +29,8 @@
     "yaml": "^2.7.0"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^9.6.1",
+    "@stryker-mutator/mocha-runner": "^9.6.1",
     "c8": "^12.0.0",
     "eslint": "^10.5.0",
     "eslint-config-google": "^0.14.0",

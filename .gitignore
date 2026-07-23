@@ -2,6 +2,8 @@ node_modules/
 docs/
 .nyc_output
 coverage/
+.stryker-tmp/
+reports/
 .idea
 .xlint/
 xslint.iml

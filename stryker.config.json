@@ -1,0 +1,27 @@
+{
+  "packageManager": "npm",
+  "testRunner": "mocha",
+  "reporters": [
+    "progress",
+    "clear-text",
+    "html"
+  ],
+  "coverageAnalysis": "perTest",
+  "mutate": [
+    "src/**/*.js",
+    "!src/index.js",
+    "!src/xslint.js",
+    "!src/logger.js",
+    "!src/output.js"
+  ],
+  "mochaOptions": {
+    "spec": [
+      "test/tokens.test.js",
+      "test/xpath-linter.test.js",
+      "test/corpus-linter.test.js",
+      "test/xpath-validator.test.js",
+      "test/xsl-validator.test.js",
+      "test/xpath-format-linter.test.js"
+    ]
+  }
+}
