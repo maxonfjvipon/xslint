@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: g4s8/xcop-action@master
+      - uses: g4s8/xcop-action@v1.3
         with:
           license: LICENSE.txt
           files: |
