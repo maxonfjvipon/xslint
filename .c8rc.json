@@ -1,0 +1,14 @@
+{
+  "include": [
+    "src/**"
+  ],
+  "reporter": [
+    "text-summary",
+    "lcov"
+  ],
+  "check-coverage": true,
+  "statements": 97,
+  "lines": 97,
+  "functions": 95,
+  "branches": 93
+}
