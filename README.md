@@ -149,6 +149,9 @@ YAML only tunes severity and message. Regenerate the documentation site with
 
 You will need [npm] and [node] installed
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and
+[CHANGELOG.md](CHANGELOG.md) for release notes.
+
 [npm]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 [node]: https://nodejs.org/en
 [guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
