@@ -91,6 +91,8 @@ XPath uses namespace prefix `xsl:` → `http://www.w3.org/1999/XSL/Transform` an
 
 ## Adding a New Rule
 
+Rule names are kebab-case with no `template-match-` (or other noise) prefix. Every rule needs a motive and at least one test pack. `test/conformance.test.js` enforces all three across `xpath` and `corpus` (naming and motives are enforced for `validation` and `format` too), so a rule that misnames itself, drops its motive, or ships without a pack fails the build.
+
 Per-file rule:
 1. Create `src/resources/checks/xpath/<rule-name>.yaml` with `xpath`, `severity`, `message`.
 2. Create `test/resources/xpath-packs/<rule-name>.yaml` with matching `pack`, `found`, `input`.
@@ -101,7 +103,7 @@ Cross-file rule:
 
 Validators and formatting checks are not extended this way: their logic is fixed in `src/xsl-validator.js`, `src/xpath-validator.js`, and `src/xpath-format-linter.js`, and their YAML (`checks/validation/<name>.yaml` and `checks/format/<name>.yaml`) only tunes `severity` and `message`.
 
-Then: optionally add a rationale at `src/resources/motives/{xpath,corpus,validation,format}/<rule-name>.md`, run `npm test`, and regenerate the doc site with `npx grunt docs`. A brand-new pack directory of well-formed fixtures must also be registered in `test/xcop.test.js` so its inline XSL is formatting-checked.
+Then: add a rationale (required) at `src/resources/motives/{xpath,corpus,validation,format}/<rule-name>.md`, run `npm test`, and regenerate the doc site with `npx grunt docs`. A brand-new pack directory of well-formed fixtures must also be registered in `test/xcop.test.js` so its inline XSL is formatting-checked.
 
 Suppression by users: `xslint --suppress=<rule-substring>` (matches names from all validators and linters).
 

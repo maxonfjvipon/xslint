@@ -30,13 +30,13 @@ describe('xslint', function() {
     const expected = [
       'Processed files: 1',
       'Defects found: 7',
-      '(26:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
-      '(27:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
-      '(6:1) No built-in Schema types are used in XSLT 2.0 or 3.0 mode. Declare variable types with xs:string, xs:integer, or similar. (template-match-not-using-schema-types)',
-      '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (template-match-setting-value-of-variable-incorrectly)',
-      '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (template-match-short-names)',
-      '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (template-match-starts-with-double-slash)',
-      '(45:3) A named template is never invoked via xsl:call-template. Remove it or call it. (template-match-unused-named-template)',
+      '(26:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (empty-content-in-instructions)',
+      '(27:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (empty-content-in-instructions)',
+      '(6:1) No built-in Schema types are used in XSLT 2.0 or 3.0 mode. Declare variable types with xs:string, xs:integer, or similar. (not-using-schema-types)',
+      '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (setting-value-of-variable-incorrectly)',
+      '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (short-names)',
+      '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (starts-with-double-slash)',
+      '(45:3) A named template is never invoked via xsl:call-template. Remove it or call it. (unused-named-template)',
     ]
     expected.forEach((str) => assert.ok(stdout.includes(str)))
   })
@@ -44,12 +44,12 @@ describe('xslint', function() {
     const stdout = runXslint([
       'test/resources/stylesheets/xsl-with-some-violations.xsl',
       '--suppress=empty-content-in-instructions',
-      '--suppress=template-match-starts-with-double-slash',
+      '--suppress=starts-with-double-slash',
     ]);
     ['Processed files: 1', 'Defects found: 4'].forEach((expected) => assert.ok(stdout.includes(expected)))
     const absented = [
-      'template-match-empty-content-in-instructions',
-      'template-match-starts-with-double-slash',
+      'empty-content-in-instructions',
+      'starts-with-double-slash',
     ]
     absented.forEach((str) => assert.ok(!stdout.includes(str)))
   })
@@ -110,13 +110,13 @@ describe('xslint', function() {
     const expected = [
       'Processed files: 1',
       'Defects found: 7',
-      '(26:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
-      '(27:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (template-match-empty-content-in-instructions)',
-      '(6:1) No built-in Schema types are used in XSLT 2.0 or 3.0 mode. Declare variable types with xs:string, xs:integer, or similar. (template-match-not-using-schema-types)',
-      '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (template-match-setting-value-of-variable-incorrectly)',
-      '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (template-match-short-names)',
-      '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (template-match-starts-with-double-slash)',
-      '(45:3) A named template is never invoked via xsl:call-template. Remove it or call it. (template-match-unused-named-template)',
+      '(26:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (empty-content-in-instructions)',
+      '(27:9) An instruction element such as xsl:for-each, xsl:if, or xsl:when has no content. Add content or remove the empty element. (empty-content-in-instructions)',
+      '(6:1) No built-in Schema types are used in XSLT 2.0 or 3.0 mode. Declare variable types with xs:string, xs:integer, or similar. (not-using-schema-types)',
+      '(16:3) A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead. (setting-value-of-variable-incorrectly)',
+      '(16:3) A variable, function, or template has a single-character name. Use a descriptive name that reveals intent. (short-names)',
+      '(31:3) The match attribute of xsl:template starts with //, which scans the entire document tree. Use a more specific pattern. (starts-with-double-slash)',
+      '(45:3) A named template is never invoked via xsl:call-template. Remove it or call it. (unused-named-template)',
     ]
     assert.ok(stdout.includes('Empty suppress is incorrect. Delete this "--suppress" or use another one.'))
     expected.forEach((str) => assert.ok(stdout.includes(str)))
@@ -221,7 +221,7 @@ describe('xslint', function() {
     const streams = xslintStreams([
       'test/resources/stylesheets/xsl-with-some-violations.xsl',
     ])
-    assert.ok(streams.stdout.includes('template-match-short-names'))
+    assert.ok(streams.stdout.includes('short-names'))
   })
   it('should print progress logs to stderr', function() {
     const streams = xslintStreams([
@@ -245,18 +245,18 @@ describe('xslint', function() {
   it('should disable a rule named off in the config file', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
     const cfg = path.join(dir, '.xslint.yml')
-    fs.writeFileSync(cfg, 'rules:\n  template-match-short-names: off\n')
+    fs.writeFileSync(cfg, 'rules:\n  short-names: off\n')
     const streams = xslintStreams([
       'test/resources/stylesheets/xsl-with-some-violations.xsl',
       `--config=${cfg}`,
     ])
     fs.rmSync(dir, {recursive: true, force: true})
-    assert.ok(!streams.stdout.includes('template-match-short-names'))
+    assert.ok(!streams.stdout.includes('short-names'))
   })
   it('should fail when the config promotes a warning to an error', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
     const cfg = path.join(dir, '.xslint.yml')
-    fs.writeFileSync(cfg, 'rules:\n  template-match-short-names: error\n')
+    fs.writeFileSync(cfg, 'rules:\n  short-names: error\n')
     const status = xslintStatus([
       'test/resources/stylesheets/xsl-with-some-violations.xsl',
       `--config=${cfg}`,
@@ -309,13 +309,13 @@ describe('xslint', function() {
   it('should disable a family of rules by glob in the config', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
     const cfg = path.join(dir, '.xslint.yml')
-    fs.writeFileSync(cfg, 'rules:\n  "template-match-*": off\n')
+    fs.writeFileSync(cfg, 'rules:\n  "unused-*": off\n')
     const streams = xslintStreams([
       'test/resources/stylesheets/xsl-with-some-violations.xsl',
       `--config=${cfg}`,
     ])
     fs.rmSync(dir, {recursive: true, force: true})
-    assert.ok(!streams.stdout.includes('template-match'))
+    assert.ok(!streams.stdout.includes('unused-named-template'))
   })
   it('should warn about an unknown key in the config', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))

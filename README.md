@@ -60,13 +60,13 @@ xslint path/to/your/file1.xsl path/to/your/file2.xsl
 You can suppress some [checks][checks] by using `--suppress` option:
 
 ```bash
-xslint --suppress=template-match-are-you-confusing-variable-and-node
+xslint --suppress=confusing-variable-and-node
 ```
 
 You can skip several checks at once if they contain a certain substring:
 
 ```bash
-xslint --suppress=template-match
+xslint --suppress=unused
 ```
 
 If you want to suppress many checks, use `--suppress` as many times as you need:
@@ -84,8 +84,8 @@ flags override the file, and the file overrides the built-in defaults.
 ```yaml
 # .xslint.yml
 rules:
-  template-match-short-names: off       # turn one check off
-  "template-match-unused-*": error      # or a family, by glob
+  short-names: off       # turn one check off
+  "unused-*": error      # or a family, by glob
 exclude:
   - "test/**"                           # globs to skip, relative to this file
 max-warnings: 10                        # default for --max-warnings
@@ -93,7 +93,7 @@ log-level: info                         # default for --log-level
 quiet: false                            # default for --quiet
 ```
 
-- **`rules`** maps a check name — or a glob such as `template-match-*` — to
+- **`rules`** maps a check name — or a glob such as `unused-*` — to
   `off`, `warning`, or `error`. `off` disables the check (like `--suppress`);
   `warning` and `error` re-grade its severity.
 - **`exclude`** lists globs, relative to the config file's own directory, whose

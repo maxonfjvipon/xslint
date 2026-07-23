@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: with-param-use-in-invalid-parent-node
+found:
+  amount: 0
+  positions: [ ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:import href="info.xsl"/>
+    <xsl:template name="writer">
+      <xsl:param name="surname"/>
+      <p>
+        <xsl:value-of select="$surname"/>
+      </p>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:call-template name="writer">
+        <xsl:with-param name="surname" select="'Shakespeare'"/>
+      </xsl:call-template>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[3]">
+      <xsl:apply-templates select="o/o">
+        <xsl:with-param name="surname" select="'Austen'"/>
+      </xsl:apply-templates>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[4]">
+      <xsl:apply-imports>
+        <xsl:with-param name="surname" select="'Dickens'"/>
+      </xsl:apply-imports>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[5]">
+      <xsl:next-match>
+        <xsl:with-param name="surname" select="'Carroll'"/>
+      </xsl:next-match>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[6]">
+      <xsl:variable name="qw" as="xs:string" select="'ooo'"/>
+      <xsl:copy-of select="$qw"/>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[7]">
+      <xsl:iterate select="1 to 17">
+        <xsl:param name="number" select="1"/>
+        <xsl:message>
+          <xsl:value-of select="$number"/>
+        </xsl:message>
+        <xsl:next-iteration>
+          <xsl:with-param name="number" select="$number + 1"/>
+        </xsl:next-iteration>
+      </xsl:iterate>
+    </xsl:template>
+  </xsl:stylesheet>

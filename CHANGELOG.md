@@ -9,6 +9,15 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- **Breaking:** drop the `template-match-` prefix from every rule name and
+  rationalize a few awkward ones, so `--suppress` strings and config `rules`
+  keys change accordingly; add a conformance test that enforces rule naming,
+  motives, and test packs (#258).
+- Add a `.xslint.yml` configuration file — rule severities and globs,
+  `exclude`, `max-warnings`, `log-level`, `quiet` — resolved with `--config`
+  and walk-up discovery (#261, #282, #283, #284, #285).
+- Add c8 coverage measurement with a 90% gate and a Codecov badge (#265).
+- Add scheduled Stryker mutation testing (#266).
 - Parse each XPath rule once at load instead of once per file (#256).
 - Compute each tokenizer probe once per position (#255).
 - Apply the schema-type and node-set rules to XSLT 3.0 stylesheets (#259).
