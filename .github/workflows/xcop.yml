@@ -14,9 +14,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: g4s8/xcop-action@v1.3
+      - uses: ruby/setup-ruby@v1
         with:
-          license: LICENSE.txt
-          files: |
-            **/*.xsl
-            **/*.xml
+          ruby-version: '3.3'
+      - run: gem install xcop -v 0.11.0
+      - run: >-
+          xcop --license LICENSE.txt
+          --include '**/*.xsl' --include '**/*.xml'
+          --exclude 'test/resources/malformed/**'

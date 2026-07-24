@@ -4,7 +4,6 @@
  */
 
 const {runXslint, xslintStatus, xslintStreams} = require('./helpers')
-const {yaml} = require('../src/helpers')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -101,7 +100,7 @@ describe('xslint', function() {
   it('should test default directory', function() {
     const stdout = runXslint([])
     assert.ok(stdout.includes('Directories and files to process: .'))
-    assert.ok(stdout.includes('Processed files: 12'))
+    assert.ok(stdout.includes('Processed files: 14'))
   })
   it('should test empty suppress', function() {
     const stdout = runXslint([
@@ -148,18 +147,7 @@ describe('xslint', function() {
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`))
   })
   it('should lint the parseable stylesheets and report the malformed ones', function() {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
-    const src = path.resolve(__dirname, 'resources', 'malformed')
-    fs.writeFileSync(
-      path.join(dir, 'good.xsl'),
-      yaml.parsedFromFile(path.join(src, 'invalid-xpath.yaml')).content,
-    )
-    fs.writeFileSync(
-      path.join(dir, 'bad.xsl'),
-      yaml.parsedFromFile(path.join(src, 'malformed.yaml')).content,
-    )
-    const stdout = runXslint([dir])
-    fs.rmSync(dir, {recursive: true, force: true});
+    const stdout = runXslint(['test/resources/malformed']);
     [
       'Processed files: 2',
       'bad.xsl(1:1)',
@@ -189,15 +177,10 @@ describe('xslint', function() {
     assert.equal(status, 0)
   })
   it('should exit one when an error is found', function() {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
-    fs.writeFileSync(
-      path.join(dir, 'broken.xsl'),
-      yaml.parsedFromFile(
-        path.resolve(__dirname, 'resources', 'malformed', 'malformed.yaml'),
-      ).content,
-    )
-    const status = xslintStatus([dir, '--max-warnings=100'])
-    fs.rmSync(dir, {recursive: true, force: true})
+    const status = xslintStatus([
+      'test/resources/malformed/bad.xsl',
+      '--max-warnings=100',
+    ])
     assert.equal(status, 1)
   })
   it('should print defects to stdout', function() {
