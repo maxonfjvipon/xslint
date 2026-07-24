@@ -14,10 +14,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Complain about concatenated stylesheet fixtures
+      - name: Fail on inline stylesheet fixtures in tests
         run: |
-          matches=$(grep -rn "]\.join(" test/ --include='*.test.js' || true)
-          if [ -n "${matches}" ]; then
-            echo "${matches}"
-            echo "::warning::Build test stylesheet fixtures from .xsl resources or the pack input: block, not string concatenation"
+          if grep -rnE '<\?xml|<xsl:' test/ --include='*.test.js'; then
+            echo "::error::Test stylesheet fixtures must be committed resources under test/resources, not inline strings"
+            exit 1
           fi

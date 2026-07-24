@@ -4,6 +4,7 @@
  */
 
 const {runXslint, xslintStatus, xslintStreams} = require('./helpers')
+const {yaml} = require('../src/helpers')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -100,7 +101,7 @@ describe('xslint', function() {
   it('should test default directory', function() {
     const stdout = runXslint([])
     assert.ok(stdout.includes('Directories and files to process: .'))
-    assert.ok(stdout.includes('Processed files: 10'))
+    assert.ok(stdout.includes('Processed files: 12'))
   })
   it('should test empty suppress', function() {
     const stdout = runXslint([
@@ -148,23 +149,14 @@ describe('xslint', function() {
   })
   it('should lint the parseable stylesheets and report the malformed ones', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const src = path.resolve(__dirname, 'resources', 'malformed')
     fs.writeFileSync(
       path.join(dir, 'good.xsl'),
-      `<?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/">
-    <xsl:value-of select="1 +"/>
-  </xsl:template>
-</xsl:stylesheet>`,
+      yaml.parsedFromFile(path.join(src, 'invalid-xpath.yaml')).content,
     )
     fs.writeFileSync(
       path.join(dir, 'bad.xsl'),
-      `<?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/">
-    <result>
-  </xsl:template>
-</xsl:stylesheet>`,
+      yaml.parsedFromFile(path.join(src, 'malformed.yaml')).content,
     )
     const stdout = runXslint([dir])
     fs.rmSync(dir, {recursive: true, force: true});
@@ -200,12 +192,9 @@ describe('xslint', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
     fs.writeFileSync(
       path.join(dir, 'broken.xsl'),
-      `<?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/">
-    <result>
-  </xsl:template>
-</xsl:stylesheet>`,
+      yaml.parsedFromFile(
+        path.resolve(__dirname, 'resources', 'malformed', 'malformed.yaml'),
+      ).content,
     )
     const status = xslintStatus([dir, '--max-warnings=100'])
     fs.rmSync(dir, {recursive: true, force: true})
@@ -259,19 +248,10 @@ describe('xslint', function() {
     assert.equal(status, 1)
   })
   it('should skip files matched by a config exclude glob', function() {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
-    fs.writeFileSync(path.join(dir, '.xslint.yml'), 'exclude:\n  - "*.xsl"\n')
-    fs.writeFileSync(
-      path.join(dir, 'sheet.xsl'),
-      `<?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/"><out/></xsl:template>
-</xsl:stylesheet>`,
-    )
     const streams = xslintStreams([
-      dir, `--config=${path.join(dir, '.xslint.yml')}`,
+      'test/resources/excluded',
+      '--config=test/resources/excluded/.xslint.yml',
     ])
-    fs.rmSync(dir, {recursive: true, force: true})
     assert.ok(streams.stderr.includes('Processed files: 0'))
   })
   it('should apply max-warnings from the config file', function() {
@@ -354,15 +334,9 @@ describe('xslint', function() {
     assert.ok(!streams.stdout.includes('short-names'))
   })
   it('should warn about an unknown rule in a disable directive', function() {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
-    const file = path.join(dir, 'sheet.xsl')
-    fs.writeFileSync(file, `<?xml version="1.0"?>
-<!-- xslint-disable-file bogus-rule -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="s">
-  <xsl:template match="/"><out/></xsl:template>
-</xsl:stylesheet>`)
-    const streams = xslintStreams([file])
-    fs.rmSync(dir, {recursive: true, force: true})
+    const streams = xslintStreams(
+      ['test/resources/directives/unknown-rule.xsl'],
+    )
     assert.ok(streams.stderr.includes('Rule \'bogus-rule\' in an xslint-disable'))
   })
   it('should warn about an unused inline directive', function() {
