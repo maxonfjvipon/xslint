@@ -47,6 +47,22 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .nursery {
+    background: #ddf4ff;
+    color: #0969da;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nursery-note {
+    background: #ddf4ff;
+    border-left: 4px solid #0969da;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .back { display: inline-block; margin-bottom: 24px; font-size: 0.9rem; }
   .meta { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0 24px; flex-wrap: wrap; }
   .xpath {
@@ -71,9 +87,12 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span>
+    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
     <code class="xpath">//xsl:*[text()[normalize-space()] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]</code>
   </div>
+  <p class="nursery-note"><code>--stable</code> withholds this
+  check while an open issue reports it wrong about code a processor accepts:
+  #881, whose normalize-space strips a wider whitespace class than XPath and so misses 29 nodes of TEI.</p>
   <div class="check-content">
 <h1>Literal text outside <code>xsl:text</code></h1>
 <p>Literal text (other than whitespace) must not sit directly inside an <code>xsl:</code>

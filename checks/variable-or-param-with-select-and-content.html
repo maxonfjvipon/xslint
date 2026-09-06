@@ -47,6 +47,22 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .nursery {
+    background: #ddf4ff;
+    color: #0969da;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nursery-note {
+    background: #ddf4ff;
+    border-left: 4px solid #0969da;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .back { display: inline-block; margin-bottom: 24px; font-size: 0.9rem; }
   .meta { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0 24px; flex-wrap: wrap; }
   .xpath {
@@ -71,9 +87,12 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-error">error</span>
+    <span class="severity-error">error</span> <span class="nursery">nursery</span>
     <code class="xpath">//(xsl:variable | xsl:param | xsl:with-param)[@select and (* or text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
   </div>
+  <p class="nursery-note"><code>--stable</code> withholds this
+  check while an open issue reports it wrong about code a processor accepts:
+  #851, which reads only the plain spelling of @select.</p>
   <div class="check-content">
 <h1>Using internal content and @select to set a variable, param or with-param</h1>
 <p>An xsl:variable, an xsl:param and an xsl:with-param — the variable-binding

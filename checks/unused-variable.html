@@ -47,6 +47,22 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .nursery {
+    background: #ddf4ff;
+    color: #0969da;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nursery-note {
+    background: #ddf4ff;
+    border-left: 4px solid #0969da;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .back { display: inline-block; margin-bottom: 24px; font-size: 0.9rem; }
   .meta { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0 24px; flex-wrap: wrap; }
   .xpath {
@@ -71,10 +87,13 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span>
+    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
     <code class="xpath">declaration: //xsl:variable[@name]</code>
     <code class="xpath">usage: //@*</code>
   </div>
+  <p class="nursery-note"><code>--stable</code> withholds this
+  check while an open issue reports it wrong about code a processor accepts:
+  #498, whose reference detection matches a name as a substring rather than as a token.</p>
   <div class="check-content">
 <h1>Unused variable</h1>
 <p>A variable whose <code>$name</code> is referenced nowhere it is in scope — within its own
