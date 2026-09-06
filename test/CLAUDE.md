@@ -247,7 +247,7 @@ here, which turns 3 to 5 growths of 18 non-finite and leaves the gate passing. T
 unaffected, being taken over the corpus four times larger and against the whole run rather than one
 reading of it: under that same coarse clock `corpus-linter` reads 14.0% to 14.9% where a fine one
 reads 15.1% to 15.7%. So a coarse clock costs one platform the looser question, and the check tier
-goes pending (#889).
+goes pending (#892).
 
 It stands down in one process and says so: `npm run coverage` runs mocha under c8, and V8's branch
 bookkeeping does not fall evenly across the stages — it charges `xpath-linter`, the one putting

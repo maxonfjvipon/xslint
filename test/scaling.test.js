@@ -168,7 +168,7 @@
  * is registered **pending** rather than passed, which is #645's rule. The
  * stage tier keeps an `it` of its own and is unaffected, a share being
  * taken over the corpus four times larger and against the whole run, so
- * only growth ever paid that clock (#889).
+ * only growth ever paid that clock (#892).
  *
  * `SHADOWED` is the one place the sweep is knowingly wrong, and it is
  * wrong upward. `--suppress` matches by substring, so a check whose name
@@ -267,7 +267,7 @@ const SHADOWED = {
  * of them. A quarter is the geometric middle of the two measured
  * distributions: 1 to 4 of the forty-nine read `0` here over five runs,
  * against 36 to 38 under a clock quantised to the scheduler tick Windows
- * charges processor time in (#889).
+ * charges processor time in (#892).
  * @type {number}
  */
 const RESOLVED = 0.25
@@ -634,7 +634,7 @@ const tabled = function(weight) {
  * fraction of a millisecond and Windows charges in ticks of some sixteen, so a
  * reading there counts tick boundaries rather than measuring the check: three
  * quarters of them come back `0` and what is left swings five times over
- * between attempts of one run (#889).
+ * between attempts of one run (#892).
  * @param {Map.<string, Array.<number>>} costs - Each check's readings so far
  * @return {boolean} - Whether the tier has a measurement to judge
  */
