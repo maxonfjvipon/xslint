@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: variable-or-param-with-select-and-content
+found:
+  amount: 4
+  positions: [ [ 4, 5 ], [ 8, 5 ], [ 9, 5 ], [ 11, 7 ] ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="s">
+    <xsl:template name="collapse">
+      <xsl:param name="first" select="@one">&#x2028;</xsl:param>
+      <xsl:value-of select="$first"/>
+    </xsl:template>
+    <xsl:template match="/">
+      <xsl:variable name="second" select="@two">three</xsl:variable>
+      <xsl:variable name="fourth" select="@five">&#xA0;</xsl:variable>
+      <xsl:call-template name="collapse">
+        <xsl:with-param name="first" select="@six">&#x2003;</xsl:with-param>
+      </xsl:call-template>
+      <xsl:variable name="seventh" select="@eight">
+      </xsl:variable>
+      <xsl:value-of select="concat($second, $fourth, $seventh)"/>
+    </xsl:template>
+  </xsl:stylesheet>

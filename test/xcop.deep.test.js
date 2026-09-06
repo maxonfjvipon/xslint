@@ -35,9 +35,9 @@ const available = cmdAvailable('xcop', ['--version'], false)
 /**
  * Packs whose fixture must carry what xcop rejects, so it cannot also be
  * canonical XML: an unused namespace declaration, a prefix list naming one,
- * the no-break space of #643, and the indentation a nearer `xml:space` frees
- * (#553, #693, #817). Each entry is the path a pack stands at, a basename
- * naming two as readily as one, and each is asserted rather than skipped.
+ * the no-break space of #643, the wider gaps of #881, the indentation a
+ * nearer `xml:space` frees. Each is the path a pack stands at, a basename
+ * naming two as readily as one, and each is asserted (#553, #693, #817, #881).
  * @type {Array.<string>}
  */
 const UNFORMATTED = [
@@ -52,8 +52,14 @@ const UNFORMATTED = [
   'string-length-packs/no-break-space-before-the-bracket.yaml',
   'translate-packs/no-break-space-before-the-bracket.yaml',
   'xpath-packs/blank-nested-if-cancelled-preserve.yaml',
+  'xpath-packs/blank-nested-if-in-a-wider-gap.yaml',
+  'xpath-packs/empty-content-in-instructions-in-a-wider-gap.yaml',
+  'xpath-packs/malformed-version-in-stylesheet-in-a-wider-gap.yaml',
   'xpath-packs/setting-value-of-variable-cancelled-preserve.yaml',
+  'xpath-packs/setting-value-of-variable-incorrectly-in-a-wider-gap.yaml',
+  'xpath-packs/text-outside-xsl-text-in-a-wider-gap.yaml',
   'xpath-packs/variable-or-param-preserved-inert-content.yaml',
+  'xpath-packs/variable-or-param-with-select-and-content-in-a-wider-gap.yaml',
 ]
 
 /**

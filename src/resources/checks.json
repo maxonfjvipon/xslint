@@ -147,7 +147,7 @@
     },
     "xpath": {
       "blank-nested-if": {
-        "xpath": "//xsl:if[(count(*) = 1) and (count(xsl:if) = 1) and not(text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//xsl:if[(count(*) = 1) and (count(xsl:if) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "warning",
         "message": "A nested xsl:if inside another xsl:if is prohibited. Combine conditions with 'and' into a single xsl:if."
       },
@@ -167,7 +167,7 @@
         "message": "'xsl:choose' has no 'xsl:when' branch. Add one, or drop the 'xsl:choose' and keep its content directly."
       },
       "empty-content-in-instructions": {
-        "xpath": "//(xsl:for-each | xsl:if)[count(node()) = count(text()) and normalize-space() = \"\" and not(text()[ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//(xsl:for-each | xsl:if)[count(node()) = count(text()) and xslint:normalize-space(.) = \"\" and not(text()[ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "warning",
         "message": "An instruction element such as xsl:for-each or xsl:if has no content. Add content or remove the empty element."
       },
@@ -194,12 +194,12 @@
         "nursery": "#851, whose version gate reads @version as text and so never sees the shadow spelling of it"
       },
       "incorrect-use-of-boolean-constants": {
-        "xpath": "//(xsl:if | xsl:when)[normalize-space(@test) = (\"'true'\", \"'false'\", '\"true\"', '\"false\"')]",
+        "xpath": "//(xsl:if | xsl:when)[xslint:normalize-space(@test) = (\"'true'\", \"'false'\", '\"true\"', '\"false\"')]",
         "severity": "warning",
         "message": "The test is the string 'true' or 'false', a non-empty string that is always true, not a boolean. Use true() or false() instead."
       },
       "malformed-version-in-stylesheet": {
-        "xpath": "(//@version[parent::xsl:*][not(parent::xsl:output)] | //@xsl:version[not(parent::xsl:*)])[not(matches(normalize-space(.), '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$'))]",
+        "xpath": "(//@version[parent::xsl:*][not(parent::xsl:output)] | //@xsl:version[not(parent::xsl:*)])[not(matches(xslint:normalize-space(.), '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$'))]",
         "severity": "error",
         "message": "A declared version is not a number, so it names no XSLT version and every version-dependent check falls back to XSLT 1.0 here, the fixes it writes included. Declare it as a decimal, such as 2.0"
       },
@@ -267,7 +267,7 @@
         "message": "'xsl:param' must be declared before any other content in its 'xsl:template' or 'xsl:function'. Move it above the content."
       },
       "setting-value-of-variable-incorrectly": {
-        "xpath": "//xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "warning",
         "message": "A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead.",
         "nursery": "#590, which advises a select onto a variable already carrying one"
@@ -294,10 +294,9 @@
         "nursery": "#550, which draws a second defect on one matchless template"
       },
       "text-outside-xsl-text": {
-        "xpath": "//xsl:*[text()[normalize-space()] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]",
+        "xpath": "//xsl:*[text()[xslint:normalize-space(.)] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]",
         "severity": "warning",
-        "message": "Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'.",
-        "nursery": "#881, whose normalize-space strips a wider whitespace class than XPath and so misses 29 nodes of TEI"
+        "message": "Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'."
       },
       "too-many-templates": {
         "xpath": "(/xsl:stylesheet | /xsl:transform)[count(//xsl:template) >= 10]",
@@ -325,7 +324,7 @@
         "message": "xsl:stylesheet is nested inside another element. It must be the outermost element of the document."
       },
       "variable-or-param-with-select-and-content": {
-        "xpath": "//(xsl:variable | xsl:param | xsl:with-param)[(@select or @_select) and (* or text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//(xsl:variable | xsl:param | xsl:with-param)[(@select or @_select) and (* or text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "error",
         "message": "An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value."
       },

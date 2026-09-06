@@ -3,11 +3,45 @@
  * SPDX-License-Identifier: MIT
  */
 
+/*
+ * The fontoxpath environment, and the one function this project adds to it.
+ * `xslint:normalize-space` is what every selector of ours spells where XPath
+ * would say `normalize-space`, because fontoxpath's own is JavaScript's: it
+ * trims and collapses on `\s`, so a no-break space, a line separator and an
+ * em space are gaps to it, where XPath defines the function over the four
+ * characters of XML's `S` alone — the genre of the `\s` in #643, one
+ * function further in.
+ *
+ * Seven selectors spell it, and six of them were wrong before #881, in both
+ * directions at once. Three under-reported, the wider gap swallowing content
+ * a stylesheet emits: `text-outside-xsl-text` read 29 nodes of the three
+ * corpora as blank, `variable-or-param-with-select-and-content` missed an
+ * XTSE0620 Saxon refuses to load, and `malformed-version-in-stylesheet` let
+ * a `version="&#xA0;2.0"` pass as a number. Three over-reported, calling a
+ * character nothing at all: `empty-content-in-instructions` called an
+ * `xsl:if` empty that emits one, and `blank-nested-if` and
+ * `setting-value-of-variable-incorrectly` advised a collapse that would have
+ * dropped it. All three are report-only, so what the wider gap cost was a
+ * misleading report and never a corrupted file. The 29 nodes are #881's
+ * own measurement over the three corpora the README advertises.
+ *
+ * The seventh was already right, and that is the part worth keeping. Its
+ * predicate is one `src/predicates.js` serves off the shared walk, whose
+ * `normalized` reads the four characters XPath defines — so one tree held
+ * both answers to the same question, and which one a check got depended on
+ * whether the optimiser had reached it. A served answer that differs from
+ * the engine's is worse than a slow one, however correct it is on its own,
+ * which is why the vocabulary refuses a bare `normalize-space` outright and
+ * serves only the `xslint:` spelling. Registering the function is what lets
+ * it: the walk and the engine now read the same four characters.
+ */
+
 const {
   evaluateXPath, evaluateXPathToBoolean, evaluateXPathToNodes,
   evaluateXPathToStrings,
-  compileXPathToJavaScript,
+  compileXPathToJavaScript, registerCustomXPathFunction,
 } = require('fontoxpath')
+const {normalized} = require('./tokens')
 
 /**
  * Namespace URI of the xslint custom XPath functions.
@@ -38,6 +72,19 @@ const PREFIXES = {
   'xsl': STANDARD.xsl,
   'xslint': FUNCTIONS,
 }
+
+/**
+ * `xslint:normalize-space`, which every selector of ours spells where XPath
+ * would say `normalize-space`. The engine's own trims and collapses on `\s`,
+ * so a no-break space or an em space is a gap to it, where XPath defines the
+ * function over XML's four `S` characters alone — so a selector asking the
+ * engine read a wider gap than the walk answering it (#643, #881).
+ */
+registerCustomXPathFunction(
+  {namespaceURI: FUNCTIONS, localName: 'normalize-space'},
+  ['xs:string?'], 'xs:string',
+  (context, text) => normalized(text ?? ''),
+)
 
 /**
  * Resolve prefix.
