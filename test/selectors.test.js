@@ -8,6 +8,7 @@ const fs = require('fs')
 const path = require('path')
 const {EVERY, answered, chosen, splitOf, valued} = require('../src/selectors')
 const {nodes, strings} = require('../src/xpath')
+const {normalized} = require('../src/tokens')
 const {xml, yaml} = require('../src/helpers')
 const {kinds} = require('../src/resources/checks.json')
 const {worded} = require('./guides')
@@ -498,6 +499,19 @@ const CANDIDATES = [
   './/xsl:text', 'not(.//xsl:text)', './/a', 'count(descendant::xsl:*) = 1',
   '//xsl:text', 'xsl:variable//xsl:text', './xsl:text',
   'count(descendant-or-self::xsl:*) >= 2',
+  'text()', 'not(text())', 'count(text()) = 1', 'count(text()) >= 2',
+  'text()[xslint:normalize-space(.)]',
+  'not(text()[xslint:normalize-space(.)])',
+  'text()[xslint:normalize-space(.) = "delta"]',
+  'text()[xslint:normalize-space(.) = ""]',
+  'xslint:normalize-space(.)', 'not(xslint:normalize-space(.))',
+  'xslint:normalize-space(.) = ""',
+  'xslint:normalize-space(.) = "gamma"',
+  'string-length(xslint:normalize-space(.)) = 5',
+  'comment()', 'not(comment())', 'node()', 'processing-instruction()',
+  'descendant::text()', 'count(node()) = count(text())',
+  'text()[xslint:normalize-space(.) or ' +
+    'ancestor::*[@xml:space][1]/@xml:space = "preserve"]',
   'count(*) = 1 and not(text()[xslint:normalize-space(.)])',
   '@select and //xsl:text', '//xsl:text and @select',
   '@select and //xsl:nothing', 'not(node()) and @select',
@@ -855,6 +869,18 @@ describe('selectors', function() {
             'the sequence it stands in and cannot be asked of one candidate',
         )
       })
+  })
+  it('holds a gap in its text that no XPath reads as one', function() {
+    assert.ok(
+      Array.from(SHEET.documentElement.getElementsByTagNameNS(XSLT, 'variable'))
+        .flatMap((node) => Array.from(node.childNodes))
+        .map((node) => node.nodeValue ?? '')
+        .some((data) => data.trim() === '' && normalized(data) !== ''),
+      'every text node in candidates.xsl that JavaScript reads as blank ' +
+        'is blank to XPath as well, so a row asking what a gap is made of ' +
+        'would pass against an answer spelling one the JavaScript way, ' +
+        'which is the whole of the defect #881 was about',
+    )
   })
   it('holds a name no UTF-16 length counts as XPath counts it', function() {
     assert.ok(

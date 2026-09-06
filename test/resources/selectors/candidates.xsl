@@ -45,4 +45,11 @@
       </a>
     </xsl:variable>
   </xsl:variable>
+  <xsl:variable name="fifteen">gamma<a x="4"/></xsl:variable>
+  <xsl:variable name="sixteen"><![CDATA[delta]]></xsl:variable>
+  <xsl:variable name="seventeen"> </xsl:variable>
+  <xsl:variable name="eighteen">
+    <!-- epsilon -->
+    <?zeta eta?>
+  </xsl:variable>
 </xsl:stylesheet>

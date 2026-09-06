@@ -126,18 +126,18 @@ asked only of the stages with no entry, against `GROWTH` at 3.0, since an entry
 pins what a stage costs outright and that is the stronger statement. The same
 pair stands one level down since #811, a stage's share being blind to one check
 of thirty-eight going quadratic: every check of a stage owning several answers
-to `COST` at 3%, and `COSTS` names the three that legitimately cost more,
-`name-starts-with-numeric` at 7%, `text-outside-xsl-text` at 8% and
-`too-many-templates` at 4%. `corpora.yml` is the nightly tier, timing
-DocBook-XSL, TEI and DITA-OT at pinned commits against a budget of 9.5, 9 and
-4.5 seconds, and asserting what it read rather than only how long it took —
-including every defect it drew since #638, diffed by `scripts/snapshot.js`
-against a report committed per corpus, since a check that changes what it
-reports over a real stylesheet is a change nothing else here notices. What a
-gate measured at one size cannot see is a quadratic whose constant is still
-small there, so `test/import-linter.test.js` is a third instrument, timing one
-check over a chain of 200 stylesheets and again over 800 and failing past a
-growth of 8 (#769).
+to `COST` at 3%, and `COSTS` names the two that legitimately cost more,
+`name-starts-with-numeric` at 7% and `too-many-templates` at 4%; a third came
+off at #811, that table's ratchet turning from the under side. `corpora.yml` is
+the nightly tier, timing DocBook-XSL, TEI and DITA-OT at pinned commits against
+a budget of 9.5, 9 and 4.5 seconds, and asserting what it read rather than only
+how long it took — including every defect it drew since #638, diffed by
+`scripts/snapshot.js` against a report committed per corpus, since a check that
+changes what it reports over a real stylesheet is a change nothing else here
+notices. What a gate measured at one size cannot see is a quadratic whose
+constant is still small there, so `test/import-linter.test.js` is a third
+instrument, timing one check over a chain of 200 stylesheets and again over 800
+and failing past a growth of 8 (#769).
 
 Every one of those tables is a **ratchet and not a licence**, red from both
 sides: past the bar, or so far under it that `SLACK` (four) says the bar has

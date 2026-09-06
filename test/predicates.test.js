@@ -24,12 +24,12 @@
  * below forced here — takes it out of the reach of the gate holding a
  * guide's counts to the code, `DOCUMENTS` naming guides and the README and
  * no source file but `src/attributes.js`. So the two counts that note
- * states of the vocabulary's reach, 41 of 51, are computed here from
+ * states of the vocabulary's reach, 41 of 50, are computed here from
  * `checks.json` and held to it: every branch a selector splits into that
  * the walk serves, parted by the `weighed` a run parts with, each
  * predicate asked once. Both kinds are read, a corpus check's declaration
  * and usage reaching `predicateOf` as a per-file selector does — the
- * `xpath` kind alone answers 39 of 48, which is no number a run ever sees,
+ * `xpath` kind alone answers 39 of 47, which is no number a run ever sees,
  * and counting it that way is how the note came to say 33 and 24. Two
  * sentences carry the pair in opposite orders, so both are read and
  * rewording either fails, the lesson `DERIVED` records one section down.
@@ -37,16 +37,22 @@
  * Neither table asks whether an answer is *correct*: that is `CANDIDATES`
  * in `test/selectors.test.js`, which asks fontoxpath what each spelling
  * selects over `candidates.xsl` and fails where serving answers anything
- * else — the oracle, 139 rows here against 32 before, and armed against the
+ * else — the oracle, 159 rows here against 32 before, and armed against the
  * engine before a line of the compiler existed. A row there is a question
  * rather than a claim, so enriching the fixture can only strengthen it; the
  * fixture grew five variables and a non-XSLT child so that presence, a
  * literal sequence, a string length, a parent and `count(*)` each split the
- * nine candidates unevenly, and a group three deep at #811's descendant
- * phase, so that `xsl:variable//xsl:text` answers something
+ * nine candidates of that day unevenly, and a group three deep at #811's
+ * descendant phase, so that `xsl:variable//xsl:text` answers something
  * `xsl:variable/xsl:text` does not — on the shallower fixture the two read
  * alike, and the row asking about the descent would have passed while
- * `pathed` weighed no separator at all. That width is held to the sweep
+ * `pathed` weighed no separator at all. Four more arrived with that
+ * ticket's last clause, and each is a way a `text()` step splits where a
+ * `node()` step does not: a text node beside a CDATA section, since a
+ * branch one kind reaches counts as covered for the other; a lone no-break
+ * space, which JavaScript reads as a gap and XPath does not; and a
+ * variable holding a comment and a processing instruction and no text at
+ * all. Twenty candidates answer the sweep now. That width is held to it
  * from here on, having drifted twice inside a paragraph that reads like a
  * question asked per spelling. One thing it cannot hold is a prefix
  * `src/xpath.js` does not bind: `my:thing` stands in the document for
@@ -217,6 +223,11 @@ const COMPILED = [
   'count(.//xsl:*) > 100',
   'count(descendant::xsl:*) >= 2',
   './/xsl:text',
+  'text()',
+  'not(text())',
+  'text()[xslint:normalize-space(.)]',
+  'not(text()[xslint:normalize-space(.)])',
+  'count(text()) = 1',
   'local-name() = "template"',
   'not(local-name() = (\'text\', \'param\'))',
 ]
@@ -251,10 +262,6 @@ const REFUSED = [
     why: 'a negated existential, the comparison easiest to answer wrongly',
   },
   {
-    text: 'not(text()[xslint:normalize-space(.)])',
-    why: 'a call on the context item, read here only of an attribute step',
-  },
-  {
     text: 'local-name(@name) = "name"',
     why: 'a call taking a node set, where this answers the candidate\'s own',
   },
@@ -264,7 +271,15 @@ const REFUSED = [
   },
   {
     text: 'count(node()) = count(text())',
-    why: 'a comparison whose far side is computed per candidate',
+    why: 'a kind test wider than text(), admitting a comment and a gap',
+  },
+  {
+    text: 'descendant::text()',
+    why: 'that kind test off the child axis, where no descent gathers one',
+  },
+  {
+    text: 'comment()',
+    why: 'a kind of node no selector in the tree asks after',
   },
   {
     text: 'not(@as and (if (/xsl:stylesheet) then /*/@version else 1))',
@@ -285,6 +300,14 @@ const REFUSED = [
   {
     text: 'xslint:normalize-space(xsl:text) = "alpha"',
     why: 'that same element, one call further in',
+  },
+  {
+    text: 'xslint:normalize-space(.) = ""',
+    why: 'the candidate itself in one, its value its own whole subtree',
+  },
+  {
+    text: 'string-length(xslint:normalize-space(.)) = 5',
+    why: 'that same subtree, reached by a second call over the first',
   },
   {
     text: 'xsl:variable/xsl:text = "alpha"',
