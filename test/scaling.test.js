@@ -86,7 +86,7 @@
  * quadratic: the anchor phase took three of them from 442 ms to 25 over
  * DocBook-XSL and moved their stage by four points, so the granularity a
  * bar is asked at is the granularity a regression hides under. `COST` is
- * that bar and `COSTS` its three entries, read the way `SHARE` and `SHARES`
+ * that bar and `COSTS` its two entries, read the way `SHARE` and `SHARES`
  * are read of a stage. It reaches the forty-nine checks whose stage owns
  * more than one — thirty-eight of `xpath-linter`, four of `corpus-linter`,
  * three of `double-slash-linter` and two each of `import-linter` and
@@ -122,22 +122,33 @@
  * dearest readings of 4.69%, 4.49% and 4.61% fails three of three for
  * having stopped being a bar.
  *
- * The three entries answer the other rule, none having a second
+ * The two entries answer the other rule, neither having a second
  * distribution to leave room for, and each is judged the same way over the
  * same twelve rounds. `name-starts-with-numeric` reads 4.03% at its
  * dearest, so half again to twice puts it at 7; it asks an XSD regex of
  * every candidate, which the walk cannot answer without taking a second
- * opinion about regex dialects. `text-outside-xsl-text` reads 4.48% and
- * takes 8; it is served since #811 — its axis off a bucket keyed on the
- * namespace alone, its `local-name()` clause off the walk — and this
- * corpus is the one that cannot see what that bought. 78% of its elements
- * stand in the XSLT namespace and 87% of those outlive the clause, so two
- * in three still reach the engine and the check reads 42-45 ms either
- * way; DocBook-XSL, which hands it 55%, reads 156-172 against 239-258.
- * `too-many-templates` reads 2.09% and takes 4; it is one of `UNINDEXED`'s
- * four, anchored on the root and spending everything it costs inside a
- * predicate that descends the tree, so a bar of 3 stood 1.43 times over a
- * check nobody had touched.
+ * opinion about regex dialects. `too-many-templates` reads 2.09% and takes
+ * 4; it is one of `UNINDEXED`'s four, anchored on the root and spending
+ * everything it costs inside a predicate that descends the tree, so a bar
+ * of 3 stood 1.43 times over a check nobody had touched.
+ *
+ * A third entry stood beside them and is gone, which is this table's
+ * ratchet turning from the under side rather than a bar being relaxed.
+ * `text-outside-xsl-text` took 8 against a reading of 4.48% because #811
+ * served its axis and its `local-name()` clause and this corpus could see
+ * neither: 78% of its elements stand in the XSLT namespace and 87% of
+ * those outlive that clause, so two in three still reached the engine.
+ * Its last clause is served since #881 gave the vocabulary a
+ * `normalize-space` to agree with, so the predicate compiles whole and no
+ * candidate reaches the engine at all. Over fourteen rounds a side it reads
+ * 0.59% to 0.86% where un-serving that one clause reads 3.63% to 4.35%, and
+ * 8 stands 9.3 times over the dearest served reading, where `SLACK` calls
+ * four the end of a bar. The geometric middle of the two is 1.77, under the
+ * 3 that `COST` already stands at, and the cheapest unserved reading is
+ * above that 3 — so the bar with no entry behind it catches the same
+ * regression, four of four un-served against four of four with the clause
+ * back. The check is not a dear one to except any more either: three of its
+ * stage's 38 read above 1% and it is not one of them.
  *
  * Which end of the readings answers depends on which side is asking. A
  * ceiling is judged off the cheapest, noise inflating a measurement
@@ -229,14 +240,13 @@ const SHARE = 7
 /**
  * The checks that legitimately cost more of a run than the rest, the way
  * `SHARES` names the three dear stages: an XSD regex asked of every candidate,
- * a served selector this corpus is too uniform for the serving to narrow, and
- * one anchored on the root that spends everything inside a predicate that
- * descends the tree. What each reads is in the note above (#811).
+ * and one anchored on the root that spends everything inside a predicate that
+ * descends the tree. What each reads, and what left this table once its
+ * predicate compiled whole, is in the note above (#811, #881).
  * @type {{[check: string]: number}}
  */
 const COSTS = {
   'name-starts-with-numeric': 7,
-  'text-outside-xsl-text': 8,
   'too-many-templates': 4,
 }
 
