@@ -198,7 +198,7 @@ common/common_tagdocs.xsl:3029:25 count-compared-to-zero fix "empty(Element)"
 common/common_tagdocs.xsl:3066:35 string-length-compared-to-zero suggestion "current-grouping-key() != ''"
 common/common_tagdocs.xsl:3128:11 use-choose-without-otherwise
 common/common_tagdocs.xsl:3175:7 use-choose-without-otherwise
-common/common_tagdocs.xsl:3198:7 empty-content-in-instructions
+common/common_tagdocs.xsl:3198:7 text-outside-xsl-text
 common/common_tagdocs.xsl:3217:13 short-names
 common/common_textcrit.xsl:2:1 missing-id-in-stylesheet
 common/common_textcrit.xsl:2:1 too-many-templates
@@ -2311,9 +2311,11 @@ fo/fo_core.xsl:2:1 missing-id-in-stylesheet
 fo/fo_core.xsl:2:1 too-many-templates
 fo/fo_core.xsl:58:49 name-compared-to-string suggestion "self::xmltex"
 fo/fo_core.xsl:81:32 use-double-slash
+fo/fo_core.xsl:83:10 text-outside-xsl-text
 fo/fo_core.xsl:140:7 unused-function-template-parameter
 fo/fo_core.xsl:326:10 use-choose-without-otherwise
 fo/fo_core.xsl:359:10 use-choose-without-otherwise
+fo/fo_core.xsl:392:7 text-outside-xsl-text
 fo/fo_core.xsl:402:21 unabbreviated-axis fix ""
 fo/fo_core.xsl:498:7 not-creating-attribute-correctly
 fo/fo_core.xsl:574:21 use-choose-without-otherwise
@@ -2477,6 +2479,7 @@ html/html_core.xsl:380:23 redundant-whitespace fix " "
 html/html_core.xsl:398:72 redundant-whitespace fix " "
 html/html_core.xsl:443:58 redundant-whitespace fix " "
 html/html_core.xsl:556:11 short-names
+html/html_core.xsl:564:15 text-outside-xsl-text
 html/html_core.xsl:638:70 redundant-whitespace fix ""
 html/html_core.xsl:660:9 setting-value-of-variable-incorrectly
 html/html_core.xsl:701:60 redundant-whitespace fix " "
@@ -2736,6 +2739,7 @@ html/html_textstructure.xsl:2790:16 text-outside-xsl-text suggestion "<xsl:text>
 html/html_textstructure.xsl:2862:13 setting-value-of-variable-incorrectly
 html/html_textstructure.xsl:2865:13 setting-value-of-variable-incorrectly
 html/html_textstructure.xsl:2903:13 use-choose-without-otherwise
+html/html_textstructure.xsl:2950:16 text-outside-xsl-text
 html/html_textstructure.xsl:3030:7 unused-function-template-parameter
 html/html_textstructure.xsl:3031:7 unused-function-template-parameter
 html/html_textstructure_id.xsl:2:1 missing-id-in-stylesheet

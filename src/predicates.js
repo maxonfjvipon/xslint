@@ -19,8 +19,10 @@
  * The compile is off the parse and never the text, kept against the text, so
  * each of the 51 distinct predicates in the tree is compiled once a run; 41
  * of them are. What refuses is as deliberate as what serves — a regex, whose
- * XPath flavour is not JavaScript's; `text()[normalize-space()]`, which the
- * engine reads wider than XPath does (#881); a conditional; an absolute
+ * XPath flavour is not JavaScript's; a bare `normalize-space`, which is the
+ * engine's own and reads a wider gap than XPath defines, where every
+ * selector of ours spells the `xslint:` one this serves (#881); a
+ * conditional; an absolute
  * path, which asks the document rather than the candidate; an unprefixed
  * element name, the refusal `bucketed` already makes. **Over-acceptance is
  * a wrong report** where under-acceptance is only the engine call it was,
@@ -131,7 +133,7 @@
  */
 
 const {PREFIXES} = require('./xpath')
-const {TOKENS, TRIVIA, WHITESPACE} = require('./tokens')
+const {TOKENS, TRIVIA, normalized} = require('./tokens')
 const {parsed} = require('./grammar')
 const {ASSUMED} = require('./syntax')
 
@@ -370,25 +372,6 @@ const held = function(tokens, node) {
 }
 
 /**
- * XPath's own `normalize-space`, which collapses runs of the four characters
- * XML calls `S` and trims the ends. JavaScript's `\s` is wider and is banned
- * here for it: a no-break space is not a gap to any processor (#643).
- * @param {string} text - The string to normalize
- * @return {string} - The same string, its gaps collapsed and its ends cut
- */
-const normalized = function(text) {
-  return text.split('').map(
-    (character) => {
-      let same = character
-      if (WHITESPACE.includes(character)) {
-        same = ' '
-      }
-      return same
-    },
-  ).join('').split(' ').filter((one) => one !== '').join(' ')
-}
-
-/**
  * Where a step's name test stops, which is where its first predicate opens or
  * where the step itself closes, a step being a name test and then nothing but
  * predicates.
@@ -469,9 +452,9 @@ const stepped = function(tokens, node, under = undefined) {
 /**
  * The strings an operand of a comparison carries, or undefined where it is
  * outside the vocabulary. A bare attribute step answers the values it selects,
- * empty where it selects nothing, `normalize-space` of one answers a single
- * string, empty where the attribute is absent — XPath's two different answers
- * — and `local-name()` answers the one name the candidate itself carries.
+ * empty where it selects nothing, `xslint:normalize-space` of one answers a
+ * single string, empty where the attribute is absent — XPath's two different
+ * answers — and `local-name()` answers the one name the candidate carries.
  * @param {Array} tokens - The tokens the tree was parsed from
  * @param {object} node - A node standing as one side of a comparison
  * @return {(function(Node): Array.<string>|undefined)} - The strings it
@@ -511,7 +494,7 @@ const worded = function(tokens, node) {
         ]
       }
     }
-  } else if (calling(tokens, node, 'normalize-space') &&
+  } else if (calling(tokens, node, 'xslint:normalize-space') &&
     node.children.length === 1 && carrying(tokens, node.children[0])) {
     const selects = stepped(tokens, node.children[0])
     if (selects !== undefined) {

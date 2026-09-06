@@ -113,6 +113,27 @@ const GAP = `[${WHITESPACE}]`
 const GAPS = new RegExp(`${GAP}+`)
 
 /**
+ * XPath's own `normalize-space` over those same four characters: runs of them
+ * collapsed to one space and the ends cut. One run needs one answer to that
+ * question, so the shared walk answers a predicate with it and `src/xpath.js`
+ * registers it as `xslint:normalize-space`, the engine's own reading
+ * JavaScript's wider class (#643, #881).
+ * @param {string} text - The string to normalize
+ * @return {string} - The same string, its gaps collapsed and its ends cut
+ */
+const normalized = function(text) {
+  return text.split('').map(
+    (character) => {
+      let same = character
+      if (WHITESPACE.includes(character)) {
+        same = ' '
+      }
+      return same
+    },
+  ).join('').split(' ').filter((one) => one !== '').join(' ')
+}
+
+/**
  * Quote characters that open a string literal.
  * @type {string}
  */
@@ -771,4 +792,5 @@ module.exports = {
   WHITESPACE,
   GAP,
   GAPS,
+  normalized,
 }

@@ -9,9 +9,22 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Register `xslint:normalize-space` and spell it in the seven selectors that
+  said `normalize-space`, which fontoxpath trims and collapses on
+  JavaScript's `\s` rather than over the four characters of XML's `S`. Six
+  checks read the wider gap, and read it in both directions: a no-break
+  space, a line separator or an em space went unseen by
+  `text-outside-xsl-text`, `variable-or-param-with-select-and-content` and
+  `malformed-version-in-stylesheet`, and was mistaken for nothing at all by
+  `blank-nested-if`, `empty-content-in-instructions` and
+  `setting-value-of-variable-incorrectly`, which reported code a processor
+  accepts. The seventh was already right, the shared walk serving it off a
+  `normalized` of our own, so one tree held both answers to the same
+  question. `text-outside-xsl-text` leaves the nursery (#881).
+
 - Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-three checks no open issue reports wrong about code a processor
-  accepts. The other fifteen carry a `nursery:` mark naming that issue, so the
+  fifty-four checks no open issue reports wrong about code a processor
+  accepts. The other fourteen carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
   check verbatim in the config re-admits it, where a glob does not (#581).
 

@@ -461,8 +461,11 @@ about XSLT to keep current; what the reach costs is a report on a file already
 refused, an `xsl:select` or an `xsl:match` being an attribute no version allows
 there, and never a defect invented against working code.
 
-XPath binds prefix `xsl:` to the XSLT namespace; `xslint:` is reserved in
-`src/xpath.js` for custom functions (none are registered now).
+XPath binds prefix `xsl:` to the XSLT namespace; `xslint:` is where our own
+functions live, and `src/xpath.js` registers one: `xslint:normalize-space`,
+which every selector of ours spells because the engine's own collapses
+JavaScript's whitespace rather than XML's `S` — the note atop that module
+says which six of the seven selectors that cost, and how (#881).
 
 ## Check formats
 
@@ -892,7 +895,7 @@ the 22 and could only ever ask whether the string appeared.
 - **Suppress**: `xslint --suppress=<rule-substring>` matches names across every
   validator and linter.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
-  **nursery**, the fifteen of sixty-eight checks an open issue reports wrong
+  **nursery**, the fourteen of sixty-eight checks an open issue reports wrong
   about code a processor accepts. Each says so itself, in a `nursery:` mark
   opening with that issue's number, so the tier is derived from the tree and
   grows as tickets close. A check the config grades **verbatim** is re-admitted;
@@ -975,14 +978,14 @@ one of them.
 | `src/comparisons.js` | `comparedToZero` — the shared scan for a call compared with `0`/`1` (count, string-length) |
 | `src/booleans.js` | `coerced` and `unwrapped` — where nothing but an effective boolean value is taken, and what may stand there instead |
 | `src/expressions.js` | `enclosed` — the expressions an attribute value template holds in its braces |
-| `src/tokens.js` | Positioned XPath lexer (`tokenized`, `TOKENS`), preserving whitespace; owns `GAP`, `TRIVIA`, `OPAQUE`, `NAMED` |
+| `src/tokens.js` | Positioned XPath lexer (`tokenized`, `TOKENS`), preserving whitespace; owns `GAP`, `TRIVIA`, `OPAQUE`, `NAMED`, and `normalized`, the gap-collapsing XPath defines and the engine widens |
 | `src/grammar.js` | `parsed` and `matched` — the XPath 3.1 expression grammar and the pattern grammar, as recursive descent, at the version in force |
 | `src/syntax.js` | The one door between a record and its parse: `parseOf`, `isValid`, `gathered`, `textOf`, `calls`, `filters` |
 | `src/import-graph.js` | Resolves `xsl:import`/`xsl:include` hrefs: `importsOf`, `graphOf` |
 | `src/fixers.js` | Maps a declarative check name to a `node => fix` builder |
 | `src/fixes.js` | Shared fix builders reading the raw source: `deletion`, `substitution`, `excision`, `standsAt` |
 | `src/fixer.js` | Applies a defect's `fix` to source (decode-walk, verify-before-apply, end-to-start) |
-| `src/xpath.js` | The fontoxpath environment, and only that: `PREFIXES`, the two evaluators, `satisfies`, `compiles` |
+| `src/xpath.js` | The fontoxpath environment, and what we add to it: `PREFIXES`, the two evaluators, `satisfies`, `compiles`, and the `xslint:normalize-space` every selector of ours spells |
 | `src/helpers.js` | XML parsing (expands internal-subset entities), YAML parsing, file recursion |
 | `src/resources/checks.json` | Every check as a run reads it, built from the YAML; never edited by hand |
 | `src/logger.js` | 4-level logger |
