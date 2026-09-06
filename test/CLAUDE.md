@@ -246,8 +246,8 @@ is therefore no reading and is dropped rather than judged — verified by quanti
 here, which turns 3 to 5 growths of 18 non-finite and leaves the gate passing. The share is
 unaffected, being taken over the corpus four times larger and against the whole run rather than one
 reading of it: under that same coarse clock `corpus-linter` reads 14.0% to 14.9% where a fine one
-reads 15.1% to 15.7%. So a coarse clock costs the looser of the two questions on one platform, not
-the gate.
+reads 15.1% to 15.7%. So a coarse clock costs one platform the looser question, and the check tier
+goes pending (#889).
 
 It stands down in one process and says so: `npm run coverage` runs mocha under c8, and V8's branch
 bookkeeping does not fall evenly across the stages — it charges `xpath-linter`, the one putting
@@ -732,7 +732,7 @@ and the merge behind the wildcard phase breached it again by 162 with neither br
 crossed it alone either — the same arithmetic a second time, which is what a shared budget does
 to two branches that each measured themselves alone. What answered it was the move again, on the
 dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 503
+fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 492
 characters out of every chain through `test/` and none out of the one that is dearest without it.
 The relief that bought lasted one ticket again, and the third breach is the plainest of the
 three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands

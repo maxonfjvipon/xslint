@@ -86,7 +86,7 @@
  * quadratic: the anchor phase took three of them from 442 ms to 25 over
  * DocBook-XSL and moved their stage by four points, so the granularity a
  * bar is asked at is the granularity a regression hides under. `COST` is
- * that bar and `COSTS` its two entries, read the way `SHARE` and `SHARES`
+ * that bar and `COSTS` its three entries, read the way `SHARE` and `SHARES`
  * are read of a stage. It reaches the forty-nine checks whose stage owns
  * more than one — thirty-eight of `xpath-linter`, four of `corpus-linter`,
  * three of `double-slash-linter` and two each of `import-linter` and
@@ -149,6 +149,26 @@
  * processor time comes in ticks coarser than a single check costs, read
  * `name-starts-with-numeric` at 1.63% where this machine reads 4.03% and
  * called an entry derived from the dearest reading loose.
+ *
+ * That runner is why the check tier stands down rather than answers, and
+ * what says so is the tier's own readings. A check costs a fraction of a
+ * millisecond here where Windows charges processor time in scheduler
+ * ticks of some 15,625 microseconds, so a reading there counts tick
+ * boundaries: quantising the clock to that tick turns 36 to 38 of the
+ * forty-nine into `0` over five runs, against 1 to 4 over five runs of the
+ * fine one — and the gate reports passing either way, which is the half
+ * worth naming. Three quarters of the tier asserted nothing while reading
+ * green, and what was left swung far enough to fail the build twice over a
+ * tree whose own pull request was green, `empty-content-in-instructions`
+ * printing 16.53% on one attempt of a run that never faulted it and under
+ * 3% on another attempt of that same process. Flooring alone can only
+ * deflate, so the inflation is the clock summing every thread Windows
+ * charges a whole tick at each interrupt. `RESOLVED` is the geometric
+ * middle of those two distributions, and a tier the clock cannot resolve
+ * is registered **pending** rather than passed, which is #645's rule. The
+ * stage tier keeps an `it` of its own and is unaffected, a share being
+ * taken over the corpus four times larger and against the whole run, so
+ * only growth ever paid that clock (#889).
  *
  * `SHADOWED` is the one place the sweep is knowingly wrong, and it is
  * wrong upward. `--suppress` matches by substring, so a check whose name
@@ -241,6 +261,16 @@ const COST = 3
 const SHADOWED = {
   'select-starts-with-double-slash': 'starts-with-double-slash',
 }
+
+/**
+ * What fraction of the checks may read `0` before the clock has resolved none
+ * of them. A quarter is the geometric middle of the two measured
+ * distributions: 1 to 4 of the forty-nine read `0` here over five runs,
+ * against 36 to 38 under a clock quantised to the scheduler tick Windows
+ * charges processor time in (#889).
+ * @type {number}
+ */
+const RESOLVED = 0.25
 
 /**
  * How many times its own reading a ceiling may stand above before it has
@@ -600,18 +630,36 @@ const tabled = function(weight) {
 }
 
 /**
+ * Whether the clock resolved what the check tier judges. A check costs a
+ * fraction of a millisecond and Windows charges in ticks of some sixteen, so a
+ * reading there counts tick boundaries rather than measuring the check: three
+ * quarters of them come back `0` and what is left swings five times over
+ * between attempts of one run (#889).
+ * @param {Map.<string, Array.<number>>} costs - Each check's readings so far
+ * @return {boolean} - Whether the tier has a measurement to judge
+ */
+const resolves = function(costs) {
+  return Array.from(costs.values()).filter(
+    (readings) => Math.max(...readings) === 0,
+  ).length < RESOLVED * costs.size
+}
+
+/**
  * Every stage whose cost or growth, and every check whose cost, disagrees with
  * what its bar says, measured again up to `ATTEMPTS` times while any of them
  * does, beside the whole table of readings — a gate that fails must say what it
  * measured. The first measurement is thrown away, on the one principle a
  * warm-up has: warm the code with the work about to be timed.
- * @return {{faults: Array.<string>, table: string}} - Faults and the readings
+ * @return {{stages: Array, checks: Array, resolved: boolean, table: string}} -
+ *   Each tier's faults, whether the clock resolved the checks, and the readings
  */
 const judged = function() {
   weighed(ATTEMPTS)
   const readings = new Map()
   const costs = new Map()
-  let found = []
+  let stages = []
+  let checks = []
+  let resolved = true
   let table = ''
   for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
     const weight = weighed(attempt)
@@ -622,14 +670,38 @@ const judged = function() {
       costs.set(name, (costs.get(name) ?? []).concat([share]))
     }
     table = tabled(weight)
-    found = Array.from(readings, ([name, list]) => fault(name, list))
-      .concat(Array.from(costs, ([name, list]) => overspent(name, list)))
+    stages = Array.from(readings, ([name, list]) => fault(name, list))
       .filter((said) => said !== '')
-    if (found.length === 0) {
+    checks = Array.from(costs, ([name, list]) => overspent(name, list))
+      .filter((said) => said !== '')
+    resolved = resolves(costs)
+    if (stages.length === 0 && (checks.length === 0 || !resolved)) {
       break
     }
   }
-  return {faults: found, table: table}
+  return {
+    stages: stages, checks: checks, resolved: resolved, table: table,
+  }
+}
+
+/**
+ * The one measurement both tiers read, taken on the first ask and remembered.
+ * A stage answers to its bar under a clock that cannot resolve a check, so the
+ * two are an `it` apiece and only the second stands down — sharing this, a
+ * corpus of its own paying for the building and the discarded warm-up twice.
+ * @type {?object}
+ */
+let taken = null
+
+/**
+ * What `judged` answered, measured once however many tiers ask for it.
+ * @return {object} - Each tier's faults, the clock's verdict, and the readings
+ */
+const settled = function() {
+  if (taken === null) {
+    taken = judged()
+  }
+  return taken
 }
 
 /**
@@ -688,18 +760,45 @@ const misquoted = function(guide) {
   )
 }
 describe('scaling', function() {
-  it('holds every stage and check to the bar it answers to', function() {
+  it('holds every stage to the bar it answers to', function() {
     this.timeout(120000)
     if (instrumented()) {
       this.skip()
     }
-    const judgement = judged()
+    const judgement = settled()
     assert.deepEqual(
-      judgement.faults,
+      judgement.stages,
       [],
-      'a stage or a check no longer costs or grows the way the bars in ' +
+      'a stage no longer costs or grows the way the bars in ' +
         `test/scaling.test.js say, over a corpus of ${SMALL} stylesheets and ` +
         `one of ${SMALL * STEP}: ${judgement.table}`,
+    )
+  })
+  it('holds every check to the bar it answers to', function() {
+    this.timeout(120000)
+    if (instrumented()) {
+      this.skip()
+    }
+    const judgement = settled()
+    if (!judgement.resolved) {
+      this.skip()
+    }
+    assert.deepEqual(
+      judgement.checks,
+      [],
+      'a check no longer costs the way the bars in test/scaling.test.js say, ' +
+        `over a corpus of ${SMALL * STEP} stylesheets: ${judgement.table}`,
+    )
+  })
+  it('reads a clock too coarse for a check as no measurement', function() {
+    assert.deepEqual(
+      [4, 36].map((zeros) => resolves(new Map(
+        Array.from({length: 49}, (blank, at) => [`${at}`, [Number(at >= zeros)]]),
+      ))),
+      [true, false],
+      'the check tier no longer stands down under the tick Windows charges ' +
+        'processor time in, where 36 of its 49 readings come back zero, or no ' +
+        'longer judges the 4 of 49 a fine clock leaves',
     )
   })
   it('names in SHARES only stages the pipeline still has', function() {
