@@ -395,6 +395,34 @@ describe('xslint', function() {
       fs.rmSync(dir, {recursive: true, force: true})
       assert.ok(streams.stderr.includes('unused-named-template'))
     })
+  it('should re-admit a withheld check the configuration names verbatim',
+    function() {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+      const cfg = path.join(dir, '.xslint.yml')
+      fs.writeFileSync(
+        cfg, 'stable: true\nrules:\n  "unused-named-template": error\n',
+      )
+      const streams = xslintStreams([
+        'test/resources/stylesheets/xsl-with-some-violations.xsl',
+        `--config=${cfg}`,
+      ])
+      fs.rmSync(dir, {recursive: true, force: true})
+      assert.ok(streams.stdout.includes('unused-named-template'))
+    })
+  it('should not call a verbatim graded check withheld by the tier',
+    function() {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+      const cfg = path.join(dir, '.xslint.yml')
+      fs.writeFileSync(
+        cfg, 'stable: true\nrules:\n  "unused-named-template": error\n',
+      )
+      const streams = xslintStreams([
+        'test/resources/stylesheets/xsl-with-some-violations.xsl',
+        `--config=${cfg}`,
+      ])
+      fs.rmSync(dir, {recursive: true, force: true})
+      assert.ok(!streams.stderr.includes('stays withheld'))
+    })
   it('should not call a directive over a withheld check unused', function() {
     const streams = xslintStreams([
       'test/resources/directives/wrapped.xsl',
