@@ -53,8 +53,8 @@ three platforms and two node versions, and `corpora`, which times a real run
 The suite comes in two halves, and the line between them is a child process. A
 **deep** test starts one — it runs `xslint` or `xcop` the way a user does — and
 is named `*.deep.test.js`; every other test stays in this process. Seven files
-are deep, and they still cost most of what the suite costs: 690 of the 3040
-tests, 10 of the 15 seconds. The other 2350 finish inside one, which is why
+are deep, and they still cost most of what the suite costs: 704 of the 3065
+tests, 11 of the 16 seconds. The other 2361 finish inside one, which is why
 `npm run fast` is the loop to work in and `npm test` the one to finish on. The
 deep target runs under `mocha --parallel`, so those seven files run at once and
 the slowest of them sets the clock — `xslint.deep.test.js` alone, whose 60 tests
@@ -654,10 +654,13 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   spell — but a union is the shorter reading wherever the list is closed (#784).
   Nor may it ask whether an attribute is *there* in one of the two spellings
   XSLT gives it: any attribute of an XSLT element is written `_x` as readily
-  as `x`, so a presence clause reads `not(@_x)` beside `not(@x)`. Ten
-  selectors read one spelling, all ten reported a stylesheet Saxon loads, and
-  two of them rewrote it; `conformance.test.js` holds that from both sides,
-  exempting `xsl:version` alone (#849).
+  as `x`, so `not(@x)` reads `not(@_x)` beside it and a bare `@x` reads
+  `(@x or @_x)`. Thirteen selectors asked one spelling, every one of them
+  reporting a stylesheet Saxon loads and three rewriting it;
+  `conformance.test.js` holds both, exempting on a ratcheted table the
+  attributes that have no shadow spelling, and structurally a cross-file
+  `declaration`'s `@name`, which the format reads for its value and never for
+  who wrote it (#849, #851).
   And a selector that opens `//name` or `//(name | name)` is served from the
   shared walk rather than by a descendant step of its own, so how a selector
   opens decides what it costs: the axis comes off `named` in `src/tree.js` and
@@ -895,7 +898,7 @@ the 22 and could only ever ask whether the string appeared.
 - **Suppress**: `xslint --suppress=<rule-substring>` matches names across every
   validator and linter.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
-  **nursery**, the fourteen of sixty-eight checks an open issue reports wrong
+  **nursery**, the thirteen of sixty-eight checks an open issue reports wrong
   about code a processor accepts. Each says so itself, in a `nursery:` mark
   opening with that issue's number, so the tier is derived from the tree and
   grows as tickets close. A check the config grades **verbatim** is re-admitted;

@@ -225,16 +225,16 @@
         "nursery": "#705, which never judges a stylesheet embedded below the document element"
       },
       "mode-or-priority-without-match": {
-        "xpath": "//xsl:template[not(@match) and not(@_match) and (@mode or @priority)]",
+        "xpath": "//xsl:template[not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
         "severity": "error",
         "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.",
-        "nursery": "#550, which draws a second defect on one matchless template, and #851, which reads only the plain spelling of @mode"
+        "nursery": "#550, which draws a second defect on one matchless template"
       },
       "modern-construct-in-xslt-1": {
-        "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as])",
+        "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as or @_as])",
         "severity": "error",
         "message": "This XSLT 2.0 construct is used in a stylesheet declared version 1.0, which a conformant 1.0 processor rejects. Use a 1.0 equivalent, or set the version to 2.0.",
-        "nursery": "#555, which draws a second defect on an xsl:function through its @as, and #851, which reads only the plain spelling of that attribute"
+        "nursery": "#555, which draws a second defect on an xsl:function through its @as"
       },
       "name-starts-with-numeric": {
         "xpath": "//(xsl:variable | xsl:template)[matches(@name, '^[0-9]')] | //xsl:function[matches(@name, '^([^:]*:)?[0-9]')]",
@@ -324,10 +324,9 @@
         "message": "xsl:stylesheet is nested inside another element. It must be the outermost element of the document."
       },
       "variable-or-param-with-select-and-content": {
-        "xpath": "//(xsl:variable | xsl:param | xsl:with-param)[@select and (* or text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//(xsl:variable | xsl:param | xsl:with-param)[(@select or @_select) and (* or text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "error",
-        "message": "An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value.",
-        "nursery": "#851, which reads only the plain spelling of @select"
+        "message": "An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value."
       },
       "when-or-otherwise-outside-choose": {
         "xpath": "//xsl:when[not(parent::xsl:choose)] | //xsl:otherwise[not(parent::xsl:choose)]",

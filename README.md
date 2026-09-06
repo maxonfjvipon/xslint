@@ -155,9 +155,9 @@ accepts, use `--stable`:
 xslint --stable
 ```
 
-It withholds the fourteen checks in the *nursery* — the ones whose [check
+It withholds the thirteen checks in the *nursery* — the ones whose [check
 page][checks] names the open issue keeping them there — and reports the other
-fifty-four. A check leaves the nursery when its issue closes, so the tier only
+fifty-five. A check leaves the nursery when its issue closes, so the tier only
 ever grows, and grading one by name in `.xslint.yml` re-admits it.
 
 ## Configuration

@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: modern-construct-in-xslt-1
+found:
+  amount: 3
+  positions: [ [ 5, 5 ], [ 8, 9 ], [ 17, 3 ] ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:template match="/harbour">
+      <xsl:variable name="lighthouse" _as="{'xs:string'}" select="'Eddystone'"/>
+      <xsl:choose>
+        <xsl:when test="lantern">
+          <xsl:variable name="beacon" _as="{'xs:integer'}" select="7"/>
+          <xsl:value-of select="$beacon"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <dark/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$lighthouse"/>
+    </xsl:template>
+    <xsl:template match="/harbour/quay" _as="{'xs:string'}">
+      <quay/>
+    </xsl:template>
+    <xsl:template match="/harbour/pier">
+      <xsl:variable name="mooring" select="'rope'"/>
+      <xsl:value-of select="$mooring"/>
+    </xsl:template>
+  </xsl:stylesheet>
