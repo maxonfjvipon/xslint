@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: template-has-no-name-or-match
+found:
+  amount: 4
+  positions: [ [ 14, 3, mode-or-priority-without-match ], [ 5, 3 ], [ 8, 3 ], [ 11, 3 ] ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:mode name="hyperbola"/>
+    <xsl:template mode="hyperbola">
+      <hyperbola/>
+    </xsl:template>
+    <xsl:template priority="7">
+      <asymptote/>
+    </xsl:template>
+    <xsl:template _mode="{'hyperbola'}">
+      <vertex/>
+    </xsl:template>
+    <xsl:template name="focus" mode="hyperbola">
+      <focus/>
+    </xsl:template>
+    <xsl:template match="/">
+      <xsl:apply-templates mode="hyperbola"/>
+    </xsl:template>
+  </xsl:stylesheet>

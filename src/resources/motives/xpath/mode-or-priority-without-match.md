@@ -1,8 +1,11 @@
 # Use @mode or @priority in Template without @match
 
-An `xsl:template` that has no `match` attribute must have no `mode` attribute
-and no `priority` attribute. In a named template they have no meaning, since
-it is called by name rather than selected among several templates.
+A template carrying a `name` and no `match` is invoked by name, so `mode` and
+`priority` have nothing to decide: both of them only ever choose between the
+templates a `match` pattern made candidates for a node. A processor does not
+ignore them either — it refuses the module as a static error (XTSE0500), so
+the stylesheet does not run at all. Either give the template the `match` the
+two attributes are about, or drop them and call it by name.
 
 Incorrect:
 
