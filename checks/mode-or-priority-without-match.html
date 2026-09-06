@@ -88,11 +88,11 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-error">error</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:template[not(@match) and not(@_match) and (@mode or @priority)]</code>
+    <code class="xpath">//xsl:template[not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]</code>
   </div>
   <p class="nursery-note"><code>--stable</code> withholds this
   check while an open issue reports it wrong about code a processor accepts:
-  #550, which draws a second defect on one matchless template, and #851, which reads only the plain spelling of @mode.</p>
+  #550, which draws a second defect on one matchless template.</p>
   <div class="check-content">
 <h1>Use @mode or @priority in Template without @match</h1>
 <p>An <code>xsl:template</code> that has no <code>match</code> attribute must have no <code>mode</code> attribute

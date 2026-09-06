@@ -88,11 +88,11 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-error">error</span> <span class="nursery">nursery</span>
-    <code class="xpath">/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as])</code>
+    <code class="xpath">/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as or @_as])</code>
   </div>
   <p class="nursery-note"><code>--stable</code> withholds this
   check while an open issue reports it wrong about code a processor accepts:
-  #555, which draws a second defect on an xsl:function through its @as, and #851, which reads only the plain spelling of that attribute.</p>
+  #555, which draws a second defect on an xsl:function through its @as.</p>
   <div class="check-content">
 <h1>Modern construct in a 1.0 stylesheet</h1>
 <p>A stylesheet that declares <code>version=&quot;1.0&quot;</code> must run on an XSLT 1.0 processor,
