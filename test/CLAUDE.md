@@ -589,29 +589,49 @@ one that was written, so a sheet holding an `xsl:for-each-group` drew no
 `modern-construct-in-xslt-1` before the fixer ran and one after — a check writing a wrong version
 and a second check believing it.
 
-`SUPPLIED` reads every `not(@x)` a selector spells and asks for the `not(@_x)` beside it, with
-`SHADOWLESS` naming what is exempt: `xsl:version` alone, for a reason no other attribute has. It
-is what makes a literal result element a stylesheet at all, so the mechanism that would read a
-shadow one is not running yet, and Saxon refuses both spellings there — `xsl:_version` as
-`XTSE0150` and `_xsl:version` as `SXXP0003`. That table ratchets like the rest: an entry whose
-selector has gained the guard, or stopped asking, turns red. No corpus said any of this. DocBook-XSL,
-TEI and DITA-OT hold no shadow attribute between them, so the nightly tier reads the same numbers
-either way and the ten packs are the whole of the pin.
+`SUPPLIED` reads every presence test a selector spells and asks for the shadow spelling beside it,
+with `SHADOWLESS` naming the two that are exempt, each on a reason of its own. `xml:space` sits in
+a namespace and the mechanism reaches only an attribute in none, so it has no shadow spelling to
+ask after; `xsl:version` is what makes a literal result element a stylesheet at all, so the
+mechanism that would read a shadow one is not running yet, and Saxon refuses both spellings there
+— `xsl:_version` as `XTSE0150` and `_xsl:version` as `SXXP0003`. That table ratchets like the
+rest: an entry whose selector has gained the guard, or stopped asking, turns red. No corpus said
+any of this — DocBook-XSL, TEI and DITA-OT hold no shadow attribute between them, so the nightly
+tier reads the same either way and the packs are the whole of the pin.
 
-What that gate reads is the negated spelling and nothing else, which is a bound worth stating
-rather than leaving to be found again. Asked the other way — a bare `@x` in a predicate, standing
-for *the author wrote one* — the same question is open in three selectors, each measured the same
-way. `variable-or-param-with-select-and-content` misses a `_select` beside content, `XTSE0620` on
-Saxon and the exact fault it exists for; `mode-or-priority-without-match` misses a `_mode` on a
-matchless template, `XTSE0500`, which is the positive half of the very selector fixed above; and
-`modern-construct-in-xslt-1` misses an `_as` in a 1.0 sheet where an `as` fires. A fourth of that
-family is closed here by accident rather than by design — `empty-variable` asks `(@as or @_as)`
-because that clause stands inside a `not(...)` `SUPPLIED` can see. Two must never join them:
-`unused-named-template` and `unused-variable` read the attribute's *value* and match usages
-against it, where a shadow one holds an expression producing the name rather than the name. A
-third group wants the value for that same reason and can only ever go quiet, never invent a
-defect — the version gates of three checks, `versionOf`, and `importsOf`, whose
-`hasAttribute('href')` builds no edge for a shadow href (#851).
+That gate read the **negated** spelling alone, and #851 is the other half: a bare `@x` closing
+on a bracket, an `and`, an `or` or a union bar says *the author wrote one* as plainly as `not(@x)`
+says the opposite, and three selectors asked it one way.
+`variable-or-param-with-select-and-content` missed a `_select` beside content, `XTSE0620` on Saxon
+and the fault it exists for; `mode-or-priority-without-match` missed a `_mode` on a matchless
+template, `XTSE0500`, the positive half of the selector #849 fixed; and
+`modern-construct-in-xslt-1` missed an `_as` in a 1.0 sheet where an `as` fires. A fourth closed
+by accident: `empty-variable` asks `(@as or @_as)` because that clause stands inside a `not(...)`
+the negated half already saw. A step tail is not a clause: the `/@x` ending a path asks for a
+value where a clause asks who wrote it, keeping `//xsl:call-template/@name` out. Two of the three
+carried a fixer, and a widened selector in front of a narrow one is worse than neither:
+`deletion` took the attribute by name, so a shadow-only element handed it `null` and the run died
+in `src/fixes.js`. Both ask which spelling is present and decline where both are, XSLT 3.0
+leaving that static error to the author.
+
+One exemption runs the other way: the `@name` of a cross-file `declaration`. That selector picks
+the nodes whose name a `usage` is matched against, so the linter reads the attribute's **value**,
+and a shadow one holds the expression producing that name, never the name — a widened
+`declaration` would select a node whose `@name` is absent, match it against nothing, and invent a
+defect where the narrow spelling merely goes quiet. It is a condition on the key rather than a
+row beside two check names: it follows from the corpus format, not from which selectors spell
+`[@name]` today, so a table would redden the third that spells it and want a row before the build
+went green. A table with its ratchet also came to 31 lines where the cap left 13. The widened
+gate is also what brought `xml:space` into
+`SHADOWLESS`, `ancestor::*[@xml:space][1]` being a bare clause the negated half never read.
+
+A third group wants the value for the same reason and can only go quiet, never invent a defect,
+so it stays open. The version gates of `empty-variable`, `function-use-in-xslt-1` and
+`modern-construct-in-xslt-1` read `@version` as text; `versionOf` asks `getAttributeNS` then
+`getAttribute`, neither reaching a `_version`; and `importsOf` tests `hasAttribute('href')`, so a
+shadow href builds no edge and leaves that module out of every cross-file check. All of it wants
+a static evaluator for an attribute value template, which #851 holds now and the `nursery:` mark
+on the first two names (#851).
 
 The line cap is held from a third side since #825. A file the cap is lifted off must have its
 length stated in a guide, and the number must be the one ESLint reads: `SPRAWLING`'s membership was
@@ -649,14 +669,14 @@ that 0.87 of the bar while a turn touching `src/linters/` was loading 157,504 an
 two dearest notes moved one step further down, out of `src/CLAUDE.md` and into the top of
 `src/grammar.js` and `src/syntax.js` — 24,681 characters. A turn touching `test/` ran it close
 ever since, until #811's wildcard phase moved this guide's nightly-tier note into
-`test/budget.test.js`; the dearest reads 138,884, which is 0.93, and is `src/linters/`'s once
+`test/budget.test.js`; the dearest reads 139,085, which is 0.93, and is `src/linters/`'s once
 more. What answers a chain reaching the bar is that move again, a module's derivation into the
 file-header note of the module itself, and never a bar widened to fit what has grown past it: a
 docblock holds five lines of description since #832, so prose that has outgrown a guide does not
 simply move into one instead. A `CEILING` of half the bar stood beside it until it
 was seen to be a gate no tree could fail: the root stands in every chain, so the chain holding it
-above weighs each other guide against the bar less what stands over it — 24,173 for
-`src/linters/CLAUDE.md`, where half of the bar is 75,000 — and holds the root itself to 80,552, a
+above weighs each other guide against the bar less what stands over it — 23,972 for
+`src/linters/CLAUDE.md`, where half of the bar is 75,000 — and holds the root itself to 80,546, a
 number derived from the dearest chain rather than chosen. A gate no tree can fail is removed and
 not kept (#750, #660). All four of those figures — the chain, its ratio, and the two allowances —
 follow from three file sizes, so one guide growing moves every one of them, and none of them
@@ -701,9 +721,9 @@ times in one. Ten notes moved to make the bar quiet — `xpath-linter.js`, `root
 `predicates.test.js`, `helpers.js`, `grammar-corpus.test.js`, `grammar-shapes.test.js` and
 `workflows.test.js` out of this
 one. An eleventh was refused by the valve rather than chosen against: `test/conformance.test.js` stands
-at 926 lines and its note is 150 more, and `max-lines` counts comments, so a section can outgrow the
+at 992 lines and its note is 150 more, and `max-lines` counts comments, so a section can outgrow the
 file it is about and relief has a floor — what answers that one is the note being cut, not moved.
-What that leaves is 1,116 characters of headroom, off a chain that is `src/linters/`'s own once
+What that leaves is 915 characters of headroom, off a chain that is `src/linters/`'s own once
 more rather than this file's: the merge behind #811's bracket phase breached the bar by 844 with
 neither branch having crossed it alone, and the root's `src/xslint.js` derivation moved into
 `src/CLAUDE.md` to answer it — 2,147 characters out of every chain but the three standing under
@@ -712,7 +732,7 @@ and the merge behind the wildcard phase breached it again by 162 with neither br
 crossed it alone either — the same arithmetic a second time, which is what a shared budget does
 to two branches that each measured themselves alone. What answered it was the move again, on the
 dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 2,608
+fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 874
 characters out of every chain through `test/` and none out of the one that is dearest without it.
 The relief that bought lasted one ticket again, and the third breach is the plainest of the
 three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands

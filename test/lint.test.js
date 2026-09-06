@@ -82,16 +82,17 @@ describe('lint (programmatic API)', function() {
       ],
     )
   })
-  it('withholds a nursery check by its whole name, never a substring',
-    function() {
-      assert.deepEqual(
-        lint(
-          [source('fix/variable-or-param-with-select-spelled-oddly.xsl')],
-          {stable: true},
-        ).map((defect) => defect.name),
-        ['not-using-output', 'unused-function-template-parameter'],
-      )
-    })
+  it('reports every check of a stylesheet no nursery name holds', function() {
+    assert.deepEqual(
+      lint(
+        [source('fix/variable-or-param-with-select-spelled-oddly.xsl')],
+        {stable: true},
+      ).map((defect) => defect.name),
+      ['not-using-output', 'unused-function-template-parameter'].concat(
+        Array(6).fill('variable-or-param-with-select-and-content'),
+      ),
+    )
+  })
   it('re-admits a nursery check a configuration grades by name', function() {
     assert.ok(
       lint(

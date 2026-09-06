@@ -55,7 +55,7 @@ and each is a channel kept apart from one that already existed. It matches a **w
 `suppressed` matches a substring and `unused-function` stands inside
 `unused-function-template-parameter`, which is settled. It exempts a name the config grades
 **verbatim** and never one a glob reached, which is what `admitted` is for beside `overrides`: that
-map is keyed by expanded names, so `'*': warning` would have exempted all fifteen silently, a
+map is keyed by expanded names, so `'*': warning` would have exempted every one of them silently, a
 pattern about severity being no vouch for a check. It defaults to `overrides`'s keys, verbatim for
 an embedder calling `lint`, and a glob run says which of the checks it graded stay withheld. And it
 stands **after** the directive pass: a defect withheld in front of it is a defect the directive over

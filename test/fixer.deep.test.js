@@ -426,6 +426,20 @@ const APPLIED = [
     after: 'variable-or-param-with-select-and-content.fixed.xsl',
   },
   {
+    name: 'should drop an orphan mode and priority written in the shadow ' +
+      'spelling with --fix-suggestions',
+    flag: '--fix-suggestions',
+    before: 'a-shadow-mode-the-fixer-drops.xsl',
+    after: 'a-shadow-mode-the-fixer-drops.fixed.xsl',
+  },
+  {
+    name: 'should delete a select written in the shadow spelling with ' +
+      '--fix-suggestions',
+    flag: '--fix-suggestions',
+    before: 'a-shadow-select-the-fixer-drops.xsl',
+    after: 'a-shadow-select-the-fixer-drops.fixed.xsl',
+  },
+  {
     name: 'should delete a select however its delimiter and gaps are spelled ' +
       'with --fix-suggestions',
     flag: '--fix-suggestions',
@@ -589,6 +603,12 @@ const UNCHANGED = [
     name: 'cannot delete a select beside a body with plain --fix',
     flag: '--fix',
     sheet: 'variable-or-param-with-select-and-content.xsl',
+  },
+  {
+    name: 'cannot choose between a select written in both spellings with ' +
+      '--fix-suggestions',
+    flag: '--fix-suggestions',
+    sheet: 'a-select-written-in-both-spellings.xsl',
   },
   {
     name: 'cannot delete a select whose value holds a numeric entity with ' +

@@ -52,16 +52,18 @@ const missingVersion = function(node) {
 }
 
 /**
- * Fix for `mode-or-priority-without-match`: delete the orphan attribute. It is
- * one of two corrections the rule offers (the other is adding `match`), so it
- * is a suggestion, and only when exactly one of `mode`/`priority` is present
- * can a single deletion resolve the defect — with both, there is no fix.
+ * Fix for `mode-or-priority-without-match`: delete the orphan attribute, in
+ * whichever of its two spellings the author wrote. It is one of two
+ * corrections the rule offers (the other is adding `match`), so it is a
+ * suggestion, and only where exactly one of them stands can a single deletion
+ * resolve the defect.
  * @param {Element} node - The `xsl:template` element
  * @param {string} content - Raw source text of the file it stands in
  * @return {?object} - The suggestion fix, or null
  */
 const modeOrPriority = function(node, content) {
-  const present = ['mode', 'priority'].filter((name) => node.hasAttribute(name))
+  const present = ['mode', '_mode', 'priority', '_priority']
+    .filter((name) => node.hasAttribute(name))
   let fix = null
   if (present.length === 1) {
     fix = {
@@ -121,19 +123,24 @@ const textOutsideXslText = function(node) {
 
 /**
  * Fix for `variable-or-param-with-select-and-content`: delete the `@select`,
- * leaving the body as the only value. It is one of the two corrections the rule
- * offers — dropping the body instead is structural, so no single edit expresses
- * it — and the body binds a tree where the expression bound its own type, so it
- * is a suggestion.
+ * in whichever of its two spellings the author wrote, leaving the body as the
+ * only value. It is one of the two corrections the rule offers — dropping the
+ * body is structural, so no single edit expresses it — and the body binds a
+ * tree where the expression bound its own type, so it is a suggestion.
  * @param {Element} node - The variable-binding element
  * @param {string} content - Raw source text of the file it stands in
- * @return {object} - The suggestion fix
+ * @return {?object} - The suggestion fix, or null
  */
 const selectAndContent = function(node, content) {
-  return {
-    ...deletion(node.getAttributeNode('select'), content),
-    suggestion: true,
+  const present = ['select', '_select'].filter((name) => node.hasAttribute(name))
+  let fix = null
+  if (present.length === 1) {
+    fix = {
+      ...deletion(node.getAttributeNode(present[0]), content),
+      suggestion: true,
+    }
   }
+  return fix
 }
 
 /**

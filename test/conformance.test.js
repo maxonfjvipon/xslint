@@ -79,8 +79,8 @@ const NURSERY = {
   'empty-variable': '#851',
   'function-use-in-xslt-1': '#851',
   'missing-version-in-stylesheet': '#705',
-  'mode-or-priority-without-match': '#550 #851',
-  'modern-construct-in-xslt-1': '#555 #851',
+  'mode-or-priority-without-match': '#550',
+  'modern-construct-in-xslt-1': '#555',
   'setting-value-of-variable-incorrectly': '#590',
   'template-has-no-name-or-match': '#550',
   'text-outside-xsl-text': '#881',
@@ -89,7 +89,6 @@ const NURSERY = {
   'unused-named-template': '#498',
   'unused-variable': '#498',
   'using-namespace-axis': '#632',
-  'variable-or-param-with-select-and-content': '#851',
   'with-param-use-in-invalid-parent-node': '#566',
 }
 
@@ -197,13 +196,16 @@ const EMITTED = {
 }
 
 /**
- * An attribute a selector tests the presence of. XSLT 3.0 writes any attribute
- * of an XSLT element `_x` as readily as `x`, evaluated before a module is
- * compiled, so a check asking whether the author supplied one reads both or
- * reports a stylesheet SaxonJ-HE 12.5 loads without a word — ten did (#849).
+ * An attribute a selector tests the presence of, asked either way round: the
+ * `not(@x)` of #849, and the bare `@x` standing as a clause of its own, which
+ * closes on a bracket, an `and`, an `or` or a union bar. A step tail is not
+ * one — the `/@x` of a path reads a value where a clause asks who wrote it,
+ * which is the whole of the difference this gate turns on (#851).
  * @type {RegExp}
  */
-const SUPPLIED = new RegExp(`not${GAP}*\\(${GAP}*@([\\w:.-]+)${GAP}*\\)`, 'g')
+const SUPPLIED = new RegExp(
+  `(^|[^/])@([\\w:.-]+)${GAP}*(?:\\)${GAP}*)*(?:\\]|and\\b|or\\b|\\|)`, 'g',
+)
 
 /**
  * The shadow spelling of an attribute, the underscore standing in front of the
@@ -217,13 +219,15 @@ const shadowed = function(named) {
 }
 
 /**
- * The attributes with no shadow spelling to ask after, beside the reason.
- * `xsl:version` is what makes a literal result element a stylesheet at all, so
- * the mechanism reading a shadow one is not running yet: Saxon refuses both
- * `xsl:_version` (XTSE0150) and `_xsl:version` (SXXP0003) on such a root.
+ * The attributes with no shadow spelling to ask after, beside the reason. The
+ * mechanism reaches an attribute of an XSLT element in no namespace, so
+ * `xml:space` has none at all; `xsl:version` is what makes a literal result
+ * element a stylesheet, so nothing is running yet to read one — Saxon refuses
+ * `xsl:_version` (XTSE0150) and `_xsl:version` (SXXP0003) alike on such a root.
  * @type {{[key: string]: string}}
  */
 const SHADOWLESS = {
+  'xml:space': 'the shadow mechanism reaches no attribute in a namespace',
   'xsl:version': 'it is what makes a literal result element a stylesheet',
 }
 
@@ -234,7 +238,7 @@ const SHADOWLESS = {
  */
 const unshadowed = function(selector) {
   return Array.from(selector.matchAll(SUPPLIED))
-    .map((found) => found[1])
+    .map((found) => found[2])
     .filter((named) => !named.split(':').pop().startsWith('_'))
     .filter((named) => !selector.includes(`@${shadowed(named)}`))
 }
@@ -705,13 +709,14 @@ describe('conformance', function() {
           for (const key of keys) {
             assert.deepStrictEqual(
               unshadowed(check[key] ?? '').filter(
-                (named) => SHADOWLESS[named] === undefined,
+                (named) => SHADOWLESS[named] === undefined &&
+                  !(key === 'declaration' && named === 'name'),
               ),
               [],
               `${kind}/${name} asks its ${key} whether an attribute is ` +
                 'there and reads one of the two spellings XSLT gives it, so ' +
                 'a stylesheet writing the shadow form draws a defect no ' +
-                'processor agrees with. Ask not(@_x) beside not(@x)',
+                'processor agrees with. Ask the shadow spelling beside it',
             )
           }
         }
@@ -723,7 +728,7 @@ describe('conformance', function() {
       'the shadow spelling of a prefixed attribute keeps the prefix and ' +
         'underscores the local name, where _xsl:version names a prefix no ' +
         'document binds and so reaches no attribute at all. Nothing else ' +
-        'asks: the one prefixed presence test in the tree is exempt on ' +
+        'asks: both prefixed presence tests in the tree are exempt on ' +
         'SHADOWLESS, so the gates around this one read the same either way',
     )
   })
