@@ -88,7 +88,7 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">//(xsl:for-each | xsl:if)[count(node()) = count(text()) and normalize-space() = "" and not(text()[ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
+    <code class="xpath">//(xsl:for-each | xsl:if)[count(node()) = count(text()) and xslint:normalize-space(.) = "" and not(text()[ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
   </div>
   <div class="check-content">
 <h1>Empty content in instructions</h1>

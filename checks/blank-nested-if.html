@@ -88,7 +88,7 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">//xsl:if[(count(*) = 1) and (count(xsl:if) = 1) and not(text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
+    <code class="xpath">//xsl:if[(count(*) = 1) and (count(xsl:if) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
   </div>
   <div class="check-content">
 <h1>Blank nested if</h1>

@@ -88,7 +88,7 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-error">error</span> <span class="nursery">nursery</span>
-    <code class="xpath">//(xsl:variable | xsl:param | xsl:with-param)[@select and (* or text()[normalize-space() or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
+    <code class="xpath">//(xsl:variable | xsl:param | xsl:with-param)[@select and (* or text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
   </div>
   <p class="nursery-note"><code>--stable</code> withholds this
   check while an open issue reports it wrong about code a processor accepts:

@@ -87,12 +87,9 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:*[text()[normalize-space()] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]</code>
+    <span class="severity-warning">warning</span>
+    <code class="xpath">//xsl:*[text()[xslint:normalize-space(.)] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #881, whose normalize-space strips a wider whitespace class than XPath and so misses 29 nodes of TEI.</p>
   <div class="check-content">
 <h1>Literal text outside <code>xsl:text</code></h1>
 <p>Literal text (other than whitespace) must not sit directly inside an <code>xsl:</code>

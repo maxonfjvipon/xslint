@@ -88,7 +88,7 @@
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
     <span class="severity-warning">warning</span>
-    <code class="xpath">//(xsl:if | xsl:when)[normalize-space(@test) = ("'true'", "'false'", '"true"', '"false"')]</code>
+    <code class="xpath">//(xsl:if | xsl:when)[xslint:normalize-space(@test) = ("'true'", "'false'", '"true"', '"false"')]</code>
   </div>
   <div class="check-content">
 <h1>Incorrect use of boolean constants</h1>
