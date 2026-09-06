@@ -50,14 +50,17 @@ finished first, node discarded the report, and eleven merges in a row read `-0` 
 GitHub runners passed.
 
 `NURSERY` is what `--stable` withholds, read off `checks.json` rather than written out here, each
-check naming the open issue that keeps it out (#581). Three things about the gate are deliberate. It
-matches a **whole name** on a channel of its own, `suppressed` matching a substring and
-`unused-function` standing inside `unused-function-template-parameter`, which is settled — so the
-existing channel would withhold a check nothing reports wrong. It exempts any name the config grades
-outright, that being the user asking for the check by hand, where `off` still reaches `disabled`.
-And it stands **after** the directive pass: a defect withheld in front of it is a defect the
-directive over it never suppressed, so `--stable` would call that directive unused and tell the
-author to delete the one line keeping the file quiet under the other tier.
+check naming the open issue that keeps it out (#581). Three things about the gate are deliberate,
+and each is a channel kept apart from one that already existed. It matches a **whole name**, where
+`suppressed` matches a substring and `unused-function` stands inside
+`unused-function-template-parameter`, which is settled. It exempts a name the config grades
+**verbatim** and never one a glob reached, which is what `admitted` is for beside `overrides`: that
+map is keyed by expanded names, so `'*': warning` would have exempted all fifteen silently, a
+pattern about severity being no vouch for a check. It defaults to `overrides`'s keys, verbatim for
+an embedder calling `lint`, and a glob run says which of the checks it graded stay withheld. And it
+stands **after** the directive pass: a defect withheld in front of it is a defect the directive over
+it never suppressed, so `--stable` would call that directive unused and tell the author to delete
+the one line keeping the file quiet under the other tier.
 
 ## `src/config.js`
 

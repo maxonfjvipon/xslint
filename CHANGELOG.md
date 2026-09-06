@@ -13,7 +13,7 @@ publication date only; detailed notes begin with the Unreleased section.
   fifty-three checks no open issue reports wrong about code a processor
   accepts. The other fifteen carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
-  check by name in the config re-admits it (#581).
+  check verbatim in the config re-admits it, where a glob does not (#581).
 
 - **Breaking:** rename `null-output-from-stylesheet` to
   `template-writes-nothing`, and ask it of every template rather than only a

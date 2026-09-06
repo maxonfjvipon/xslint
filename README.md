@@ -185,9 +185,11 @@ stable: false                           # default for --stable
 - **`exclude`** lists globs, relative to the config file's own directory, whose
   matching files are not linted.
 - **`max-warnings`**, **`log-level`**, **`quiet`**, and **`stable`** set the
-  defaults for the matching command-line flags. A check named outright under
+  defaults for the matching command-line flags. A check named **verbatim** under
   `rules` outranks `stable`, so grading a nursery check `warning` or `error`
-  puts it back in the report.
+  puts it back in the report. A glob does not: `'*': warning` grades every check
+  it reaches and vouches for none, so the nursery stays withheld and each
+  withheld check is named on standard error.
 
 Unknown top-level keys, rule names that match no check, and values of the wrong
 type (a non-numeric `max-warnings`, a non-list `exclude`, a non-boolean

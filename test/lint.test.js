@@ -102,6 +102,19 @@ describe('lint (programmatic API)', function() {
         'where a grade written against the name is the user asking for it',
     )
   })
+  it('withholds a nursery check the caller grades without naming', function() {
+    assert.ok(
+      !lint(
+        [source('stylesheets/xsl-with-some-violations.xsl')],
+        {
+          stable: true, admitted: [],
+          overrides: {'unused-named-template': 'error'},
+        },
+      ).some((defect) => defect.name === 'unused-named-template'),
+      'cannot withhold a nursery check a grade reached through a glob, ' +
+        'where the pattern names no check and vouches for none',
+    )
+  })
   it('exposes the fix engine for callers to apply', function() {
     const sources = [source('stylesheets/xsl-with-no-violations.xsl')]
     assert.equal(fixed(sources, lint(sources)).contents.size, 0)

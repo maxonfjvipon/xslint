@@ -296,12 +296,16 @@ const ranked = function(one, two) {
  * @param {Array.<{file: string, content: string}>} sources - Raw stylesheets,
  *  each as it was read, a byte order mark it opens with held aside by `parted`
  * @param {{suppress: Array.<string>, overrides: {[check: string]: string},
- *  stable: boolean}} options - Check-name substrings to skip, per-check
- *  severity re-grades, and whether to withhold the `NURSERY`
+ *  stable: boolean, admitted: Array.<string>}} options - Substrings to skip,
+ *  re-grades, the `NURSERY` gate, and the verbatim names it exempts (#581)
  * @return {Array.<object>} - The defects that survive suppression
  */
 const lint = function(
-  sources, {suppress = [], overrides = {}, stable = false} = {},
+  sources,
+  {
+    suppress = [], overrides = {}, stable = false,
+    admitted = Object.keys(overrides),
+  } = {},
 ) {
   const suppressions = validatedSuppressions(suppress)
   const read = sources.map((source) => ({
@@ -341,7 +345,7 @@ const lint = function(
   const gated = new Set()
   if (stable) {
     for (const name of NURSERY.keys()) {
-      if (!Object.hasOwn(overrides, name)) {
+      if (!admitted.includes(name)) {
         gated.add(name)
       }
     }
@@ -367,6 +371,7 @@ const xslint = function(pths, options) {
   }
   const disabled = []
   const overrides = {}
+  const admitted = []
   for (const [pattern, severity] of Object.entries(config.rules)) {
     const matched = CHECKS.filter((check) => minimatch(check, pattern))
     if (matched.length === 0) {
@@ -377,6 +382,9 @@ const xslint = function(pths, options) {
         disabled.push(check)
       } else {
         overrides[check] = severity
+        if (check === pattern) {
+          admitted.push(check)
+        }
       }
     }
   }
@@ -399,10 +407,23 @@ const xslint = function(pths, options) {
     file: stylesheet,
     content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
+  const stable = options.stable ?? config.stable ?? false
+  if (stable) {
+    for (const check of Object.keys(overrides)) {
+      if (NURSERY.has(check) && !admitted.includes(check)) {
+        logger.warn(
+          `Rule '${check}' stays withheld under the stable tier, ` +
+            'a pattern grading it having named no check: ' +
+            `${NURSERY.get(check)}`,
+        )
+      }
+    }
+  }
   let reported = lint(sources, {
     suppress: [...options.suppress, ...disabled],
     overrides: overrides,
-    stable: options.stable ?? config.stable ?? false,
+    stable: stable,
+    admitted: admitted,
   })
   if (options.fix || options.fixDryRun || options.fixSuggestions) {
     /**
