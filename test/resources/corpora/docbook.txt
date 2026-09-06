@@ -301,8 +301,13 @@ contrib/xsl/resume/fo/resume.xsl:2:1 too-many-templates
 contrib/xsl/resume/fo/resume.xsl:50:3 unused-variable
 contrib/xsl/resume/fo/resume.xsl:82:3 unused-function-template-parameter
 contrib/xsl/resume/fo/resume.xsl:87:3 unused-function-template-parameter
+contrib/xsl/resume/fo/resume.xsl:117:15 text-outside-xsl-text
+contrib/xsl/resume/fo/resume.xsl:162:15 text-outside-xsl-text
 contrib/xsl/resume/html/resume.xsl:2:1 missing-id-in-stylesheet
 contrib/xsl/resume/html/resume.xsl:2:1 too-many-templates
+contrib/xsl/resume/html/resume.xsl:44:11 text-outside-xsl-text
+contrib/xsl/resume/html/resume.xsl:60:11 text-outside-xsl-text
+contrib/xsl/resume/html/resume.xsl:80:11 text-outside-xsl-text
 contrib/xsl/slides/s5/s5.xsl:2:1 missing-id-in-stylesheet
 contrib/xsl/tabular-toc/examples/book/xsl/custom.xsl:2:1 missing-id-in-stylesheet
 contrib/xsl/tabular-toc/examples/website/xsl/custom.xsl:2:1 missing-id-in-stylesheet
@@ -359,6 +364,9 @@ contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:848:7 text-outside-xsl-text sugg
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:851:7 text-outside-xsl-text suggestion "<xsl:text>0</xsl:text>"
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:966:3 setting-value-of-variable-incorrectly
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1056:71 redundant-whitespace fix ""
+contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1514:15 text-outside-xsl-text
+contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1562:19 text-outside-xsl-text
+contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1595:19 text-outside-xsl-text
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1660:63 redundant-whitespace fix ""
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1729:3 text-outside-xsl-text suggestion "<xsl:text>, </xsl:text>"
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:1759:54 predicate-position-literal fix "last()"
@@ -388,6 +396,7 @@ contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2785:31 not-creating-attribute-c
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2804:33 not-creating-attribute-correctly
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2820:33 not-creating-attribute-correctly
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2833:53 redundant-whitespace fix ""
+contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2883:21 text-outside-xsl-text
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2919:23 count-compared-to-zero fix "not($autolayout//*[@id = $doc.root/@id])"
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2971:67 predicate-position-literal fix "last()"
 contrib/xsl/tabular-toc/xsl/tabular-docbook.xsl:2975:5 text-outside-xsl-text suggestion "<xsl:text>note</xsl:text>"
@@ -2501,13 +2510,16 @@ xsl/html/chunk-common.xsl:1568:41 count-compared-to-zero fix "boolean($up)"
 xsl/html/chunk-common.xsl:1571:40 count-compared-to-zero fix "boolean($next)"
 xsl/html/chunk-common.xsl:1588:31 count-compared-to-zero fix "$prev"
 xsl/html/chunk-common.xsl:1604:35 count-compared-to-zero fix "boolean($up)"
+xsl/html/chunk-common.xsl:1609:19 text-outside-xsl-text
 xsl/html/chunk-common.xsl:1614:31 count-compared-to-zero fix "$next"
 xsl/html/chunk-common.xsl:1648:37 count-compared-to-zero fix "boolean($prev)"
 xsl/html/chunk-common.xsl:1649:40 count-compared-to-zero fix "boolean($up)"
 xsl/html/chunk-common.xsl:1650:40 count-compared-to-zero fix "boolean($next)"
 xsl/html/chunk-common.xsl:1670:31 count-compared-to-zero fix "$prev"
 xsl/html/chunk-common.xsl:1686:35 count-compared-to-zero fix "boolean($up)"
+xsl/html/chunk-common.xsl:1699:19 text-outside-xsl-text
 xsl/html/chunk-common.xsl:1704:31 count-compared-to-zero fix "$next"
+xsl/html/chunk-common.xsl:1745:19 text-outside-xsl-text
 xsl/html/chunk-common.xsl:1811:17 not-creating-attribute-correctly
 xsl/html/chunk-common.xsl:1869:7 not-creating-attribute-correctly
 xsl/html/chunk.xsl:1:1 missing-id-in-stylesheet
@@ -2691,6 +2703,7 @@ xsl/html/html.xsl:259:5 text-outside-xsl-text suggestion "<xsl:text>™</xsl:tex
 xsl/html/html.xsl:260:5 text-outside-xsl-text suggestion "<xsl:text>™</xsl:text>"
 xsl/html/html.xsl:261:5 text-outside-xsl-text suggestion "<xsl:text>®</xsl:text>"
 xsl/html/html.xsl:262:5 text-outside-xsl-text suggestion "<xsl:text>(SM)</xsl:text>"
+xsl/html/html.xsl:263:5 text-outside-xsl-text
 xsl/html/html.xsl:264:5 text-outside-xsl-text suggestion "<xsl:text>“</xsl:text>"
 xsl/html/html.xsl:265:5 text-outside-xsl-text suggestion "<xsl:text>”</xsl:text>"
 xsl/html/html.xsl:266:5 text-outside-xsl-text suggestion "<xsl:text>‘</xsl:text>"
@@ -3042,6 +3055,7 @@ xsl/javahelp/javahelp.xsl:602:5 text-outside-xsl-text suggestion "<xsl:text>©</
 xsl/javahelp/javahelp.xsl:609:9 text-outside-xsl-text suggestion "<xsl:text>™</xsl:text>"
 xsl/javahelp/javahelp.xsl:612:5 text-outside-xsl-text suggestion "<xsl:text>®</xsl:text>"
 xsl/javahelp/javahelp.xsl:613:5 text-outside-xsl-text suggestion "<xsl:text>(SM)</xsl:text>"
+xsl/javahelp/javahelp.xsl:614:5 text-outside-xsl-text
 xsl/javahelp/javahelp.xsl:615:5 text-outside-xsl-text suggestion "<xsl:text>“</xsl:text>"
 xsl/javahelp/javahelp.xsl:616:5 text-outside-xsl-text suggestion "<xsl:text>”</xsl:text>"
 xsl/javahelp/javahelp.xsl:617:5 text-outside-xsl-text suggestion "<xsl:text>‘</xsl:text>"
@@ -3573,12 +3587,14 @@ xsl/webhelp/xsl/webhelp-common.xsl:435:51 redundant-whitespace fix " "
 xsl/webhelp/xsl/webhelp-common.xsl:448:50 redundant-whitespace fix " "
 xsl/webhelp/xsl/webhelp-common.xsl:551:9 unused-function-template-parameter
 xsl/webhelp/xsl/webhelp-common.xsl:564:10 count-compared-to-zero fix "boolean($up)"
+xsl/webhelp/xsl/webhelp-common.xsl:570:21 text-outside-xsl-text
 xsl/webhelp/xsl/webhelp-common.xsl:590:39 count-compared-to-zero fix "boolean($prev)"
 xsl/webhelp/xsl/webhelp-common.xsl:591:33 count-compared-to-zero fix "boolean($up)"
 xsl/webhelp/xsl/webhelp-common.xsl:594:32 count-compared-to-zero fix "boolean($next)"
 xsl/webhelp/xsl/webhelp-common.xsl:596:47 count-compared-to-zero fix "$prev"
 xsl/webhelp/xsl/webhelp-common.xsl:611:37 text-outside-xsl-text suggestion "<xsl:text>\n                                        |\n                                        </xsl:text>"
 xsl/webhelp/xsl/webhelp-common.xsl:611:53 count-compared-to-zero fix "boolean($up)"
+xsl/webhelp/xsl/webhelp-common.xsl:625:37 text-outside-xsl-text
 xsl/webhelp/xsl/webhelp-common.xsl:628:33 text-outside-xsl-text suggestion "<xsl:text>\n                                    |\n                                    </xsl:text>"
 xsl/webhelp/xsl/webhelp-common.xsl:628:47 count-compared-to-zero fix "$next"
 xsl/webhelp/xsl/webhelp-common.xsl:662:17 unused-variable
@@ -3625,6 +3641,7 @@ xsl/website/rss.xsl:112:41 select-starts-with-double-slash suggestion ".//"
 xsl/website/tabular.xsl:2:1 missing-id-in-stylesheet
 xsl/website/tabular.xsl:2:1 too-many-templates
 xsl/website/tabular.xsl:156:44 unabbreviated-axis fix ""
+xsl/website/tabular.xsl:186:17 text-outside-xsl-text
 xsl/website/tabular.xsl:202:3 unused-function-template-parameter
 xsl/website/toc-tabular.xsl:2:1 missing-id-in-stylesheet
 xsl/website/toc-tabular.xsl:63:9 not-creating-attribute-correctly
@@ -3651,6 +3668,9 @@ xsl/website/website-common.xsl:41:5 text-outside-xsl-text suggestion "<xsl:text>
 xsl/website/website-common.xsl:42:5 text-outside-xsl-text suggestion "<xsl:text>tip</xsl:text>"
 xsl/website/website-common.xsl:43:5 text-outside-xsl-text suggestion "<xsl:text>important</xsl:text>"
 xsl/website/website-common.xsl:44:5 text-outside-xsl-text suggestion "<xsl:text>note</xsl:text>"
+xsl/website/website-common.xsl:175:15 text-outside-xsl-text
+xsl/website/website-common.xsl:216:15 text-outside-xsl-text
+xsl/website/website-common.xsl:229:15 text-outside-xsl-text
 xsl/website/website-common.xsl:350:27 predicate-position-literal fix "last()"
 xsl/website/website-common.xsl:356:3 text-outside-xsl-text suggestion "<xsl:text>, </xsl:text>"
 xsl/website/website-common.xsl:665:3 unused-variable

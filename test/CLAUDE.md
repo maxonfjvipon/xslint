@@ -429,8 +429,8 @@ and rechecked by nothing since.
 A snapshot is `test/resources/corpora/<name>.txt`, one line per defect: the file relative to the
 corpus root, the line, the column, the check, and where the defect is fixable the tier and the
 replacement. The relative path is what keeps the runner's own checkout directory out of the file.
-The replacement is there because half of what a run says is in it — 1909 of DocBook-XSL's 3753
-lines, 3504 of TEI's 5514 and 457 of DITA-OT's 1194 carry one as this lands — so a fixer that
+The replacement is there because half of what a run says is in it — 1909 of DocBook-XSL's 3773
+lines, 3504 of TEI's 5518 and 457 of DITA-OT's 1197 carry one as this lands — so a fixer that
 began writing something else while its detections held would move nothing a detection-only record
 could see, and `--fix` is the one thing here that edits a user's files. No count is quoted as a
 bar: the file **is** the expectation, exactly, so a figure repeated here would rot at the first
@@ -463,7 +463,7 @@ the workflow clean; 48 tests across `snapshot`, `budget` and `workflows` hold th
 and the step to each other — 42 of them in this process and 6 in the two deep halves, which run each
 script the way the shell does, since the exit code is the whole of what arms either judge and a
 verdict returned to nobody leaves the tier as unable to fail as #785 found it; the step's own shell,
-replayed over a real DITA-OT clone at its pinned commit, reads `linted=190`, `found=1194` and
+replayed over a real DITA-OT clone at its pinned commit, reads `linted=190`, `found=1197` and
 `judged=0`; and the same replay over a *mutated* copy of this tree exits 1 with an annotation naming
 a detection that had gone and the replacements that had been rewritten, ending `, and 33 more` —
 `SHOWN` being ten, gains before losses, since a report that has moved wholesale must say so in one

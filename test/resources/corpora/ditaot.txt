@@ -252,6 +252,7 @@ src/main/plugins/org.dita.html5/xsl/reference.xsl:247:9 text-outside-xsl-text su
 src/main/plugins/org.dita.html5/xsl/reference.xsl:248:9 text-outside-xsl-text suggestion "<xsl:text>th</xsl:text>"
 src/main/plugins/org.dita.html5/xsl/reference.xsl:249:9 text-outside-xsl-text suggestion "<xsl:text>th</xsl:text>"
 src/main/plugins/org.dita.html5/xsl/reference.xsl:250:9 text-outside-xsl-text suggestion "<xsl:text>td</xsl:text>"
+src/main/plugins/org.dita.html5/xsl/reference.xsl:280:9 text-outside-xsl-text
 src/main/plugins/org.dita.html5/xsl/rel-links.xsl:9:1 missing-id-in-stylesheet
 src/main/plugins/org.dita.html5/xsl/rel-links.xsl:9:1 not-using-output
 src/main/plugins/org.dita.html5/xsl/rel-links.xsl:9:1 too-many-templates
@@ -721,7 +722,7 @@ src/main/plugins/org.dita.pdf2/xsl/fo/markup-domain.xsl:9:1 not-using-output
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:34:1 missing-id-in-stylesheet
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:34:1 not-using-output
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:34:1 too-many-templates
-src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:62:7 empty-content-in-instructions
+src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:62:7 text-outside-xsl-text
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:383:13 blank-nested-if
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:384:17 text-outside-xsl-text suggestion "<xsl:text> | </xsl:text>"
 src/main/plugins/org.dita.pdf2/xsl/fo/pr-domain.xsl:384:31 count-compared-to-zero fix "exists(preceding-sibling::*)"
@@ -1031,6 +1032,7 @@ src/main/plugins/org.dita.xhtml/xsl/xslhtml/refdisplay.xsl:311:7 text-outside-xs
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/refdisplay.xsl:312:7 text-outside-xsl-text suggestion "<xsl:text>th</xsl:text>"
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/refdisplay.xsl:313:7 text-outside-xsl-text suggestion "<xsl:text>th</xsl:text>"
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/refdisplay.xsl:314:7 text-outside-xsl-text suggestion "<xsl:text>td</xsl:text>"
+src/main/plugins/org.dita.xhtml/xsl/xslhtml/refdisplay.xsl:346:7 text-outside-xsl-text
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/rel-links.xsl:10:1 missing-id-in-stylesheet
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/rel-links.xsl:10:1 not-using-output
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/rel-links.xsl:10:1 too-many-templates
@@ -1115,6 +1117,7 @@ src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:515:5 use-choose-without-
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:787:3 use-choose-without-otherwise
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:835:21 string-length-compared-to-zero suggestion "$header != ''"
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:835:51 string-length-compared-to-zero suggestion "$keycolhead != ''"
+src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:874:11 text-outside-xsl-text
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:902:7 text-outside-xsl-text suggestion "<xsl:text>0</xsl:text>"
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:909:7 text-outside-xsl-text suggestion "<xsl:text>th</xsl:text>"
 src/main/plugins/org.dita.xhtml/xsl/xslhtml/tables.xsl:910:7 text-outside-xsl-text suggestion "<xsl:text>td</xsl:text>"
