@@ -7,6 +7,7 @@ const path = require('path')
 const fs = require('fs')
 const {allFilesFrom} = require('./helpers')
 const {parted} = require('./source')
+const {kinds} = require('./resources/checks.json')
 const {validate: validateXsls, names: xslChecks} =
   require('./validators/xsl-validator')
 const {
@@ -177,6 +178,19 @@ const CHECKS = [
 ]
 
 /**
+ * The checks a stable run withholds, each paired with the open issue reporting
+ * it wrong — read off the checks themselves, where a `nursery` mark names that
+ * issue, so the tier is the tree's answer rather than a list kept beside it. A
+ * whole name and never a substring, which is what `suppress` matches (#581).
+ * @type {Map.<string, string>}
+ */
+const NURSERY = new Map(
+  Object.values(kinds).flatMap((kind) => Object.entries(kind))
+    .filter(([, check]) => Object.hasOwn(check, 'nursery'))
+    .map(([name, check]) => [name, check.nursery]),
+)
+
+/**
  * Deleting incorrect substring-suppressions from array of arguments
  * @param {Array.<string>} suppressions - Array of suppressed checks
  * @return {Array.<string>} - Normalizing list of suppressions
@@ -281,11 +295,18 @@ const ranked = function(one, two) {
  * `xslint-disable` directives are honored.
  * @param {Array.<{file: string, content: string}>} sources - Raw stylesheets,
  *  each as it was read, a byte order mark it opens with held aside by `parted`
- * @param {{suppress: Array.<string>, overrides: {[check: string]: string}}}
- *  options - Check-name substrings to skip, and per-check severity re-grades
+ * @param {{suppress: Array.<string>, overrides: {[check: string]: string},
+ *  stable: boolean, admitted: Array.<string>}} options - Substrings to skip,
+ *  re-grades, the `NURSERY` gate, and the verbatim names it exempts (#581)
  * @return {Array.<object>} - The defects that survive suppression
  */
-const lint = function(sources, {suppress = [], overrides = {}} = {}) {
+const lint = function(
+  sources,
+  {
+    suppress = [], overrides = {}, stable = false,
+    admitted = Object.keys(overrides),
+  } = {},
+) {
   const suppressions = validatedSuppressions(suppress)
   const read = sources.map((source) => ({
     file: source.file, content: parted(source.content).text,
@@ -321,8 +342,17 @@ const lint = function(sources, {suppress = [], overrides = {}} = {}) {
       logger.warn(`Unused xslint-disable directive at ${file}:${stale.line}`)
     }
   }
+  const gated = new Set()
+  if (stable) {
+    for (const name of NURSERY.keys()) {
+      if (!admitted.includes(name)) {
+        gated.add(name)
+      }
+    }
+  }
   return defects.filter(
-    (defect) => !suppresses(directives.get(defect.file), defect),
+    (defect) => !gated.has(defect.name) &&
+      !suppresses(directives.get(defect.file), defect),
   ).sort(ranked)
 }
 
@@ -330,7 +360,8 @@ const lint = function(sources, {suppress = [], overrides = {}} = {}) {
  * Entry point for the command line.
  * @param {Array.<string>} pths - Files or directories with .xsl to lint
  * @param {object} options - CLI options: `logLevel`, `quiet`, `suppress`,
- *  `maxWarnings`, `config`, `format`, `fix`, `fixDryRun`, `fixSuggestions`
+ *  `maxWarnings`, `config`, `format`, `stable`, `fix`, `fixDryRun`,
+ *  `fixSuggestions`
  */
 const xslint = function(pths, options) {
   logger.setLevel(leveled(options.quiet, options.logLevel))
@@ -340,6 +371,7 @@ const xslint = function(pths, options) {
   }
   const disabled = []
   const overrides = {}
+  const admitted = []
   for (const [pattern, severity] of Object.entries(config.rules)) {
     const matched = CHECKS.filter((check) => minimatch(check, pattern))
     if (matched.length === 0) {
@@ -350,6 +382,9 @@ const xslint = function(pths, options) {
         disabled.push(check)
       } else {
         overrides[check] = severity
+        if (check === pattern) {
+          admitted.push(check)
+        }
       }
     }
   }
@@ -372,9 +407,23 @@ const xslint = function(pths, options) {
     file: stylesheet,
     content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
+  const stable = options.stable ?? config.stable ?? false
+  if (stable) {
+    for (const check of Object.keys(overrides)) {
+      if (NURSERY.has(check) && !admitted.includes(check)) {
+        logger.warn(
+          `Rule '${check}' stays withheld under the stable tier, ` +
+            'a pattern grading it having named no check: ' +
+            `${NURSERY.get(check)}`,
+        )
+      }
+    }
+  }
   let reported = lint(sources, {
     suppress: [...options.suppress, ...disabled],
     overrides: overrides,
+    stable: stable,
+    admitted: admitted,
   })
   if (options.fix || options.fixDryRun || options.fixSuggestions) {
     /**
