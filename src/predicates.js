@@ -13,11 +13,12 @@
  * property read answers in tens of nanoseconds. Serving an axis *without*
  * its predicate is a loss, which is what sizes the phase:
  * `text-outside-xsl-text` reads 239-258 ms whole from the engine, 262-299
- * with the walk's axis and the tail asked per candidate, and 156-172 with
- * the `local-name()` half of its predicate answered here.
+ * with the walk's axis and the tail asked per candidate, 156-172 with the
+ * `local-name()` half of its predicate answered here, and 62-68 with the
+ * whole of it answered here since #881 (below).
  *
  * The compile is off the parse and never the text, kept against the text, so
- * each of the 51 distinct predicates in the tree is compiled once a run; 41
+ * each of the 50 distinct predicates in the tree is compiled once a run; 41
  * of them are. What refuses is as deliberate as what serves — a regex, whose
  * XPath flavour is not JavaScript's; a bare `normalize-space`, which is the
  * engine's own and reads a wider gap than XPath defines, where every
@@ -45,7 +46,7 @@
  * of its whole subtree, so a comparison reading one off a step answered
  * `undefined` against every element there is; `carrying` refuses a step in
  * a value position unless it names the attribute axis, which costs nothing
- * the tree spells — 41 of the 51 compile either way.
+ * the tree spells — 41 of the 50 compile either way.
  *
  * None of the three was the oracle's fault and all three were its blind
  * spot: `CANDIDATES` asks the engine what a spelling selects, so what it
@@ -93,7 +94,9 @@
  * 85-94, `variable-or-param-with-select-and-content` 33-36 where it read 74-75
  * and `empty-variable` 31-32 where it read 68-70. The fifth of the class,
  * `empty-content-in-instructions`, reads 73-77 against 75-77: no clause of it
- * compiles, so nothing parts and nothing is spent trying.
+ * compiles, so nothing parts and nothing is spent trying. That last still
+ * holds and no longer by accident: the clause it turns on is refused
+ * deliberately since #881, and for a reason worth the paragraph below.
  *
  * Those four do not add up to what the run saves, and the gap belongs to
  * the measurement rather than to the change. Eight interleaved rounds a
@@ -110,6 +113,35 @@
  * reading taken inside a sweep is not that check's own cost, the four give
  * back a third of what they stop spending, and the neighbours that had been
  * riding on them pay the rest.
+ *
+ * The last clause of the class is served since #881, which is what #811
+ * waited on: `text()[xslint:normalize-space(.)]` could not join this
+ * vocabulary while the engine and a served answer disagreed about what a
+ * gap is, a check's verdict having to stand clear of whether the optimiser
+ * reached it. With it, `text-outside-xsl-text` compiles whole and no
+ * candidate of it reaches the engine at all — 62-68 ms over DocBook-XSL
+ * against 247-257 un-served, where the same shape read 156-172 before that
+ * ticket. The rise is the registered function's own and no regression
+ * here: it is a JavaScript callback per node where `normalize-space` was
+ * compiled into the engine, and with the native one put back the un-served
+ * path reads 168-173 again. What the serving is worth grew with what it
+ * steps around.
+ *
+ * `.` is served where the candidate is a **text** node and refused where it
+ * is an element, the same refusal `carrying` already makes of
+ * `xsl:text = "alpha"`: a text node's string value is one property read, an
+ * element's is the concatenation of its whole subtree. Both answers are
+ * right, so nothing about the answer says which to serve — what parting
+ * costs does. A served clause runs on every candidate where the engine
+ * reads `and` left to right and stops, so serving the dear half of a
+ * conjunction whose cheap half rarely lets it through is a loss paid per
+ * node: `empty-content-in-instructions` spells `count(node()) = count(text())`
+ * ahead of its `normalize-space`, and serving `.` at element level read
+ * 50-54 ms over DocBook-XSL against the 24-25 it reads with that clause
+ * refused. `COST` saw it and could not fail on it, both readings standing
+ * under the bar. Kinds reach the compile for that alone — `stepped` settles
+ * what the axis yields before the clauses are compiled against it — which
+ * makes this the one narrowing here that no wrong answer would have found.
  *
  * The descendant axis is the one this vocabulary gathers rather than
  * follows, a subtree being no chain of links to climb: `below` pushes, an
@@ -146,10 +178,28 @@ const {ASSUMED} = require('./syntax')
 const COMPILED = new Map()
 
 /**
- * The element node type, the one kind a name test on a forward axis yields.
- * @type {number}
+ * The node kinds a walk is filtered to where a name test stands on it, a name
+ * being a question only an element answers.
+ * @type {Array.<number>}
  */
-const ELEMENT = 1
+const ELEMENTS = [1]
+
+/**
+ * The node kinds a `text()` test admits. XPath's data model holds one text
+ * node where the DOM holds two types, a CDATA section being a spelling of
+ * text and not a kind of its own, so a walk blind to the second reads a
+ * `<![CDATA[x]]>` as no text at all.
+ * @type {Array.<number>}
+ */
+const TEXTUAL = [3, 4]
+
+/**
+ * The node kinds an attribute axis reaches, which is the axis itself: nothing
+ * else hangs off `attributes`, so the walk below is handed this and narrows
+ * by nothing.
+ * @type {Array.<number>}
+ */
+const ATTRIBUTES = [2]
 
 /**
  * The axes a step may open with, each mapped to what it reaches from one
@@ -214,31 +264,43 @@ const namespaced = function(prefix) {
 }
 
 /**
- * What a name test admits, read off the tokens standing where one does: a
- * wildcard admitting every name, or a qualified name. An unprefixed element
- * name is refused for the reason `bucketed` refuses one — a default namespace
- * reaches an element — where an unprefixed attribute stands in no namespace.
- * @param {Array} carried - The solid tokens of the name test
- * @param {boolean} attribute - Whether the axis reaches attributes
+ * What a node test admits: the kinds it reaches, and a wildcard or a
+ * qualified name among those. An unprefixed element name is refused for the
+ * reason `bucketed` refuses one — a default namespace reaches an element —
+ * where an unprefixed attribute stands in none. `text()` is admitted on the
+ * child axis alone, the only one walked for anything but elements (#811).
+ * @param {Array} carried - The solid tokens of the node test
+ * @param {string} axis - The axis it stands on, as `AXES` names it
  * @return {?object} - What the test admits, or undefined where it is refused
  */
-const admitted = function(carried, attribute) {
+const admitted = function(carried, axis) {
   let answer = undefined
   if (carried.length === 1 && carried[0].type === TOKENS.MULTI) {
-    answer = {uri: '', local: '', every: true, whole: false}
+    answer = {
+      kinds: ELEMENTS, uri: '', local: '', every: true, whole: false,
+    }
   } else if (carried.length === 3 && carried[0].type === TOKENS.NAME &&
     carried[1].type === TOKENS.COLON && carried[2].type === TOKENS.MULTI &&
     namespaced(carried[0].value) !== '') {
     answer = {
-      uri: namespaced(carried[0].value), local: '', every: false, whole: true,
+      kinds: ELEMENTS, uri: namespaced(carried[0].value), local: '',
+      every: false, whole: true,
+    }
+  } else if (carried.map((one) => one.value).join('') === 'text()' &&
+    axis === 'child') {
+    answer = {
+      kinds: TEXTUAL, uri: '', local: '', every: true, whole: false,
     }
   } else if (carried.length === 1 && carried[0].type === TOKENS.NAME) {
     const parts = carried[0].value.split(':')
-    if (parts.length === 1 && attribute) {
-      answer = {uri: '', local: parts[0], every: false, whole: false}
+    if (parts.length === 1 && axis === 'attribute') {
+      answer = {
+        kinds: ATTRIBUTES, uri: '', local: parts[0], every: false, whole: false,
+      }
     } else if (parts.length === 2 && namespaced(parts[0]) !== '') {
       answer = {
-        uri: namespaced(parts[0]), local: parts[1], every: false, whole: false,
+        kinds: ELEMENTS, uri: namespaced(parts[0]), local: parts[1],
+        every: false, whole: false,
       }
     }
   }
@@ -260,18 +322,20 @@ const admits = function(node, test) {
 }
 
 /**
- * The elements a chain of links yields, walked from where it opens and taken
- * one link at a time. Four axes are that walk with a different link, and a
- * non-element on the way is stepped over rather than stopping it — a comment
- * standing between two siblings ends neither the sibling axis.
+ * The nodes of the kinds asked for that a chain of links yields, walked from
+ * where it opens and taken one link at a time. Four axes are that walk with a
+ * different link, and a node of another kind on the way is stepped over
+ * rather than stopping it — a comment standing between two siblings ends
+ * neither the sibling axis.
  * @param {?Node} standing - Where the walk starts, or null
  * @param {string} link - The property each step of the walk follows
- * @return {Array.<Node>} - The elements it reaches
+ * @param {Array.<number>} kinds - The node types it keeps
+ * @return {Array.<Node>} - The nodes it reaches
  */
-const elements = function(standing, link) {
+const linked = function(standing, link, kinds) {
   let found = []
   for (let walk = standing; walk !== null; walk = walk[link]) {
-    if (walk.nodeType === ELEMENT) {
+    if (kinds.includes(walk.nodeType)) {
       found = found.concat([walk])
     }
   }
@@ -295,7 +359,7 @@ const below = function(node) {
    * @param {Node} standing - The node to descend from
    */
   const visit = function(standing) {
-    for (const one of elements(standing.firstChild, 'nextSibling')) {
+    for (const one of linked(standing.firstChild, 'nextSibling', ELEMENTS)) {
       found.push(one)
       visit(one)
     }
@@ -318,30 +382,32 @@ const above = function(node) {
 }
 
 /**
- * The nodes an axis reaches from one context node, before any name test
- * narrows them. An attribute axis answers the attributes a node carries, and
- * every other axis answers elements, which is what keeps a name test's
- * verdict about a namespace and a local name alone.
+ * The nodes of the kinds a test admits that an axis reaches from one context
+ * node, before the name test narrows them further. An attribute axis answers
+ * the attributes a node carries, that being every node it reaches, and a
+ * descendant axis answers elements alone — which is why `text()` is admitted
+ * on the child axis and nowhere else.
  * @param {Node} node - The context node
  * @param {string} axis - The axis, as `AXES` names it
+ * @param {Array.<number>} kinds - The node types the test admits
  * @return {Array.<Node>} - What it reaches
  */
-const reached = function(node, axis) {
+const reached = function(node, axis, kinds) {
   let found = []
   if (axis === 'attribute') {
     found = Array.from(node.attributes || [])
   } else if (axis === 'self') {
     found = [node]
   } else if (axis === 'parent') {
-    found = elements(above(node), 'parentNode').slice(0, 1)
+    found = linked(above(node), 'parentNode', kinds).slice(0, 1)
   } else if (axis === 'child') {
-    found = elements(node.firstChild, 'nextSibling')
+    found = linked(node.firstChild, 'nextSibling', kinds)
   } else if (axis === 'preceding-sibling') {
-    found = elements(node.previousSibling, 'previousSibling')
+    found = linked(node.previousSibling, 'previousSibling', kinds)
   } else if (axis === 'following-sibling') {
-    found = elements(node.nextSibling, 'nextSibling')
+    found = linked(node.nextSibling, 'nextSibling', kinds)
   } else if (axis === 'ancestor') {
-    found = elements(above(node), 'parentNode')
+    found = linked(above(node), 'parentNode', kinds)
   } else if (axis === 'descendant') {
     found = below(node)
   }
@@ -436,14 +502,19 @@ const stepped = function(tokens, node, under = undefined) {
       (kid) => kid.kind === 'predicate' && kid.children.length === 1,
     )) {
     const {axis, named} = opening(tokens, node)
-    const test = admitted(named, axis === 'attribute')
-    const inner = node.children.map((kid) => tested(tokens, kid.children[0]))
-    if (test !== undefined && inner.every((one) => one !== undefined) &&
-      (under === undefined || axis === 'child')) {
-      answer = (context) => inner.reduce(
-        (kept, one) => kept.filter(one),
-        reached(context, under ?? axis).filter((found) => admits(found, test)),
+    const test = admitted(named, under ?? axis)
+    if (test !== undefined && (under === undefined || axis === 'child')) {
+      const inner = node.children.map(
+        (kid) => tested(tokens, kid.children[0], test.kinds),
       )
+      if (inner.every((one) => one !== undefined)) {
+        answer = (context) => inner.reduce(
+          (kept, one) => kept.filter(one),
+          reached(context, under ?? axis, test.kinds).filter(
+            (found) => admits(found, test),
+          ),
+        )
+      }
     }
   }
   return answer
@@ -451,16 +522,18 @@ const stepped = function(tokens, node, under = undefined) {
 
 /**
  * The strings an operand of a comparison carries, or undefined where it is
- * outside the vocabulary. A bare attribute step answers the values it selects,
- * empty where it selects nothing, `xslint:normalize-space` of one answers a
- * single string, empty where the attribute is absent — XPath's two different
- * answers — and `local-name()` answers the one name the candidate carries.
+ * outside the vocabulary. An attribute step answers the values it selects and
+ * `xslint:normalize-space` a single string, empty where what it reads is
+ * absent — XPath's two different answers — `local-name()` the candidate's own
+ * name, and `.` its string value, which the DOM spells `textContent`.
  * @param {Array} tokens - The tokens the tree was parsed from
  * @param {object} node - A node standing as one side of a comparison
+ * @param {Array} kinds - The node kinds the axis yields, since `.` is a
+ *  property read on a text node and a whole subtree on an element
  * @return {(function(Node): Array.<string>|undefined)} - The strings it
  *  carries, or undefined
  */
-const worded = function(tokens, node) {
+const worded = function(tokens, node, kinds = ELEMENTS) {
   let answer = undefined
   if (node.kind === 'literal') {
     const literal = held(tokens, node)
@@ -473,7 +546,7 @@ const worded = function(tokens, node) {
       answer = (context) => selects(context).map((one) => one.value)
     }
   } else if (node.kind === 'parenthesized' || node.kind === 'sequence') {
-    const parts = node.children.map((kid) => worded(tokens, kid))
+    const parts = node.children.map((kid) => worded(tokens, kid, kinds))
     if (parts.length > 0 && parts.every((one) => one !== undefined)) {
       answer = (context) => parts.flatMap((one) => one(context))
     }
@@ -485,7 +558,7 @@ const worded = function(tokens, node) {
     }
   } else if (calling(tokens, node, 'substring-after') &&
     node.children.length === 2) {
-    const parts = node.children.map((kid) => worded(tokens, kid))
+    const parts = node.children.map((kid) => worded(tokens, kid, kinds))
     if (parts.every((one) => one !== undefined)) {
       answer = (context) => {
         const mark = parts[1](context)[0] ?? ''
@@ -495,16 +568,17 @@ const worded = function(tokens, node) {
       }
     }
   } else if (calling(tokens, node, 'xslint:normalize-space') &&
-    node.children.length === 1 && carrying(tokens, node.children[0])) {
-    const selects = stepped(tokens, node.children[0])
-    if (selects !== undefined) {
-      answer = (context) => [
-        normalized(selects(context).map((one) => one.value)[0] ?? ''),
-      ]
+    node.children.length === 1) {
+    const carries = worded(tokens, node.children[0], kinds)
+    if (carries !== undefined) {
+      answer = (context) => [normalized(carries(context)[0] ?? '')]
     }
   } else if (calling(tokens, node, 'local-name') &&
     node.children.length === 0) {
     answer = (context) => [context.localName]
+  } else if (node.kind === 'context' &&
+    kinds.every((one) => TEXTUAL.includes(one))) {
+    answer = (context) => [context.nodeValue]
   }
   return answer
 }
@@ -624,10 +698,12 @@ const calling = function(tokens, node, name) {
  * or the `string-length` of an attribute, which is zero where none is there.
  * @param {Array} tokens - The tokens the tree was parsed from
  * @param {object} node - A node standing as one side of a comparison
+ * @param {Array} kinds - The node kinds the axis yields, since `.` is a
+ *  property read on a text node and a whole subtree on an element
  * @return {(function(Node): number|undefined)} - The number it carries, or
  *  undefined
  */
-const counted = function(tokens, node) {
+const counted = function(tokens, node, kinds = ELEMENTS) {
   let answer = undefined
   if (node.kind === 'literal') {
     const literal = held(tokens, node)
@@ -642,7 +718,7 @@ const counted = function(tokens, node) {
     }
   } else if (calling(tokens, node, 'string-length') &&
     node.children.length === 1) {
-    const carries = worded(tokens, node.children[0])
+    const carries = worded(tokens, node.children[0], kinds)
     if (carries !== undefined) {
       answer = (context) => Array.from(carries(context)[0] ?? '').length
     }
@@ -678,13 +754,15 @@ const signed = function(tokens, node) {
  * `=` alone because a negated existential is the shape easiest to get wrong.
  * @param {Array} tokens - The tokens the tree was parsed from
  * @param {object} node - A comparison node of its tree
+ * @param {Array} kinds - The node kinds the axis yields, since `.` is a
+ *  property read on a text node and a whole subtree on an element
  * @return {(function(Node): boolean|undefined)} - What it answers of a node,
  *  or undefined
  */
-const compared = function(tokens, node) {
+const compared = function(tokens, node, kinds = ELEMENTS) {
   const sign = signed(tokens, node)
-  const numbers = node.children.map((kid) => counted(tokens, kid))
-  const strings = node.children.map((kid) => worded(tokens, kid))
+  const numbers = node.children.map((kid) => counted(tokens, kid, kinds))
+  const strings = node.children.map((kid) => worded(tokens, kid, kinds))
   let answer = undefined
   if (sign !== '' && numbers.every((one) => one !== undefined)) {
     answer = (context) => SIGNS[sign](numbers[0](context), numbers[1](context))
@@ -704,10 +782,12 @@ const compared = function(tokens, node) {
  * report, which is why every branch here narrows rather than guesses.
  * @param {Array} tokens - The tokens the tree was parsed from
  * @param {object} node - The node a predicate holds, whole
+ * @param {Array} kinds - The node kinds the axis yields, since `.` is a
+ *  property read on a text node and a whole subtree on an element
  * @return {(function(Node): boolean|undefined)} - What it answers of a node,
  *  or undefined
  */
-const tested = function(tokens, node) {
+const tested = function(tokens, node, kinds = ELEMENTS) {
   let answer = undefined
   if (node.kind === 'step') {
     const selects = stepped(tokens, node)
@@ -715,7 +795,7 @@ const tested = function(tokens, node) {
       answer = (context) => selects(context).length > 0
     }
   } else if (node.kind === 'and' || node.kind === 'or') {
-    const parts = node.children.map((kid) => tested(tokens, kid))
+    const parts = node.children.map((kid) => tested(tokens, kid, kinds))
     if (parts.length === 2 && parts.every((one) => one !== undefined)) {
       answer = (context) => parts[0](context) && parts[1](context)
       if (node.kind === 'or') {
@@ -723,17 +803,17 @@ const tested = function(tokens, node) {
       }
     }
   } else if (node.kind === 'parenthesized' && node.children.length === 1) {
-    answer = tested(tokens, node.children[0])
+    answer = tested(tokens, node.children[0], kinds)
   } else if (node.kind === 'comparison') {
-    answer = compared(tokens, node)
+    answer = compared(tokens, node, kinds)
   } else if (calling(tokens, node, 'not') && node.children.length === 1) {
-    const inner = tested(tokens, node.children[0])
+    const inner = tested(tokens, node.children[0], kinds)
     if (inner !== undefined) {
       answer = (context) => !inner(context)
     }
   } else if (calling(tokens, node, 'contains') &&
     node.children.length === 2) {
-    const parts = node.children.map((kid) => worded(tokens, kid))
+    const parts = node.children.map((kid) => worded(tokens, kid, kinds))
     if (parts.every((one) => one !== undefined)) {
       answer = (context) => (parts[0](context)[0] ?? '').includes(
         parts[1](context)[0] ?? '',
@@ -743,6 +823,11 @@ const tested = function(tokens, node) {
     const walked = pathed(tokens, node)
     if (walked !== undefined) {
       answer = (context) => walked(context).length > 0
+    }
+  } else if (calling(tokens, node, 'xslint:normalize-space')) {
+    const carries = worded(tokens, node, kinds)
+    if (carries !== undefined) {
+      answer = (context) => carries(context)[0] !== ''
     }
   }
   return answer
