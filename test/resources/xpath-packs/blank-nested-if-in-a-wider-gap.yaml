@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: blank-nested-if
+found:
+  amount: 4
+  positions:
+    - [ 4, 5 ]
+    - [ 9, 5, text-outside-xsl-text ]
+    - [ 12, 5, text-outside-xsl-text ]
+    - [ 15, 5, text-outside-xsl-text ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="s">
+    <xsl:template match="/">
+      <xsl:if test="@one">
+        <xsl:if test="@two">
+          <xsl:value-of select="@three"/>
+        </xsl:if>
+      </xsl:if>
+      <xsl:if test="@four">&#xA0;<xsl:if test="@five">
+        <xsl:value-of select="@six"/>
+      </xsl:if></xsl:if>
+      <xsl:if test="@seven">&#x2028;<xsl:if test="@eight">
+        <xsl:value-of select="@nine"/>
+      </xsl:if></xsl:if>
+      <xsl:if test="@ten">&#x2003;<xsl:if test="@eleven">
+        <xsl:value-of select="@twelve"/>
+      </xsl:if></xsl:if>
+    </xsl:template>
+  </xsl:stylesheet>

@@ -182,7 +182,7 @@ const COMPILED = [
   'not(@name) and not(@match)',
   '@disable-output-escaping = "yes"',
   '@name = ("one", "three")',
-  'normalize-space(@test) = ("\'true\'", \'"false"\')',
+  'xslint:normalize-space(@test) = ("\'true\'", \'"false"\')',
   'string-length(@name) = 1',
   'count(xsl:when) = 1',
   'count(xsl:when) >= 2',
@@ -251,16 +251,16 @@ const REFUSED = [
     why: 'a negated existential, the comparison easiest to answer wrongly',
   },
   {
-    text: 'not(text()[normalize-space()])',
-    why: 'a whitespace test the engine answers wider than XPath (#881)',
+    text: 'not(text()[xslint:normalize-space(.)])',
+    why: 'a call on the context item, read here only of an attribute step',
   },
   {
     text: 'local-name(@name) = "name"',
     why: 'a call taking a node set, where this answers the candidate\'s own',
   },
   {
-    text: 'normalize-space() = ""',
-    why: 'the context node itself, whose value is the whole subtree under it',
+    text: 'normalize-space(@test) = ""',
+    why: 'the engine\'s own, whose gap is wider than the one XPath defines',
   },
   {
     text: 'count(node()) = count(text())',
@@ -283,7 +283,7 @@ const REFUSED = [
     why: 'an element in a value position, whose value is its whole subtree',
   },
   {
-    text: 'normalize-space(xsl:text) = "alpha"',
+    text: 'xslint:normalize-space(xsl:text) = "alpha"',
     why: 'that same element, one call further in',
   },
   {

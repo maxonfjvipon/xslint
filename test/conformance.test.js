@@ -83,7 +83,6 @@ const NURSERY = {
   'modern-construct-in-xslt-1': '#555 #851',
   'setting-value-of-variable-incorrectly': '#590',
   'template-has-no-name-or-match': '#550',
-  'text-outside-xsl-text': '#881',
   'unreachable-function': '#498',
   'unused-function': '#498',
   'unused-named-template': '#498',
@@ -149,7 +148,7 @@ const NAMED = new RegExp(`(^|[^-\\w])name${GAP}*\\(${GAP}*\\)`)
  * text among them. A selector spelling `count(*) = 1` means nothing but that
  * one instruction, and text beside it answers that as much as a second element
  * does — two of the three were false positives on real stylesheets (#491,
- * #492). So `not(text()[normalize-space()])` stands beside the count.
+ * #492). So `not(text()[xslint:normalize-space(.)])` stands beside the count.
  * @type {RegExp}
  */
 const CHILDREN = new RegExp(`count${GAP}*\\(${GAP}*\\*${GAP}*\\)`)
@@ -668,7 +667,7 @@ describe('conformance', function() {
                 'same question: a construct holding one instruction and a ' +
                 'string of text holds more than the instruction, and the ' +
                 'check reports it as though it did not. Weigh the text ' +
-                'beside the count, as not(text()[normalize-space()]) does',
+                'beside the count, as not(text()[xslint:normalize-space(.)]) does',
             )
           }
         }
