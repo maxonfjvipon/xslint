@@ -60,7 +60,7 @@ Or run it on commit with [pre-commit](https://pre-commit.com) — add to your
 ```yaml
 repos:
   - repo: https://github.com/xslint/xslint
-    rev: 0.0.11
+    rev: 0.0.14
     hooks:
       - id: xslint
 ```

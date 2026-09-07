@@ -9,6 +9,19 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Reach the pre-commit `rev:` in `README.md` from the `up` job, and bump the
+  pin it left at `0.0.11` for three releases. That job rewrites the README on
+  every tag, anchored on `xslint@[0-9.]+` — which the two npm coordinates carry
+  and a bare `rev:` does not — so it rewrote two of the three version
+  references and reported success each time, `sed` being silent about matching
+  nothing and `create-pull-request` opening nothing where the tree is
+  unchanged. Anyone copying the pre-commit block got the hook as it stood in
+  July, 735 commits back. A second substitution reaches the line, and
+  `test/workflows.test.js` now holds every version the README states of this
+  repository to one value and to a pattern the job rewrites with, exempting on
+  a table, red from both sides, the versions it states of somebody else
+  (#897).
+
 - Leave an `xsl:function` to `function-use-in-xslt-1` rather than reporting it
   a second time through its `@as`, which on a function is the attribute
   declaring the return type and on nothing else is optional. A 1.0 stylesheet
