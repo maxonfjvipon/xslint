@@ -19,8 +19,12 @@ attribute promises it will run on, while a 2.0 processor reads the same file
 without complaint — backwards compatible behaviour changes how expressions are
 evaluated, not which children an element may carry — so the fault stays hidden
 until the stylesheet moves. `xsl:next-match` and `xsl:next-iteration` are
-themselves instructions XSLT 2.0 and 3.0 introduced, so neither belongs in a 1.0
-stylesheet at all, with a parameter or without one.
+themselves instructions XSLT 2.0 and 3.0 introduced, so in a 1.0 stylesheet the
+fault is the instruction rather than the parameter inside it: the element has
+nowhere to stand at all, and taking its parameter away leaves a 1.0 processor
+refusing the same module for the same reason. The version condition therefore
+concerns `xsl:apply-imports` alone — the one of the five that XSLT 1.0 does
+define, and defines as empty.
 
 Raise the declared version where no 1.0 processor has to run the stylesheet.
 Where one does, the parameter has to go, and what it carried reaches the imported
@@ -34,7 +38,7 @@ Incorrect:
 </xsl:stylesheet>
 ```
 
-Incorrect, a 1.0 `xsl:apply-imports` taking no parameter:
+Incorrect, since XSLT 1.0 gives `xsl:apply-imports` no parameter to take:
 
 ```xsl
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
