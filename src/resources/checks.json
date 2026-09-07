@@ -225,10 +225,9 @@
         "nursery": "#705, which never judges a stylesheet embedded below the document element"
       },
       "mode-or-priority-without-match": {
-        "xpath": "//xsl:template[not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
+        "xpath": "//xsl:template[(@name or @_name) and not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
         "severity": "error",
-        "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.",
-        "nursery": "#550, which draws a second defect on one matchless template"
+        "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority."
       },
       "modern-construct-in-xslt-1": {
         "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as or @_as])",
@@ -290,8 +289,7 @@
       "template-has-no-name-or-match": {
         "xpath": "//xsl:template[not(@name) and not(@_name) and not(@match) and not(@_match)]",
         "severity": "error",
-        "message": "An 'xsl:template' must have a '@match' or '@name' attribute, or both. Add one of them.",
-        "nursery": "#550, which draws a second defect on one matchless template"
+        "message": "An 'xsl:template' must have a '@match' or '@name' attribute, or both. Add one of them."
       },
       "text-outside-xsl-text": {
         "xpath": "//xsl:*[text()[xslint:normalize-space(.)] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]",

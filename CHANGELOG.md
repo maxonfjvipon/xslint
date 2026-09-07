@@ -9,6 +9,14 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Narrow `mode-or-priority-without-match` to a template that carries a `name`,
+  so one matchless template draws one defect where it drew two. A template
+  with neither `match` nor `name` is `template-has-no-name-or-match`'s to
+  report, and both faults are the same XTSE0500, so the pair said it twice and
+  the advice pulled two ways at once — add a `match`, or drop the `mode`, over
+  a template whose real fault is that nothing can reach it at all. Both checks
+  leave the nursery (#550).
+
 - Register `xslint:normalize-space` and spell it in the seven selectors that
   said `normalize-space`, which fontoxpath trims and collapses on
   JavaScript's `\s` rather than over the four characters of XML's `S`. Six
@@ -23,8 +31,8 @@ publication date only; detailed notes begin with the Unreleased section.
   question. `text-outside-xsl-text` leaves the nursery (#881).
 
 - Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-four checks no open issue reports wrong about code a processor
-  accepts. The other fourteen carry a `nursery:` mark naming that issue, so the
+  fifty-seven checks no open issue reports wrong about code a processor
+  accepts. The other eleven carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
   check verbatim in the config re-admits it, where a glob does not (#581).
 
