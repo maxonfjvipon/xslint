@@ -52,3 +52,21 @@ that attribute sets it to `preserve`, the whitespace is part of the fragment:
 That binds two spaces and the heading, which `select="heading"` does not —
 `select="concat('  ', heading)"` is the shorthand there. A nearer
 `xml:space="default"` cancels a `preserve` higher up.
+
+The shorthand also needs the variable to carry no `select` of its own. One
+holding both a `select` and a body offers a processor two candidate values and
+no rule for choosing between them, which XSLT forbids outright — 1.0 calls it
+an error, 2.0 and 3.0 raise `XTSE0620`, and the stylesheet compiles on no
+version:
+
+```xsl
+<xsl:variable name="title" select="'Chapter'">
+  <xsl:value-of select="heading"/>
+</xsl:variable>
+```
+
+Neither form of the shorthand resolves that one, both values being spelled
+already. Drop whichever of the two says what was meant, and the variable binds
+one value again. XSLT 3.0's shadow spelling `_select` is the same attribute
+computed at compile time, so it stands in the way exactly as the plain one
+does.

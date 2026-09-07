@@ -67,7 +67,11 @@ describe('lint (programmatic API)', function() {
         [source('stylesheets/xsl-with-some-violations.xsl')],
         {stable: true},
       ).map((defect) => defect.name),
-      ['short-names', 'starts-with-double-slash'],
+      [
+        'setting-value-of-variable-incorrectly',
+        'short-names',
+        'starts-with-double-slash',
+      ],
     )
   })
   it('keeps every check where no stable tier is asked for', function() {

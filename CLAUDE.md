@@ -903,7 +903,7 @@ the 22 and could only ever ask whether the string appeared.
 - **Suppress**: `xslint --suppress=<rule-substring>` matches names across every
   validator and linter.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
-  **nursery**, the eleven of sixty-eight checks an open issue reports wrong
+  **nursery**, the nine of sixty-eight checks an open issue reports wrong
   about code a processor accepts. Each says so itself, in a `nursery:` mark
   opening with that issue's number, so the tier is derived from the tree and
   grows as tickets close. A check the config grades **verbatim** is re-admitted;

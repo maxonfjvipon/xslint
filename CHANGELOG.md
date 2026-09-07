@@ -9,6 +9,37 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Leave an `xsl:function` to `function-use-in-xslt-1` rather than reporting it
+  a second time through its `@as`, which on a function is the attribute
+  declaring the return type and on nothing else is optional. A 1.0 stylesheet
+  defining one drew both checks at the one node, in contradiction of this
+  check's own motive, which has said all along that the function is
+  deliberately left out; the TEI corpus holds the case at `rdf/rdf.xsl:379`.
+  The shadow spelling `_as` double-reported with it. That one line was the
+  whole of what this check drew over DocBook-XSL, TEI and DITA-OT, so its
+  `REFUSED` row leaves `test/snapshot.test.js` — the first time that gate has
+  reddened from the side where an entry outlives what justified it rather than
+  where a check starts stopping a build. The mark this check carries is
+  rewritten to #851, whose defect in its version gate stands (#555).
+
+- Narrow `setting-value-of-variable-incorrectly` to a variable carrying no
+  `select`, so one that carries both a `select` and an `xsl:value-of` body
+  draws one defect where it drew two. The advice was one nobody could follow:
+  it asked for a `select` on a variable already holding one, while the same
+  node drew the error saying the two may not stand together — XSLT forbidding
+  the combination outright, 1.0 as an error and 2.0 and 3.0 as `XTSE0620`. The
+  shadow spelling `_select` said it twice as well. The partition loses no
+  report, a body of one `xsl:value-of` being content by any reading, so
+  wherever this check went quiet the error still stands. The check leaves the
+  nursery (#590).
+
+- Withhold `using-namespace-axis` where the axis stands as a step of a `match`
+  pattern, the advice it carries being one nobody can follow there: a pattern
+  is matched by walking up from a node rather than evaluated, so neither
+  `in-scope-prefixes()` nor `namespace-uri-for-prefix()` can stand where such
+  a step does. A predicate of that same pattern holds an ordinary expression
+  and is reported as it always was. The check leaves the nursery (#632).
+
 - Narrow `mode-or-priority-without-match` to a template that carries a `name`,
   so one matchless template draws one defect where it drew two. A template
   with neither `match` nor `name` is `template-has-no-name-or-match`'s to
@@ -31,8 +62,8 @@ publication date only; detailed notes begin with the Unreleased section.
   question. `text-outside-xsl-text` leaves the nursery (#881).
 
 - Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-seven checks no open issue reports wrong about code a processor
-  accepts. The other eleven carry a `nursery:` mark naming that issue, so the
+  fifty-nine checks no open issue reports wrong about code a processor
+  accepts. The other nine carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
   check verbatim in the config re-admits it, where a glob does not (#581).
 
