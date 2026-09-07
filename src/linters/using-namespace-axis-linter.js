@@ -4,6 +4,7 @@
  */
 
 const {tokenized, TOKENS} = require('../tokens')
+const {gathered, tokensOf} = require('../syntax')
 const {metaOf, suppressed, defect} = require('../checks')
 const {MODERN, since} = require('../xsl-version')
 const {logger} = require('../logger')
@@ -40,10 +41,42 @@ const axes = function(expression) {
 }
 
 /**
+ * Offsets of every namespace:: axis a predicate of the record holds. A
+ * predicate holds an expression wherever it stands, in a pattern as much as in
+ * an expression, so a call may be written in place of the axis there.
+ * @param {{node: Node, expression: string, pattern: boolean}} found - Record
+ * @return {Array.<number>} - Offsets where such an axis starts
+ */
+const predicated = function(found) {
+  return gathered(found, ['predicate'])
+    .flatMap((node) => tokensOf(found, node))
+    .filter((token) => token.type === TOKENS.NAMESPACE)
+    .map((token) => token.start)
+}
+
+/**
+ * Offsets of every namespace:: axis the message's advice can be followed at:
+ * all of them in an expression, and in a pattern the ones a predicate holds. A
+ * pattern is matched by walking up from a node rather than evaluated, so its
+ * own steps take no function call at any position — neither in-scope-prefixes()
+ * nor namespace-uri-for-prefix() can stand where such a step does (#632, #583).
+ * @param {{node: Node, expression: string, pattern: boolean}} found - Record
+ * @return {Array.<number>} - Offsets the advice applies at
+ */
+const advisable = function(found) {
+  let offsets = axes(found.expression)
+  if (found.pattern) {
+    const inside = predicated(found)
+    offsets = offsets.filter((offset) => inside.includes(offset))
+  }
+  return offsets
+}
+
+/**
  * Lint the valid expressions for the deprecated namespace:: axis in any XPath
  * or pattern attribute of an XSLT 2.0 or 3.0 stylesheet, reporting one defect
- * per occurrence. The fix is a structural rewrite to in-scope-prefixes() and
- * namespace-uri-for-prefix(), so the defect is report-only.
+ * per occurrence the advice reaches. The fix is a structural rewrite to
+ * in-scope-prefixes() and namespace-uri-for-prefix(), so it is report-only.
  * @param {Array.<{source: object, found: object}>} expressions - The valid
  *  expressions the validator kept, each paired with the file it came from
  * @param {Array.<string>} suppressions - Array of suppressed checks
@@ -55,9 +88,8 @@ const lintByNamespaceAxis = function(expressions, suppressions = []) {
   const defects = []
   if (!suppressed(CHECK, suppressions)) {
     for (const {source, found} of expressions) {
-      const {expression} = found
       if (since(found.version, MODERN)) {
-        for (const offset of axes(expression)) {
+        for (const offset of advisable(found)) {
           defects.push(
             defect(CHECK, META, source, found, offset),
           )

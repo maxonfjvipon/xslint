@@ -49,3 +49,12 @@ yielded nothing; and a `namespace::foo` copied by `xsl:copy-of` writes a
 namespace node into the result tree, which no function returns — recreate it with
 `xsl:namespace`, as
 `<xsl:namespace name="foo" select="namespace-uri-for-prefix('foo', .)"/>`.
+
+A `namespace::` step of a `match` pattern is a case apart, and neither function
+reaches it: a pattern is matched by walking up from the node under test, so no
+step of one is ever a function call. A template written `match="namespace::*"`
+is restructured rather than rewritten — match the element and read its bindings
+in the body, with the `in-scope-prefixes()` loop above. A predicate standing in
+that same pattern holds an ordinary expression, so the axis in
+`match="para[namespace::foo]"` becomes
+`match="para[namespace-uri-for-prefix('foo', .)]"`.

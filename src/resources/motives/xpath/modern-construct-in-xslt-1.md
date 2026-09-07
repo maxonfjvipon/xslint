@@ -9,9 +9,9 @@ not run where its own version attribute promises it will.
 This check flags a curated set of 2.0-only XSLT **instructions** —
 `xsl:for-each-group`, `xsl:sequence`, `xsl:analyze-string`, `xsl:next-match`,
 `xsl:perform-sort`, `xsl:namespace`, `xsl:character-map`, `xsl:result-document`,
-`xsl:import-schema` — and the 2.0 **`as` sequence-type attribute** on any XSLT
-element, whenever the stylesheet declares version 1.0. Only elements in the XSLT
-namespace are examined for
+`xsl:import-schema` — and the 2.0 **`as` sequence-type attribute** on any other
+XSLT element, whenever the stylesheet declares version 1.0. Only elements in the
+XSLT namespace are examined for
 `@as`, so a literal result element that legitimately carries an `as` attribute —
 `<link rel="preload" as="script"/>` in HTML output — is never mistaken for the
 sequence-type attribute.

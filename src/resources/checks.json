@@ -131,8 +131,7 @@
       },
       "using-namespace-axis": {
         "severity": "warning",
-        "message": "The namespace:: axis is deprecated in XSLT 2.0 and later. Use in-scope-prefixes() and namespace-uri-for-prefix() instead.",
-        "nursery": "#632, whose advice names functions that cannot stand inside a pattern"
+        "message": "The namespace:: axis is deprecated in XSLT 2.0 and later. Use in-scope-prefixes() and namespace-uri-for-prefix() instead."
       }
     },
     "validation": {
@@ -230,10 +229,10 @@
         "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority."
       },
       "modern-construct-in-xslt-1": {
-        "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[@as or @_as])",
+        "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[(@as or @_as) and not(self::xsl:function)])",
         "severity": "error",
         "message": "This XSLT 2.0 construct is used in a stylesheet declared version 1.0, which a conformant 1.0 processor rejects. Use a 1.0 equivalent, or set the version to 2.0.",
-        "nursery": "#555, which draws a second defect on an xsl:function through its @as"
+        "nursery": "#851, whose version gate reads @version as text and so never sees the shadow spelling of it"
       },
       "name-starts-with-numeric": {
         "xpath": "//(xsl:variable | xsl:template)[matches(@name, '^[0-9]')] | //xsl:function[matches(@name, '^([^:]*:)?[0-9]')]",
@@ -266,10 +265,9 @@
         "message": "'xsl:param' must be declared before any other content in its 'xsl:template' or 'xsl:function'. Move it above the content."
       },
       "setting-value-of-variable-incorrectly": {
-        "xpath": "//xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
+        "xpath": "//xsl:variable[not(@select) and not(@_select) and (count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "warning",
-        "message": "A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead.",
-        "nursery": "#590, which advises a select onto a variable already carrying one"
+        "message": "A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead."
       },
       "short-names": {
         "xpath": "//(xsl:variable | xsl:template)[string-length(@name) = 1] | //xsl:function[string-length(substring-after(@name, \":\")) = 1]",
@@ -332,10 +330,10 @@
         "message": "'xsl:when' and 'xsl:otherwise' are valid only as children of 'xsl:choose'. Move it into an 'xsl:choose', or use 'xsl:if'."
       },
       "with-param-use-in-invalid-parent-node": {
-        "xpath": "//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)]",
+        "xpath": "//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][number(ancestor-or-self::*[(self::xsl:* and (@version or @_version)) or (not(self::xsl:*) and @xsl:version)][1] ! (if (self::xsl:*) then @version else @xsl:version)) < 2]",
         "severity": "error",
-        "message": "xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:apply-imports, xsl:next-match and xsl:next-iteration.",
-        "nursery": "#566, which accepts a 2.0-only parent in a 1.0 stylesheet"
+        "message": "xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:next-match, xsl:next-iteration, or an xsl:apply-imports whose nearest declared version is 2.0 or later. Move it into a call, or raise that version.",
+        "nursery": "#851, whose version gate reads @version as text and so goes quiet below a shadow spelling of it"
       },
       "with-param-without-name": {
         "xpath": "//xsl:with-param[not(@name) and not(@_name)]",

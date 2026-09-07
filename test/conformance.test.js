@@ -79,14 +79,12 @@ const NURSERY = {
   'empty-variable': '#851',
   'function-use-in-xslt-1': '#851',
   'missing-version-in-stylesheet': '#705',
-  'modern-construct-in-xslt-1': '#555',
-  'setting-value-of-variable-incorrectly': '#590',
+  'modern-construct-in-xslt-1': '#851',
   'unreachable-function': '#498',
   'unused-function': '#498',
   'unused-named-template': '#498',
   'unused-variable': '#498',
-  'using-namespace-axis': '#632',
-  'with-param-use-in-invalid-parent-node': '#566',
+  'with-param-use-in-invalid-parent-node': '#851',
 }
 
 /**

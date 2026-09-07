@@ -5195,7 +5195,6 @@ rdf/rdf.xsl:13:5 leaking-result-namespace suggestion "tei rdf rdfs owl xsd crm x
 rdf/rdf.xsl:155:5 use-choose-without-otherwise
 rdf/rdf.xsl:236:5 use-choose-without-otherwise
 rdf/rdf.xsl:379:3 function-use-in-xslt-1
-rdf/rdf.xsl:379:3 modern-construct-in-xslt-1
 rdf/tei2rdf.xsl:2:1 missing-id-in-stylesheet
 rdf/tei2rdf.xsl:2:1 too-many-templates
 simple/mapatts.xsl:2:1 missing-id-in-stylesheet

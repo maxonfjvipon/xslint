@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: with-param-use-in-invalid-parent-node
+found:
+  amount: 3
+  positions: [ [ 11, 5, modern-construct-in-xslt-1 ], [ 7, 7 ], [ 36, 5 ] ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:import href="info.xsl"/>
+    <xsl:template match="/objects/o/o[1]/o[1]">
+      <xsl:apply-imports>
+        <xsl:with-param name="surname" select="'Dickens'"/>
+      </xsl:apply-imports>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[2]">
+      <xsl:next-match>
+        <xsl:with-param name="surname" select="'Carroll'"/>
+      </xsl:next-match>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[3]">
+      <xsl:iterate select="o/o">
+        <xsl:param name="number" select="1"/>
+        <xsl:next-iteration>
+          <xsl:with-param name="number" select="$number + 1"/>
+        </xsl:next-iteration>
+      </xsl:iterate>
+    </xsl:template>
+    <xsl:template name="writer">
+      <xsl:param name="surname"/>
+      <p>
+        <xsl:value-of select="$surname"/>
+      </p>
+    </xsl:template>
+    <xsl:template match="/objects/o/o[1]/o[4]">
+      <xsl:call-template name="writer">
+        <xsl:with-param name="surname" select="'Shakespeare'"/>
+      </xsl:call-template>
+      <xsl:apply-templates select="o/o">
+        <xsl:with-param name="surname" select="'Austen'"/>
+      </xsl:apply-templates>
+      <xsl:with-param name="surname" select="'Austen'"/>
+    </xsl:template>
+  </xsl:stylesheet>
