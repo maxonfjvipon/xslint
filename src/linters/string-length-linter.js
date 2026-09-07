@@ -124,7 +124,7 @@ const lintByStringLength = function(expressions, suppressions = []) {
       for (const {offset, value, replacement} of comparisons(found)) {
         let fix
         if (replacement !== null) {
-          fix = {value, replacement, suggestion: true}
+          fix = {value, replacement}
         }
         defects.push(
           defect(CHECK, META, source, found, offset, fix),

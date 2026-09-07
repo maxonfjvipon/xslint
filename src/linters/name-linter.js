@@ -157,7 +157,7 @@ const lintByName = function(expressions, suppressions = []) {
       for (const {offset, value, replacement} of comparisons(found, modern)) {
         let fix
         if (replacement !== null) {
-          fix = {value, replacement, suggestion: true}
+          fix = {value, replacement}
         }
         defects.push(
           defect(CHECK, META, source, found, offset, fix),

@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: A variable name is used bare as a node selector. Use $name syntax to reference the variable.
+fix: suggestion

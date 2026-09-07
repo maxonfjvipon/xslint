@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: The select attribute starts with //, which scans the whole document from the root. Anchor it with .// or a specific path.
+fix: suggestion

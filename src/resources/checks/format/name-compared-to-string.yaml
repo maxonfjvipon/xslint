@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: name() or local-name() is compared with a string, which is prefix-fragile and slower than a node test. Use self::name instead.
+fix: suggestion

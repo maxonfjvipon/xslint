@@ -172,7 +172,6 @@ const confused = function(found, taken) {
         fix: {
           value: first.value,
           replacement: `$${first.value}`,
-          suggestion: true,
         },
       })
     }

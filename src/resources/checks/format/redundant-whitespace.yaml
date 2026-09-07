@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: An XPath expression has redundant whitespace. Remove the extra spaces.
+fix: safe

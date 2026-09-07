@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: The xsl:stylesheet declares a namespace prefix used only in stylesheet logic, which a literal result element copies into the output. Add the prefix to exclude-result-prefixes.
+fix: suggestion

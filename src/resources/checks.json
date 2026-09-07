@@ -43,19 +43,23 @@
       },
       "confusing-variable-and-node": {
         "severity": "warning",
-        "message": "A variable name is used bare as a node selector. Use $name syntax to reference the variable."
+        "message": "A variable name is used bare as a node selector. Use $name syntax to reference the variable.",
+        "fix": "suggestion"
       },
       "count-compared-to-zero": {
         "severity": "warning",
-        "message": "count(...) is compared with 0 to test existence, which walks the whole sequence. Test existence directly instead (exists()/empty() on XSLT 2.0+, boolean()/not() on 1.0)."
+        "message": "count(...) is compared with 0 to test existence, which walks the whole sequence. Test existence directly instead (exists()/empty() on XSLT 2.0+, boolean()/not() on 1.0).",
+        "fix": "safe"
       },
       "leaking-result-namespace": {
         "severity": "warning",
-        "message": "The xsl:stylesheet declares a namespace prefix used only in stylesheet logic, which a literal result element copies into the output. Add the prefix to exclude-result-prefixes."
+        "message": "The xsl:stylesheet declares a namespace prefix used only in stylesheet logic, which a literal result element copies into the output. Add the prefix to exclude-result-prefixes.",
+        "fix": "suggestion"
       },
       "name-compared-to-string": {
         "severity": "warning",
-        "message": "name() or local-name() is compared with a string, which is prefix-fragile and slower than a node test. Use self::name instead."
+        "message": "name() or local-name() is compared with a string, which is prefix-fragile and slower than a node test. Use self::name instead.",
+        "fix": "suggestion"
       },
       "not-creating-element-correctly": {
         "severity": "warning",
@@ -67,43 +71,56 @@
       },
       "output-method-xml": {
         "severity": "warning",
-        "message": "xsl:output declares method='xml' while the root template builds an HTML document. Change the method to 'html'."
+        "message": "xsl:output declares method='xml' while the root template builds an HTML document. Change the method to 'html'.",
+        "fix": "suggestion"
       },
       "predicate-position-literal": {
         "severity": "warning",
-        "message": "A positional predicate is written the long way; [position() = N] is just [N] and [position() = last()] is just [last()]. Shorten it."
+        "message": "A positional predicate is written the long way; [position() = N] is just [N] and [position() = last()] is just [last()]. Shorten it.",
+        "fix": "safe"
       },
       "redundant-boolean-call": {
         "severity": "warning",
-        "message": "A boolean() call stands where nothing but a truth is taken — a test or a use-when, an operand of and/or, the argument of not(), the condition of an if, the body of a satisfies — so the wrapper is redundant. Drop it."
+        "message": "A boolean() call stands where nothing but a truth is taken — a test or a use-when, an operand of and/or, the argument of not(), the condition of an if, the body of a satisfies — so the wrapper is redundant. Drop it.",
+        "fix": "safe"
       },
       "redundant-double-negation": {
         "severity": "warning",
-        "message": "A double negation not(not(x)) is redundant; it is just boolean(x), and where nothing but a truth is taken simply x. Replace it."
+        "message": "A double negation not(not(x)) is redundant; it is just boolean(x), and where nothing but a truth is taken simply x. Replace it.",
+        "fix": "safe"
       },
       "redundant-import": {
         "severity": "warning",
-        "message": "The stylesheet imports or includes the same module more than once. Keep a single xsl:import/xsl:include of it and remove the other."
+        "message": "The stylesheet imports or includes the same module more than once. Keep a single xsl:import/xsl:include of it and remove the other.",
+        "fix": "suggestion"
       },
       "redundant-namespace-declarations": {
         "severity": "warning",
-        "message": "The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration."
+        "message": "The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration.",
+        "fix": "safe"
       },
       "redundant-whitespace": {
         "severity": "warning",
-        "message": "An XPath expression has redundant whitespace. Remove the extra spaces."
+        "message": "An XPath expression has redundant whitespace. Remove the extra spaces.",
+        "fix": "safe"
       },
       "select-starts-with-double-slash": {
         "severity": "warning",
-        "message": "The select attribute starts with //, which scans the whole document from the root. Anchor it with .// or a specific path."
+        "message": "The select attribute starts with //, which scans the whole document from the root. Anchor it with .// or a specific path.",
+        "fix": "suggestion"
       },
       "starts-with-double-slash": {
         "severity": "warning",
-        "message": "A pattern alternative starts with //, which is redundant since every XSLT pattern already matches at any depth, and it lowers the rule's default priority from 0.5 to that of the step alone. Remove the leading // and give the rule an explicit priority if it must keep ranking as it does."
+        "message": "A pattern alternative starts with //, which is redundant since every XSLT pattern already matches at any depth, and it lowers the rule's default priority from 0.5 to that of the step alone. Remove the leading // and give the rule an explicit priority if it must keep ranking as it does.",
+        "fix": [
+          "safe",
+          "suggestion"
+        ]
       },
       "string-length-compared-to-zero": {
         "severity": "warning",
-        "message": "string-length(...) is compared with 0 to test emptiness, which measures the whole string. Compare the value with '' instead."
+        "message": "string-length(...) is compared with 0 to test emptiness, which measures the whole string. Compare the value with '' instead.",
+        "fix": "suggestion"
       },
       "template-writes-nothing": {
         "severity": "warning",
@@ -111,11 +128,13 @@
       },
       "translate-for-case": {
         "severity": "warning",
-        "message": "translate() folds case over the ASCII alphabet; XSLT 2.0 does this with lower-case() or upper-case(), which are shorter and Unicode-aware."
+        "message": "translate() folds case over the ASCII alphabet; XSLT 2.0 does this with lower-case() or upper-case(), which are shorter and Unicode-aware.",
+        "fix": "suggestion"
       },
       "unabbreviated-axis": {
         "severity": "warning",
-        "message": "Verbose axis specifiers child::, attribute::, parent::node(), or self::node() are used. Replace them with the node name alone, @, .., or . respectively."
+        "message": "Verbose axis specifiers child::, attribute::, parent::node(), or self::node() are used. Replace them with the node name alone, @, .., or . respectively.",
+        "fix": "safe"
       },
       "unused-function-template-parameter": {
         "severity": "warning",
@@ -127,7 +146,8 @@
       },
       "use-node-set-extension": {
         "severity": "warning",
-        "message": "The node-set() extension function is unnecessary in XSLT 2.0 and later. Query the variable directly without it."
+        "message": "The node-set() extension function is unnecessary in XSLT 2.0 and later. Query the variable directly without it.",
+        "fix": "safe"
       },
       "using-namespace-axis": {
         "severity": "warning",
@@ -195,7 +215,8 @@
       "incorrect-use-of-boolean-constants": {
         "xpath": "//(xsl:if | xsl:when)[xslint:normalize-space(@test) = (\"'true'\", \"'false'\", '\"true\"', '\"false\"')]",
         "severity": "warning",
-        "message": "The test is the string 'true' or 'false', a non-empty string that is always true, not a boolean. Use true() or false() instead."
+        "message": "The test is the string 'true' or 'false', a non-empty string that is always true, not a boolean. Use true() or false() instead.",
+        "fix": "suggestion"
       },
       "malformed-version-in-stylesheet": {
         "xpath": "(//@version[parent::xsl:*][not(parent::xsl:output)] | //@xsl:version[not(parent::xsl:*)])[not(matches(xslint:normalize-space(.), '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$'))]",
@@ -221,12 +242,14 @@
         "xpath": "/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))]",
         "severity": "warning",
         "message": "The version attribute is missing on the stylesheet's root element. Declare it to specify the stylesheet version explicitly.",
+        "fix": "suggestion",
         "nursery": "#705, which never judges a stylesheet embedded below the document element"
       },
       "mode-or-priority-without-match": {
         "xpath": "//xsl:template[(@name or @_name) and not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
         "severity": "error",
-        "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority."
+        "message": "An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.",
+        "fix": "suggestion"
       },
       "modern-construct-in-xslt-1": {
         "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[(@as or @_as) and not(self::xsl:function)])",
@@ -292,7 +315,8 @@
       "text-outside-xsl-text": {
         "xpath": "//xsl:*[text()[xslint:normalize-space(.)] and not(local-name() = ('text','attribute','comment','processing-instruction','message','variable','param','with-param'))]",
         "severity": "warning",
-        "message": "Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'."
+        "message": "Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'.",
+        "fix": "suggestion"
       },
       "too-many-templates": {
         "xpath": "(/xsl:stylesheet | /xsl:transform)[count(//xsl:template) >= 10]",
@@ -312,7 +336,8 @@
       "using-disable-output-escaping": {
         "xpath": "//(xsl:value-of | xsl:text)[@disable-output-escaping = \"yes\"]",
         "severity": "warning",
-        "message": "disable-output-escaping='yes' is set, which produces implementation-defined output. Use xsl:copy-of or literal elements instead."
+        "message": "disable-output-escaping='yes' is set, which produces implementation-defined output. Use xsl:copy-of or literal elements instead.",
+        "fix": "suggestion"
       },
       "using-not-outermost-stylesheet": {
         "xpath": "(/xsl:stylesheet | /xsl:transform)//(xsl:stylesheet | xsl:transform)",
@@ -322,7 +347,8 @@
       "variable-or-param-with-select-and-content": {
         "xpath": "//(xsl:variable | xsl:param | xsl:with-param)[(@select or @_select) and (* or text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]",
         "severity": "error",
-        "message": "An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value."
+        "message": "An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value.",
+        "fix": "suggestion"
       },
       "when-or-otherwise-outside-choose": {
         "xpath": "//xsl:when[not(parent::xsl:choose)] | //xsl:otherwise[not(parent::xsl:choose)]",

@@ -7,6 +7,7 @@ const path = require('path')
 const fs = require('fs')
 const {allFilesFrom} = require('./helpers')
 const {parted} = require('./source')
+const {SUGGESTION} = require('./checks')
 const {kinds} = require('./resources/checks.json')
 const {validate: validateXsls, names: xslChecks} =
   require('./validators/xsl-validator')
@@ -191,6 +192,35 @@ const NURSERY = new Map(
 )
 
 /**
+ * The tiers each check declares under its `fix:`, which is the one place a
+ * tier is spelled: a check naming one grades every fix it offers, so no linter
+ * repeats it, and a check naming both leaves the grade where the linter put
+ * it, the tier there belonging to the place a defect stands (#899).
+ * @type {Map.<string, Array.<string>>}
+ */
+const TIERED = new Map(
+  Object.values(kinds).flatMap((kind) => Object.entries(kind))
+    .map(([name, check]) => [name, [check.fix ?? []].flat()]),
+)
+
+/**
+ * Whether only `--fix-suggestions` may apply the fix a defect carries, as its
+ * check declares — falling back on what the linter said where the check
+ * declares nothing, since a run is no place to refuse a fix over it (#899).
+ * @param {string} check - Check name
+ * @param {object} fix - The fix the linter built
+ * @return {boolean} - Whether it is a suggestion
+ */
+const suggests = function(check, fix) {
+  const declared = TIERED.get(check)
+  let tier = Boolean(fix.suggestion)
+  if (declared.length === 1) {
+    tier = declared[0] === SUGGESTION
+  }
+  return tier
+}
+
+/**
  * Deleting incorrect substring-suppressions from array of arguments
  * @param {Array.<string>} suppressions - Array of suppressed checks
  * @return {Array.<string>} - Normalizing list of suppressions
@@ -322,6 +352,9 @@ const lint = function(
   for (const defect of defects) {
     if (overrides[defect.name]) {
       defect.severity = overrides[defect.name]
+    }
+    if (defect.fix) {
+      defect.fix.suggestion = suggests(defect.name, defect.fix)
     }
   }
   const directives = new Map(

@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration.
+fix: safe

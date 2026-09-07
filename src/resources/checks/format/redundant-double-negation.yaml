@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: A double negation not(not(x)) is redundant; it is just boolean(x), and where nothing but a truth is taken simply x. Replace it.
+fix: safe

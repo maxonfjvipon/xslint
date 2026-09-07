@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: The node-set() extension function is unnecessary in XSLT 2.0 and later. Query the variable directly without it.
+fix: safe

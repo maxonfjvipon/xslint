@@ -4,3 +4,4 @@
 xpath: "//(xsl:if | xsl:when)[xslint:normalize-space(@test) = (\"'true'\", \"'false'\", '\"true\"', '\"false\"')]"
 severity: warning
 message: "The test is the string 'true' or 'false', a non-empty string that is always true, not a boolean. Use true() or false() instead."
+fix: suggestion

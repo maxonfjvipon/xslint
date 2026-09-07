@@ -138,6 +138,13 @@ const VERSIONED = {
     "The version in force at a node is derived by climbing to the root, so it is asked once per node — by expressionsOf, which is climbing them anyway — and read off the {node, start, expression, pattern, version} record after that. parseOf asked it in front of the parse memo, so every gathered, textOf, calls and isValid the expression tier issued paid a fresh climb: 950,645 of them over DocBook-XSL, dearer than twenty-one of the twenty-four stages a run is made of (#845). Take found.version, and where a linter holds a node and no record — the DOM tier, which reads a walk rather than an expression — name its file beside src/attributes.js in the group below"
 };
 
+const GRADED = {
+  selector:
+    "Property[key.name='suggestion'][value.type='Literal']",
+  message:
+    "Which tier a fix lands in is the check's fix: in its own YAML and nowhere else, src/xslint.js stamping every defect from what the check declares: sixteen linters and fixers asserted a tier beside it, so what a check said and what a user was offered could disagree with nothing in the tree to notice (#899). Declare it in the check and let the run read it. src/linters/double-slash-linter.js is the one exemption, starts-with-double-slash being safe in a @select and a suggestion on an xsl:template whose priority a dropped // shifts, which is a property of the place a defect stands rather than of the check (#583)"
+};
+
 const SPRAWLING = ["src/grammar.js"];
 
 export default defineConfig([
@@ -208,6 +215,14 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
+          VERSIONED, GRADED]
+    }
+  },
+  {
+    files: ["src/linters/double-slash-linter.js"],
+    rules: {
+      "no-restricted-syntax":
+        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
           VERSIONED]
     }
   },
@@ -215,21 +230,23 @@ export default defineConfig([
     files: ["src/attributes.js"],
     rules: {
       "no-restricted-syntax":
-        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED]
+        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
+          GRADED]
     }
   },
   {
     files: ["src/tokens.js"],
     rules: {
       "no-restricted-syntax":
-        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED]
+        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED, GRADED]
     }
   },
   {
     files: ["src/grammar.js", "src/syntax.js"],
     rules: {
       "no-restricted-syntax":
-        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, VERSIONED]
+        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, VERSIONED,
+          GRADED]
     }
   },
   {

@@ -100,7 +100,8 @@ const folded = function(found) {
 /**
  * Lint the valid expressions for `translate(x, 'A..Z', 'a..z')` case folding in
  * an XSLT 2.0 or 3.0 stylesheet, reporting one defect per call with a
- * suggestion fix that rewrites it to `lower-case(x)`/`upper-case(x)`.
+ * fix that rewrites it to `lower-case(x)`/`upper-case(x)`, which the check
+ * declares a suggestion.
  * @param {Array.<{source: object, found: object}>} expressions - The valid
  *  expressions the validator kept, each paired with the file it came from
  * @param {Array.<string>} suppressions - Array of suppressed checks
@@ -115,9 +116,7 @@ const lintByTranslate = function(expressions, suppressions = []) {
       if (since(found.version, MODERN)) {
         for (const {offset, value, replacement} of folded(found)) {
           defects.push(
-            defect(CHECK, META, source, found, offset,
-              {value, replacement, suggestion: true},
-            ),
+            defect(CHECK, META, source, found, offset, {value, replacement}),
           )
         }
       }

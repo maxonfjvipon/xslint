@@ -47,7 +47,7 @@ const authored = function() {
 
 /**
  * The file text carrying them. JSON, not JavaScript: `require` parses it with
- * the parser built into the runtime, so a process reads all 67 checks without
+ * the parser built into the runtime, so a process reads all 68 checks without
  * loading `yaml` at all — 31 of the 71 ms the pipeline spent loading (#689) —
  * and REUSE already exempts `*.json` from the SPDX header a `.js` would owe.
  * @param {object} checks - What {@link authored} read

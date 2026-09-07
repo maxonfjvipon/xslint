@@ -330,10 +330,7 @@ const lintByRootTemplate = function(corpus, suppressions = []) {
         if (method && method.value === SERIALIZED.value) {
           defects.push({
             ...reported(MISLABELLED, file, output),
-            fix: {
-              ...substitution(method, 'html', content),
-              suggestion: true,
-            },
+            fix: substitution(method, 'html', content),
           })
         }
       }

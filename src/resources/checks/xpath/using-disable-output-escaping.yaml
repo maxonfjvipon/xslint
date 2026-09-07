@@ -4,3 +4,4 @@
 xpath: '//(xsl:value-of | xsl:text)[@disable-output-escaping = "yes"]'
 severity: warning
 message: "disable-output-escaping='yes' is set, which produces implementation-defined output. Use xsl:copy-of or literal elements instead."
+fix: suggestion

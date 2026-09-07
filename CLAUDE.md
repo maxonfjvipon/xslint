@@ -475,6 +475,7 @@ Per-file rule — `src/resources/checks/xpath/<name>.yaml`:
 xpath: <XPath selecting the violation nodes>
 severity: warning|error
 message: <one sentence, no trailing period>
+fix: <optional safe|suggestion|[ safe, suggestion ]>
 ```
 
 Cross-file rule — `src/resources/checks/corpus/<name>.yaml`:
@@ -502,9 +503,12 @@ Validator and format checks — `checks/{validation,format}/<name>.yaml` — car
 only `severity` and `message`; their logic lives in code and the YAML just tunes
 those two.
 
-A check of any kind may carry one more key, `nursery:` — a sentence opening
-with the number of the open issue reporting that check wrong, which is what
-`--stable` withholds it on (see **User configuration**).
+A check of any kind may carry two more keys. `fix:` names the tier every fix it
+offers lands in — `safe`, `suggestion`, or both where the tier is the standing
+place's rather than the check's — and is the one place a tier is spelled,
+`src/xslint.js` stamping every defect from it (#899). `nursery:` is a sentence
+opening with the number of the open issue reporting that check wrong, which is
+what `--stable` withholds it on (see **User configuration**).
 
 ## Adding a rule
 
@@ -703,8 +707,9 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   and everything the selector costs standing inside the brackets.
 - **Fix in the same change.** If a check is fixable, land the fix with the
   detection — never defer it. A declarative rule gets a `node => fix` builder in
-  `src/fixers.js`; a code-based linter attaches the `fix` to its defect. Mark it
-  `suggestion: true` unless the edit is deterministic and semantics-preserving.
+  `src/fixers.js`; a code-based linter attaches the `fix` to its defect. Declare
+  the tier in the check's `fix:` — `suggestion` unless the edit is deterministic
+  and semantics-preserving.
   Cover it with a committed `test/resources/fix/<name>.{xsl,fixed.xsl}` pair
   (generate the `.fixed` by running `--fix`) plus rows in
   `test/fixer.deep.test.js`'s `APPLIED`/`UNCHANGED`/`DROPPED` tables. A check
@@ -717,9 +722,9 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   `Incorrect:`/`Correct:` pair of *valid* XSLT that resolves it, and where it
   helps, how to migrate by hand. It must not name a fix tier, mention
   `--fix`/`--fix-suggestions`/report-only, or describe scanner or parser
-  internals: whether a check is fixable is data (the `src/fixers.js` wiring and
-  the `suggestion` flag) that `README.md` lists and the docs site renders, never
-  motive prose (#604). Keep the prose true to the selector: do not write "such as"
+  internals: whether a check is fixable is data — the `fix:` its own YAML
+  declares, which `README.md` lists and the docs site renders as a badge — never
+  motive prose (#604, #899). Keep the prose true to the selector: do not write "such as"
   for a closed list, call any `/`-prefixed match the "root template", or claim a
   hand-fix is loss-less when it shifts template priority or a value's type. Only
   motive existence is machine-checked today; turning the example pair into a
@@ -934,10 +939,10 @@ the 22 and could only ever ask whether the string appeared.
   #732 without any of them changing: `isValid` — in `src/syntax.js` since #577,
   where the parse it reads is kept — asks `src/grammar.js` at the
   version in force rather than fontoxpath at 3.1, so a `cast as` in a
-  `version="1.0"` sheet now withholds the fix it used to be offered. A *safe* fix
-  (deterministic, semantics-preserving) is applied by `--fix`; a
-  `suggestion: true` fix (changes behavior, or is one of several corrections) is
-  applied only by `--fix-suggestions`. `--fix-dry-run` writes nothing.
+  `version="1.0"` sheet now withholds the fix it used to be offered. Which tier a
+  fix lands in is its check's `fix:` and not the linter's to say (see **Check
+  formats**): `--fix` applies the safe ones, `--fix-suggestions` those too, and
+  `--fix-dry-run` writes nothing.
   `src/fixer.js` locates each fix by decode-walking the raw source, so a `>`
   written `&gt;` (#518) or a span shifted by an earlier entity (#525) still fixes,
   and an already-edited span is skipped rather than corrupted. Two fixes whose
@@ -1007,6 +1012,7 @@ one of them.
 | `test/strictness.js` | `insists` — whether fontoxpath refuses an expression over its own strictness rather than over anything malformed in it |
 | `test/helpers.js` | The only door to a child process in the suite: `runXslint`, `xslintStatus`, `xslintStreams`, `xslintUnread`, `xcopped`, `walkedWith` |
 | `test/predicates.test.js` | The vocabulary held from both sides: every spelling it answers, and every one it refuses beside what puts that out of reach |
+| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers |
 | `test/packs.js` | The one harness every pack directory is read through |
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
