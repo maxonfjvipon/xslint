@@ -446,8 +446,8 @@ line, `wc -l` over a pretty-printed array meaning nothing.
 
 A snapshot also holds what the packs cannot: which checks a *real* stylesheet draws at `error`, and
 an error is the grade that stops somebody's build. So `REFUSED` in `test/snapshot.test.js` names the
-five the three corpora draw, each beside the fault that leaves the module unloadable — malformed
-XML, XTSE0500, XTSE0580, and the two a declared version refuses outright — and the gate is one set
+four the three corpora draw, each beside the fault that leaves the module unloadable — malformed
+XML, XTSE0500, XTSE0580, and the one a declared version refuses outright — and the gate is one set
 comparison against what the snapshots actually carry, which reddens from both sides at once: a
 check that begins stopping a build over a stylesheet no processor faults, and an entry that has
 outlived the defect justifying it. Two checks failed it as it landed, `not-using-output` on 129

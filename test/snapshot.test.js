@@ -182,9 +182,6 @@ const REFUSED = {
   'function-use-in-xslt-1':
     'an xsl:function in a sheet whose declared version has none, which a ' +
       'conformant processor of that version rejects',
-  'modern-construct-in-xslt-1':
-    'a 2.0 instruction in a sheet declared 1.0, where forwards-compatible ' +
-      'processing is off and the same refusal follows',
 }
 
 /**

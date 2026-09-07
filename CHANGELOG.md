@@ -9,6 +9,19 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Leave an `xsl:function` to `function-use-in-xslt-1` rather than reporting it
+  a second time through its `@as`, which on a function is the attribute
+  declaring the return type and on nothing else is optional. A 1.0 stylesheet
+  defining one drew both checks at the one node, in contradiction of this
+  check's own motive, which has said all along that the function is
+  deliberately left out; the TEI corpus holds the case at `rdf/rdf.xsl:379`.
+  The shadow spelling `_as` double-reported with it. That one line was the
+  whole of what this check drew over DocBook-XSL, TEI and DITA-OT, so its
+  `REFUSED` row leaves `test/snapshot.test.js` — the first time that gate has
+  reddened from the side where an entry outlives what justified it rather than
+  where a check starts stopping a build. The mark this check carries is
+  rewritten to #851, whose defect in its version gate stands (#555).
+
 - Withhold `using-namespace-axis` where the axis stands as a step of a `match`
   pattern, the advice it carries being one nobody can follow there: a pattern
   is matched by walking up from a node rather than evaluated, so neither
