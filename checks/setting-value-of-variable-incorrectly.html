@@ -87,12 +87,9 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
+    <span class="severity-warning">warning</span>
+    <code class="xpath">//xsl:variable[not(@select) and not(@_select) and (count(*) = 1) and (count(xsl:value-of) = 1) and not(text()[xslint:normalize-space(.) or ancestor::*[@xml:space][1]/@xml:space = 'preserve'])]</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #590, which advises a select onto a variable already carrying one.</p>
   <div class="check-content">
 <h1>Setting value of variable incorrectly</h1>
 <p>A variable whose body is one <code>xsl:value-of</code> builds a result tree fragment to
@@ -132,6 +129,20 @@ that attribute sets it to <code>preserve</code>, the whitespace is part of the f
 <p>That binds two spaces and the heading, which <code>select=&quot;heading&quot;</code> does not —
 <code>select=&quot;concat(&#39;  &#39;, heading)&quot;</code> is the shorthand there. A nearer
 <code>xml:space=&quot;default&quot;</code> cancels a <code>preserve</code> higher up.</p>
+<p>The shorthand also needs the variable to carry no <code>select</code> of its own. One
+holding both a <code>select</code> and a body offers a processor two candidate values and
+no rule for choosing between them, which XSLT forbids outright — 1.0 calls it
+an error, 2.0 and 3.0 raise <code>XTSE0620</code>, and the stylesheet compiles on no
+version:</p>
+<pre><code class="language-xsl">&lt;xsl:variable name=&quot;title&quot; select=&quot;&#39;Chapter&#39;&quot;&gt;
+  &lt;xsl:value-of select=&quot;heading&quot;/&gt;
+&lt;/xsl:variable&gt;
+</code></pre>
+<p>Neither form of the shorthand resolves that one, both values being spelled
+already. Drop whichever of the two says what was meant, and the variable binds
+one value again. XSLT 3.0&#39;s shadow spelling <code>_select</code> is the same attribute
+computed at compile time, so it stands in the way exactly as the plain one
+does.</p>
 
   </div>
 </body>

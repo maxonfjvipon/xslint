@@ -266,7 +266,7 @@
   <tr>
     <td><a href="checks/setting-value-of-variable-incorrectly.html">setting-value-of-variable-incorrectly</a></td>
     <td>xpath</td>
-    <td><span class="severity-warning">warning</span> <span class="nursery">nursery</span></td>
+    <td><span class="severity-warning">warning</span></td>
     <td>A variable is assigned via a nested xsl:value-of instead of the select attribute. Use select syntax instead.</td>
   </tr>
   <tr>
@@ -345,7 +345,7 @@
     <td><a href="checks/with-param-use-in-invalid-parent-node.html">with-param-use-in-invalid-parent-node</a></td>
     <td>xpath</td>
     <td><span class="severity-error">error</span> <span class="nursery">nursery</span></td>
-    <td>xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:apply-imports, xsl:next-match and xsl:next-iteration.</td>
+    <td>xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:next-match, xsl:next-iteration, or an xsl:apply-imports whose nearest declared version is 2.0 or later. Move it into a call, or raise that version.</td>
   </tr>
   <tr>
     <td><a href="checks/with-param-without-name.html">with-param-without-name</a></td>
@@ -530,7 +530,7 @@
   <tr>
     <td><a href="checks/using-namespace-axis.html">using-namespace-axis</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span> <span class="nursery">nursery</span></td>
+    <td><span class="severity-warning">warning</span></td>
     <td>The namespace:: axis is deprecated in XSLT 2.0 and later. Use in-scope-prefixes() and namespace-uri-for-prefix() instead.</td>
   </tr>
     </tbody>
