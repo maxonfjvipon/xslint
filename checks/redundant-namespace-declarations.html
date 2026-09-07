@@ -56,6 +56,31 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .fix-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-suggestion {
+    background: #fbefff;
+    color: #8250df;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-note {
+    background: #f6f8fa;
+    border-left: 4px solid #57606a;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .nursery-note {
     background: #ddf4ff;
     border-left: 4px solid #0969da;
@@ -87,9 +112,11 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span>
+    <span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span>
     <code class="xpath">checked over the tokens, not an XPath rule</code>
   </div>
+  <p class="fix-note"><code>--fix</code> rewrites this one: the correction is
+  deterministic, and leaves the stylesheet meaning what it meant.</p>
   <div class="check-content">
 <h1>Redundant namespace declarations</h1>
 <p>A namespace prefix declared on the <code>xsl:stylesheet</code> element but never used by

@@ -56,6 +56,31 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .fix-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-suggestion {
+    background: #fbefff;
+    color: #8250df;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-note {
+    background: #f6f8fa;
+    border-left: 4px solid #57606a;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .nursery-note {
     background: #ddf4ff;
     border-left: 4px solid #0969da;
@@ -182,7 +207,7 @@
   <tr>
     <td><a href="checks/incorrect-use-of-boolean-constants.html">incorrect-use-of-boolean-constants</a></td>
     <td>xpath</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>The test is the string 'true' or 'false', a non-empty string that is always true, not a boolean. Use true() or false() instead.</td>
   </tr>
   <tr>
@@ -212,13 +237,13 @@
   <tr>
     <td><a href="checks/missing-version-in-stylesheet.html">missing-version-in-stylesheet</a></td>
     <td>xpath</td>
-    <td><span class="severity-warning">warning</span> <span class="nursery">nursery</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span> <span class="nursery">nursery</span></td>
     <td>The version attribute is missing on the stylesheet's root element. Declare it to specify the stylesheet version explicitly.</td>
   </tr>
   <tr>
     <td><a href="checks/mode-or-priority-without-match.html">mode-or-priority-without-match</a></td>
     <td>xpath</td>
-    <td><span class="severity-error">error</span></td>
+    <td><span class="severity-error">error</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>An xsl:template that has no match attribute must have no mode attribute and no priority attribute. Add match attribute or remove mode or priority.</td>
   </tr>
   <tr>
@@ -296,7 +321,7 @@
   <tr>
     <td><a href="checks/text-outside-xsl-text.html">text-outside-xsl-text</a></td>
     <td>xpath</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>Literal text appears directly inside an 'xsl:' instruction element. Wrap it in 'xsl:text'.</td>
   </tr>
   <tr>
@@ -320,7 +345,7 @@
   <tr>
     <td><a href="checks/using-disable-output-escaping.html">using-disable-output-escaping</a></td>
     <td>xpath</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>disable-output-escaping='yes' is set, which produces implementation-defined output. Use xsl:copy-of or literal elements instead.</td>
   </tr>
   <tr>
@@ -332,7 +357,7 @@
   <tr>
     <td><a href="checks/variable-or-param-with-select-and-content.html">variable-or-param-with-select-and-content</a></td>
     <td>xpath</td>
-    <td><span class="severity-error">error</span></td>
+    <td><span class="severity-error">error</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>An xsl:variable, xsl:param or xsl:with-param has both a select attribute and a non-empty body. Use only one way to set the value.</td>
   </tr>
   <tr>
@@ -398,25 +423,25 @@
   <tr>
     <td><a href="checks/confusing-variable-and-node.html">confusing-variable-and-node</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>A variable name is used bare as a node selector. Use $name syntax to reference the variable.</td>
   </tr>
   <tr>
     <td><a href="checks/count-compared-to-zero.html">count-compared-to-zero</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>count(...) is compared with 0 to test existence, which walks the whole sequence. Test existence directly instead (exists()/empty() on XSLT 2.0+, boolean()/not() on 1.0).</td>
   </tr>
   <tr>
     <td><a href="checks/leaking-result-namespace.html">leaking-result-namespace</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>The xsl:stylesheet declares a namespace prefix used only in stylesheet logic, which a literal result element copies into the output. Add the prefix to exclude-result-prefixes.</td>
   </tr>
   <tr>
     <td><a href="checks/name-compared-to-string.html">name-compared-to-string</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>name() or local-name() is compared with a string, which is prefix-fragile and slower than a node test. Use self::name instead.</td>
   </tr>
   <tr>
@@ -434,61 +459,61 @@
   <tr>
     <td><a href="checks/output-method-xml.html">output-method-xml</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>xsl:output declares method='xml' while the root template builds an HTML document. Change the method to 'html'.</td>
   </tr>
   <tr>
     <td><a href="checks/predicate-position-literal.html">predicate-position-literal</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>A positional predicate is written the long way; [position() = N] is just [N] and [position() = last()] is just [last()]. Shorten it.</td>
   </tr>
   <tr>
     <td><a href="checks/redundant-boolean-call.html">redundant-boolean-call</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>A boolean() call stands where nothing but a truth is taken — a test or a use-when, an operand of and/or, the argument of not(), the condition of an if, the body of a satisfies — so the wrapper is redundant. Drop it.</td>
   </tr>
   <tr>
     <td><a href="checks/redundant-double-negation.html">redundant-double-negation</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>A double negation not(not(x)) is redundant; it is just boolean(x), and where nothing but a truth is taken simply x. Replace it.</td>
   </tr>
   <tr>
     <td><a href="checks/redundant-import.html">redundant-import</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>The stylesheet imports or includes the same module more than once. Keep a single xsl:import/xsl:include of it and remove the other.</td>
   </tr>
   <tr>
     <td><a href="checks/redundant-namespace-declarations.html">redundant-namespace-declarations</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>The xsl:stylesheet declares a namespace prefix that is never used. Remove the redundant xmlns declaration.</td>
   </tr>
   <tr>
     <td><a href="checks/redundant-whitespace.html">redundant-whitespace</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>An XPath expression has redundant whitespace. Remove the extra spaces.</td>
   </tr>
   <tr>
     <td><a href="checks/select-starts-with-double-slash.html">select-starts-with-double-slash</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>The select attribute starts with //, which scans the whole document from the root. Anchor it with .// or a specific path.</td>
   </tr>
   <tr>
     <td><a href="checks/starts-with-double-slash.html">starts-with-double-slash</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>A pattern alternative starts with //, which is redundant since every XSLT pattern already matches at any depth, and it lowers the rule's default priority from 0.5 to that of the step alone. Remove the leading // and give the rule an explicit priority if it must keep ranking as it does.</td>
   </tr>
   <tr>
     <td><a href="checks/string-length-compared-to-zero.html">string-length-compared-to-zero</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>string-length(...) is compared with 0 to test emptiness, which measures the whole string. Compare the value with '' instead.</td>
   </tr>
   <tr>
@@ -500,13 +525,13 @@
   <tr>
     <td><a href="checks/translate-for-case.html">translate-for-case</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span></td>
     <td>translate() folds case over the ASCII alphabet; XSLT 2.0 does this with lower-case() or upper-case(), which are shorter and Unicode-aware.</td>
   </tr>
   <tr>
     <td><a href="checks/unabbreviated-axis.html">unabbreviated-axis</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>Verbose axis specifiers child::, attribute::, parent::node(), or self::node() are used. Replace them with the node name alone, @, .., or . respectively.</td>
   </tr>
   <tr>
@@ -524,7 +549,7 @@
   <tr>
     <td><a href="checks/use-node-set-extension.html">use-node-set-extension</a></td>
     <td>format</td>
-    <td><span class="severity-warning">warning</span></td>
+    <td><span class="severity-warning">warning</span> <span class="fix-safe">safe fix</span></td>
     <td>The node-set() extension function is unnecessary in XSLT 2.0 and later. Query the variable directly without it.</td>
   </tr>
   <tr>

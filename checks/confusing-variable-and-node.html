@@ -56,6 +56,31 @@
     font-weight: 600;
     white-space: nowrap;
   }
+  .fix-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-suggestion {
+    background: #fbefff;
+    color: #8250df;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-note {
+    background: #f6f8fa;
+    border-left: 4px solid #57606a;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
   .nursery-note {
     background: #ddf4ff;
     border-left: 4px solid #0969da;
@@ -87,9 +112,12 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span>
+    <span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span>
     <code class="xpath">checked over the tokens, not an XPath rule</code>
   </div>
+  <p class="fix-note"><code>--fix-suggestions</code> rewrites this one, and a plain
+  <code>--fix</code> leaves it alone: the correction changes what the
+  stylesheet does, or is one of several the check would accept.</p>
   <div class="check-content">
 <h1>Are you confusing a variable and a node?</h1>
 <p>When a variable and a node share the same name, using the bare name in
