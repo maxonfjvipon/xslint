@@ -26,7 +26,8 @@ const assert = require('assert')
  */
 const UNINDEXED = {
   'missing-id-in-stylesheet': 'the root itself, not a descendant sweep',
-  'missing-version-in-stylesheet': 'the root itself, not a descendant sweep',
+  'missing-version-in-stylesheet':
+    'a root arm beside a servable one, and a union is served whole or not at all',
   'stylesheet-has-no-templates': 'the root itself, not a descendant sweep',
   'too-many-templates': 'the root itself, not a descendant sweep',
 }
@@ -78,7 +79,6 @@ const KINDS = ['xpath', 'corpus', 'validation', 'format']
 const NURSERY = {
   'empty-variable': '#851',
   'function-use-in-xslt-1': '#851',
-  'missing-version-in-stylesheet': '#705',
   'modern-construct-in-xslt-1': '#851',
   'unreachable-function': '#498',
   'unused-function': '#498',

@@ -413,6 +413,13 @@ const APPLIED = [
     after: 'missing-version-in-stylesheet.fixed.xsl',
   },
   {
+    name: 'should declare a missing version on a stylesheet embedded below ' +
+      'the document element with --fix-suggestions',
+    flag: '--fix-suggestions',
+    before: 'an-embedded-stylesheet-missing-its-version.xsl',
+    after: 'an-embedded-stylesheet-missing-its-version.fixed.xsl',
+  },
+  {
     name: 'should drop an orphan mode with --fix-suggestions',
     flag: '--fix-suggestions',
     before: 'mode-or-priority-without-match.xsl',

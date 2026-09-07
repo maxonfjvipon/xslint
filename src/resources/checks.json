@@ -239,11 +239,10 @@
         "message": "The '@name' is missing or empty here, and neither is a QName, so no processor will load this stylesheet"
       },
       "missing-version-in-stylesheet": {
-        "xpath": "/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))]",
+        "xpath": "/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))] | /*[not(self::xsl:*)]//(xsl:stylesheet | xsl:transform | xsl:package)[not(@version) and not(@_version)]",
         "severity": "warning",
         "message": "The version attribute is missing on the stylesheet's root element. Declare it to specify the stylesheet version explicitly.",
-        "fix": "suggestion",
-        "nursery": "#705, which never judges a stylesheet embedded below the document element"
+        "fix": "suggestion"
       },
       "mode-or-priority-without-match": {
         "xpath": "//xsl:template[(@name or @_name) and not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
