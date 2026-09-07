@@ -669,13 +669,13 @@ that 0.87 of the bar while a turn touching `src/linters/` was loading 157,504 an
 two dearest notes moved one step further down, out of `src/CLAUDE.md` and into the top of
 `src/grammar.js` and `src/syntax.js` — 24,681 characters. A turn touching `test/` ran it close
 ever since, until #811's wildcard phase moved this guide's nightly-tier note into
-`test/budget.test.js`; the dearest reads 139,494, which is 0.93, and is `src/linters/`'s once
+`test/budget.test.js`; the dearest reads 139,495, which is 0.93, and is `src/linters/`'s once
 more. What answers a chain reaching the bar is that move again, a module's derivation into the
 file-header note of the module itself, and never a bar widened to fit what has grown past it: a
 docblock holds five lines of description since #832, so prose that has outgrown a guide does not
 simply move into one instead. A `CEILING` of half the bar stood beside it until it
 was seen to be a gate no tree could fail: the root stands in every chain, so the chain holding it
-above weighs each other guide against the bar less what stands over it — 23,563 for
+above weighs each other guide against the bar less what stands over it — 23,562 for
 `src/linters/CLAUDE.md`, where half of the bar is 75,000 — and holds the root itself to 80,546, a
 number derived from the dearest chain rather than chosen. A gate no tree can fail is removed and
 not kept (#750, #660). All four of those figures — the chain, its ratio, and the two allowances —
@@ -723,7 +723,7 @@ times in one. Ten notes moved to make the bar quiet — `xpath-linter.js`, `root
 one. An eleventh was refused by the valve rather than chosen against: `test/conformance.test.js` stands
 at 992 lines and its note is 150 more, and `max-lines` counts comments, so a section can outgrow the
 file it is about and relief has a floor — what answers that one is the note being cut, not moved.
-What that leaves is 506 characters of headroom, off a chain that is `src/linters/`'s own once
+What that leaves is 505 characters of headroom, off a chain that is `src/linters/`'s own once
 more rather than this file's: the merge behind #811's bracket phase breached the bar by 844 with
 neither branch having crossed it alone, and the root's `src/xslint.js` derivation moved into
 `src/CLAUDE.md` to answer it — 2,147 characters out of every chain but the three standing under
@@ -732,7 +732,7 @@ and the merge behind the wildcard phase breached it again by 162 with neither br
 crossed it alone either — the same arithmetic a second time, which is what a shared budget does
 to two branches that each measured themselves alone. What answered it was the move again, on the
 dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 460
+fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 459
 characters out of every chain through `test/` and none out of the one that is dearest without it.
 The relief that bought lasted one ticket again, and the third breach is the plainest of the
 three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands

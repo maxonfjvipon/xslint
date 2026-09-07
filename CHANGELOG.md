@@ -22,6 +22,17 @@ publication date only; detailed notes begin with the Unreleased section.
   where a check starts stopping a build. The mark this check carries is
   rewritten to #851, whose defect in its version gate stands (#555).
 
+- Narrow `setting-value-of-variable-incorrectly` to a variable carrying no
+  `select`, so one that carries both a `select` and an `xsl:value-of` body
+  draws one defect where it drew two. The advice was one nobody could follow:
+  it asked for a `select` on a variable already holding one, while the same
+  node drew the error saying the two may not stand together — XSLT forbidding
+  the combination outright, 1.0 as an error and 2.0 and 3.0 as `XTSE0620`. The
+  shadow spelling `_select` said it twice as well. The partition loses no
+  report, a body of one `xsl:value-of` being content by any reading, so
+  wherever this check went quiet the error still stands. The check leaves the
+  nursery (#590).
+
 - Withhold `using-namespace-axis` where the axis stands as a step of a `match`
   pattern, the advice it carries being one nobody can follow there: a pattern
   is matched by walking up from a node rather than evaluated, so neither
@@ -51,8 +62,8 @@ publication date only; detailed notes begin with the Unreleased section.
   question. `text-outside-xsl-text` leaves the nursery (#881).
 
 - Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-eight checks no open issue reports wrong about code a processor
-  accepts. The other ten carry a `nursery:` mark naming that issue, so the
+  fifty-nine checks no open issue reports wrong about code a processor
+  accepts. The other nine carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
   check verbatim in the config re-admits it, where a glob does not (#581).
 

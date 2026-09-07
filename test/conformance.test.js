@@ -80,7 +80,6 @@ const NURSERY = {
   'function-use-in-xslt-1': '#851',
   'missing-version-in-stylesheet': '#705',
   'modern-construct-in-xslt-1': '#851',
-  'setting-value-of-variable-incorrectly': '#590',
   'unreachable-function': '#498',
   'unused-function': '#498',
   'unused-named-template': '#498',

@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: setting-value-of-variable-incorrectly
+found:
+  amount: 6
+  positions: [ [ 11, 5 ], [ 5, 5, variable-or-param-with-select-and-content ], [ 8, 5, variable-or-param-with-select-and-content ], [ 18, 5, variable-or-param-with-select-and-content ], [ 20, 7, variable-or-param-with-select-and-content ], [ 32, 5, variable-or-param-with-select-and-content ] ]
+  fixes: [ null, "", "", "", "", "" ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:template match="/objects/o">
+      <xsl:variable name="plainly" select="'Curie'">
+        <xsl:value-of select="name"/>
+      </xsl:variable>
+      <xsl:variable name="shadowed" _select="'Lovelace'">
+        <xsl:value-of select="name"/>
+      </xsl:variable>
+      <xsl:variable name="bodied">
+        <xsl:value-of select="name"/>
+      </xsl:variable>
+      <xsl:variable name="settled" select="'Hopper'"/>
+      <xsl:variable name="othered">
+        <xsl:copy-of select="name"/>
+      </xsl:variable>
+      <xsl:variable name="worded" select="'Noether'">Emmy<xsl:value-of select="name"/></xsl:variable>
+      <xsl:call-template name="mine">
+        <xsl:with-param name="passed" select="'Franklin'">
+          <xsl:value-of select="name"/>
+        </xsl:with-param>
+      </xsl:call-template>
+      <xsl:copy-of select="$plainly"/>
+      <xsl:copy-of select="$shadowed"/>
+      <xsl:copy-of select="$bodied"/>
+      <xsl:copy-of select="$settled"/>
+      <xsl:copy-of select="$othered"/>
+      <xsl:copy-of select="$worded"/>
+    </xsl:template>
+    <xsl:template name="mine">
+      <xsl:param name="fetched" select="'Meitner'">
+        <xsl:value-of select="name"/>
+      </xsl:param>
+      <xsl:copy-of select="$fetched"/>
+    </xsl:template>
+  </xsl:stylesheet>
