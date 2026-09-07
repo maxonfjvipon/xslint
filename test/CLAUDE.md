@@ -630,8 +630,8 @@ so it stays open. The version gates of `empty-variable`, `function-use-in-xslt-1
 `modern-construct-in-xslt-1` read `@version` as text; `versionOf` asks `getAttributeNS` then
 `getAttribute`, neither reaching a `_version`; and `importsOf` tests `hasAttribute('href')`, so a
 shadow href builds no edge and leaves that module out of every cross-file check. All of it wants
-a static evaluator for an attribute value template, which #851 holds now and the `nursery:` mark
-on the first two names (#851).
+a static evaluator for an attribute value template, which #851 holds now and a `nursery:` mark
+on all three names (#851).
 
 The line cap is held from a third side since #825. A file the cap is lifted off must have its
 length stated in a guide, and the number must be the one ESLint reads: `SPRAWLING`'s membership was
@@ -732,7 +732,7 @@ and the merge behind the wildcard phase breached it again by 162 with neither br
 crossed it alone either — the same arithmetic a second time, which is what a shared budget does
 to two branches that each measured themselves alone. What answered it was the move again, on the
 dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 454
+fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 460
 characters out of every chain through `test/` and none out of the one that is dearest without it.
 The relief that bought lasted one ticket again, and the third breach is the plainest of the
 three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands

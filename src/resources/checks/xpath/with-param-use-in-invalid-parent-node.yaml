@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-xpath: //xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)]
+xpath: "//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][number(ancestor-or-self::*[(self::xsl:* and (@version or @_version)) or (not(self::xsl:*) and @xsl:version)][1] ! (if (self::xsl:*) then @version else @xsl:version)) < 2]"
 severity: error
-message: xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:apply-imports, xsl:next-match and xsl:next-iteration.
-nursery: "#566, which accepts a 2.0-only parent in a 1.0 stylesheet"
+message: xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:next-match, xsl:next-iteration, or an xsl:apply-imports whose nearest declared version is 2.0 or later. Move it into a call, or raise that version.
+nursery: "#851, whose version gate reads @version as text and so goes quiet below a shadow spelling of it"
