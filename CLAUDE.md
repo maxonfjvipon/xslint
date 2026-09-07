@@ -1006,7 +1006,7 @@ one of them.
 | `test/strictness.js` | `insists` — whether fontoxpath refuses an expression over its own strictness rather than over anything malformed in it |
 | `test/helpers.js` | The only door to a child process in the suite: `runXslint`, `xslintStatus`, `xslintStreams`, `xslintUnread`, `xcopped`, `walkedWith` |
 | `test/predicates.test.js` | The vocabulary held from both sides: every spelling it answers, and every one it refuses beside what puts that out of reach |
-| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers |
+| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers, and the README held to naming none of them |
 | `test/packs.js` | The one harness every pack directory is read through |
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |

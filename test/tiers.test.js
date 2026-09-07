@@ -24,6 +24,18 @@
  * the tier being a property of the place a defect stands rather than of the
  * check: `starts-with-double-slash` is safe in a `@select` and a suggestion on
  * an `xsl:template`, whose priority a dropped `//` shifts (#583, #899).
+ * The third question is the other side of the same key: nobody but the check's
+ * own page says what a check corrects. `README.md` spent 42% of itself
+ * teaching the twenty-three of them, one bullet each and two for the check
+ * that grades per defect, and the audit behind this gate found the motive
+ * already carrying twenty-three of those twenty-four at five times the
+ * length. The one it did not — the brackets `use-node-set-extension` keeps
+ * around an argument binding looser than a step, which a reader unwrapping by
+ * hand drops to select something else — is a hazard of the construct, so it
+ * moved into the motive rather than dying with the prose. What the section
+ * owns is the two flags and the guarantees that hold whatever the check: the
+ * exact span, the skip on a mismatch, the wider of two overlaps. It names no
+ * check at all, the gate below failing the moment a bullet comes back (#898).
  */
 
 const {lint} = require('../src/xslint')
@@ -116,6 +128,15 @@ const spelled = function(fix) {
   return sound
 }
 
+/**
+ * What stands under the README's `Fixing` heading, up to the next one.
+ * @return {string} - The section's own text
+ */
+const fixing = function() {
+  return fs.readFileSync(path.resolve(__dirname, '..', 'README.md'), 'utf-8')
+    .split(/^## /m).find((part) => part.startsWith('Fixing\n'))
+}
+
 describe('tiers', function() {
   it('declares the tiers every check offers, and only those', function() {
     assert.deepStrictEqual(
@@ -135,6 +156,16 @@ describe('tiers', function() {
       `a check spells its tier as something other than ${TIERS.join(' or ')}, ` +
         'or lists one tier where the name alone says it, so what a run reads ' +
         'and what the docs site renders come off two shapes of one key',
+    )
+  })
+  it('names no fixable check where the catalog teaches them', function() {
+    assert.deepStrictEqual(
+      fixable().map(([name]) => name).filter((name) => fixing().includes(name)),
+      [],
+      'the README `Fixing` section names a check whose page already teaches ' +
+        'the construct, so one reader is told the same thing twice and the ' +
+        'two spellings drift apart. That section owns the flags and the ' +
+        'guarantees; which check fixes itself is the catalog\'s (#898)',
     )
   })
 })
