@@ -8,16 +8,14 @@ const {XSLT} = require('./xsl-version')
 
 /**
  * Fix for `using-disable-output-escaping`: delete the attribute. Removing it
- * changes how the output is escaped, so it is a suggestion.
+ * changes how the output is escaped, which is why the check declares it a
+ * suggestion.
  * @param {Element} node - The element carrying the attribute
  * @param {string} content - Raw source text of the file it stands in
- * @return {object} - The suggestion fix
+ * @return {object} - The fix
  */
 const disableOutputEscaping = function(node, content) {
-  return {
-    ...deletion(node.getAttributeNode('disable-output-escaping'), content),
-    suggestion: true,
-  }
+  return deletion(node.getAttributeNode('disable-output-escaping'), content)
 }
 
 /**
@@ -27,7 +25,7 @@ const disableOutputEscaping = function(node, content) {
  * namespaced one — so forking by name would write a second version onto
  * `xsl:package` (#608). The prefix is read, never assumed.
  * @param {Element} node - The root element of the stylesheet
- * @return {?object} - The suggestion fix, or nothing when none can be spelled
+ * @return {?object} - The fix, or nothing when none can be spelled
  */
 const missingVersion = function(node) {
   let spelled = 'version'
@@ -45,7 +43,6 @@ const missingVersion = function(node) {
       col: node.columnNumber + node.nodeName.length + 1,
       value: '',
       replacement: ` ${spelled}="1.0"`,
-      suggestion: true,
     }
   }
   return fix
@@ -54,34 +51,31 @@ const missingVersion = function(node) {
 /**
  * Fix for `mode-or-priority-without-match`: delete the orphan attribute, in
  * whichever of its two spellings the author wrote. It is one of two
- * corrections the rule offers (the other is adding `match`), so it is a
- * suggestion, and only where exactly one of them stands can a single deletion
- * resolve the defect.
+ * corrections the rule offers (the other is adding `match`), which is why the
+ * check declares it a suggestion, and only where exactly one of them stands
+ * can a single deletion resolve the defect.
  * @param {Element} node - The `xsl:template` element
  * @param {string} content - Raw source text of the file it stands in
- * @return {?object} - The suggestion fix, or null
+ * @return {?object} - The fix, or null
  */
 const modeOrPriority = function(node, content) {
   const present = ['mode', '_mode', 'priority', '_priority']
     .filter((name) => node.hasAttribute(name))
   let fix = null
   if (present.length === 1) {
-    fix = {
-      ...deletion(node.getAttributeNode(present[0]), content),
-      suggestion: true,
-    }
+    fix = deletion(node.getAttributeNode(present[0]), content)
   }
   return fix
 }
 
 /**
  * Fix for `incorrect-use-of-boolean-constants`: replace the string literal
- * test `'true'`/`'false'` with the boolean `true()`/`false()`. A suggestion,
- * since `'false'` is a non-empty string that is always true, so the rewrite
- * changes the test's truth value — which is the point.
+ * test `'true'`/`'false'` with the boolean `true()`/`false()`. The check
+ * declares it a suggestion, `'false'` being a non-empty string that is always
+ * true, so the rewrite changes the test's truth value — which is the point.
  * @param {Element} node - The `xsl:if`/`xsl:when` element
  * @param {string} content - Raw source text of the file it stands in
- * @return {object} - The suggestion fix
+ * @return {object} - The fix
  */
 const booleanConstant = function(node, content) {
   const test = node.getAttributeNode('test')
@@ -89,20 +83,17 @@ const booleanConstant = function(node, content) {
   if (test.value.includes('true')) {
     constant = 'true()'
   }
-  return {
-    ...substitution(test, constant, content),
-    suggestion: true,
-  }
+  return substitution(test, constant, content)
 }
 
 /**
- * Fix for `text-outside-xsl-text`: wrap the literal text in `xsl:text`. A
- * suggestion, since it is a stylistic rewrite that inserts an element. Only
- * when the instruction holds exactly one non-whitespace text node can a single
- * edit resolve the defect — with text on both sides of a child element there
- * are several nodes to wrap, so there is no fix.
+ * Fix for `text-outside-xsl-text`: wrap the literal text in `xsl:text`. The
+ * check declares it a suggestion, the rewrite inserting an element. Only when
+ * the instruction holds exactly one non-whitespace text node can a single edit
+ * resolve the defect — with text on both sides of a child element there are
+ * several nodes to wrap, so there is no fix.
  * @param {Element} node - The instruction element holding the loose text
- * @return {?object} - The suggestion fix, or null
+ * @return {?object} - The fix, or null
  */
 const textOutsideXslText = function(node) {
   const texts = Array.from(node.childNodes).filter(
@@ -115,7 +106,6 @@ const textOutsideXslText = function(node) {
       col: texts[0].columnNumber,
       value: texts[0].nodeValue,
       replacement: `<xsl:text>${texts[0].nodeValue}</xsl:text>`,
-      suggestion: true,
     }
   }
   return fix
@@ -126,19 +116,16 @@ const textOutsideXslText = function(node) {
  * in whichever of its two spellings the author wrote, leaving the body as the
  * only value. It is one of the two corrections the rule offers — dropping the
  * body is structural, so no single edit expresses it — and the body binds a
- * tree where the expression bound its own type, so it is a suggestion.
+ * tree where the expression bound its own type.
  * @param {Element} node - The variable-binding element
  * @param {string} content - Raw source text of the file it stands in
- * @return {?object} - The suggestion fix, or null
+ * @return {?object} - The fix, or null
  */
 const selectAndContent = function(node, content) {
   const present = ['select', '_select'].filter((name) => node.hasAttribute(name))
   let fix = null
   if (present.length === 1) {
-    fix = {
-      ...deletion(node.getAttributeNode(present[0]), content),
-      suggestion: true,
-    }
+    fix = deletion(node.getAttributeNode(present[0]), content)
   }
   return fix
 }

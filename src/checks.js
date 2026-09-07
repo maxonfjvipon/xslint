@@ -7,6 +7,29 @@ const {kinds} = require('./resources/checks.json')
 const {offsetAt, placeAt, skip} = require('./source')
 
 /**
+ * The tier a fix lands in when a plain `--fix` applies it: deterministic and
+ * semantics-preserving.
+ * @type {string}
+ */
+const SAFE = 'safe'
+
+/**
+ * The tier a fix lands in when only `--fix-suggestions` applies it: it changes
+ * behaviour, or is one correction of several the check would accept.
+ * @type {string}
+ */
+const SUGGESTION = 'suggestion'
+
+/**
+ * The two tiers a fix can land in, which is the whole vocabulary a check's
+ * `fix:` is spelled from — here and nowhere else, three consumers reading it:
+ * the grading in `src/xslint.js`, the badge the docs site renders, and the
+ * gate in `test/tiers.test.js` (#899).
+ * @type {Array.<string>}
+ */
+const TIERS = [SAFE, SUGGESTION]
+
+/**
  * Defect metadata of a formatting check.
  * @param {string} check - Check name
  * @return {{severity: string, message: string}} - The metadata
@@ -96,6 +119,9 @@ const defect = function(
 }
 
 module.exports = {
+  SAFE,
+  SUGGESTION,
+  TIERS,
   metaOf,
   suppressed,
   defect,

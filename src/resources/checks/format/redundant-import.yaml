@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: The stylesheet imports or includes the same module more than once. Keep a single xsl:import/xsl:include of it and remove the other.
+fix: suggestion

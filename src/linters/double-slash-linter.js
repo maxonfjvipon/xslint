@@ -89,7 +89,7 @@ const heads = function(branches, at) {
  * never sliced off the front of the value, since on `match=" //spaced"` that
  * would leave `/spaced` and turn an unanchored pattern into an absolute one.
  * A suggestion inside an `xsl:template` and safe everywhere else, for the
- * reason `RANKED` carries.
+ * reason `RANKED` carries — the one tier a linter grades (#899).
  * @param {{node: Node, expression: string, pattern: boolean}} found - Record
  * @param {{value: string}} token - The `//` token
  * @return {{value: string, replacement: string}} - The fix
@@ -133,7 +133,7 @@ const separators = function(found) {
  * anchors it. Opening it means standing in front of every solid token, so a
  * comment or a gap ahead of the slashes changes nothing. The fix writes the `.`
  * where the slashes stand, so it cannot overlap `redundant-whitespace`'s
- * (#571), and stays a suggestion, `.//` being one of several anchors.
+ * (#571), and `.//` is one of several anchors the check would accept.
  * @param {{node: Node, expression: string, pattern: boolean}} found - The
  *  expression, whole, as `expressionsOf` yields it
  * @return {Array.<{check: string, at: number, fix: object}>} - The scan found
@@ -147,8 +147,7 @@ const scanning = function(found) {
     results.push({
       check: SCANNING,
       at: first.start,
-      fix: {value: first.value, replacement: `.${first.value}`,
-        suggestion: true},
+      fix: {value: first.value, replacement: `.${first.value}`},
     })
   }
   return results

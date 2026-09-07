@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: A boolean() call stands where nothing but a truth is taken — a test or a use-when, an operand of and/or, the argument of not(), the condition of an if, the body of a satisfies — so the wrapper is redundant. Drop it.
+fix: safe

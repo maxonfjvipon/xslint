@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: "xsl:output declares method='xml' while the root template builds an HTML document. Change the method to 'html'."
+fix: suggestion

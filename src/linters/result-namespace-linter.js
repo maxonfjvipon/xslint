@@ -142,16 +142,16 @@ const textual = function(elements) {
 }
 
 /**
- * A suggestion fix that stops a prefix leaking by adding it to the root's
+ * The fix that stops a prefix leaking by adding it to the root's
  * `exclude-result-prefixes` — appended to the existing attribute, or a new one
- * inserted after the element name. It is a suggestion because it changes the
- * serialized output. Only offered when a single prefix leaks, since several
- * would each edit the one shared attribute and collide.
+ * inserted after the element name. It changes the serialized output, which is
+ * why the check declares it a suggestion. Only offered when a single prefix
+ * leaks, since several would each edit the one shared attribute and collide.
  * @param {Element} root - The stylesheet root
  * @param {string} prefix - The leaking prefix to exclude
  * @param {string} content - Raw source text of the file it stands in
- * @return {{line: number, col: number, value: string, replacement: string,
- *  suggestion: boolean}} - The fix
+ * @return {{line: number, col: number, value: string,
+ *  replacement: string}} - The fix
  */
 const exclusion = function(root, prefix, content) {
   const attribute = root.getAttributeNode('exclude-result-prefixes')
@@ -160,13 +160,9 @@ const exclusion = function(root, prefix, content) {
     col: root.columnNumber + root.nodeName.length + 1,
     value: '',
     replacement: ` exclude-result-prefixes="${prefix}"`,
-    suggestion: true,
   }
   if (attribute) {
-    fix = {
-      ...substitution(attribute, `${attribute.value} ${prefix}`, content),
-      suggestion: true,
-    }
+    fix = substitution(attribute, `${attribute.value} ${prefix}`, content)
   }
   return fix
 }

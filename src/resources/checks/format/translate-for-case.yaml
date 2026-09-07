@@ -3,3 +3,4 @@
 ---
 severity: warning
 message: translate() folds case over the ASCII alphabet; XSLT 2.0 does this with lower-case() or upper-case(), which are shorter and Unicode-aware.
+fix: suggestion

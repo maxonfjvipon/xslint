@@ -211,7 +211,7 @@ const byRedundancy = function(corpus) {
       if (mixed.has(key) || !cut) {
         defects.push(report)
       } else {
-        defects.push({...report, fix: {...cut, suggestion: true}})
+        defects.push({...report, fix: cut})
       }
     }
   })

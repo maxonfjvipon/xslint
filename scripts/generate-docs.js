@@ -8,6 +8,7 @@
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom, yaml} = require('../src/helpers')
+const {SAFE, SUGGESTION, TIERS} = require('../src/checks')
 const {marked} = require('marked')
 
 const CHECKS = path.join(__dirname, '..', 'src', 'resources', 'checks')
@@ -67,6 +68,31 @@ const CSS = `
     font-size: 0.8rem;
     font-weight: 600;
     white-space: nowrap;
+  }
+  .fix-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-suggestion {
+    background: #fbefff;
+    color: #8250df;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-note {
+    background: #f6f8fa;
+    border-left: 4px solid #57606a;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
   }
   .nursery-note {
     background: #ddf4ff;
@@ -129,6 +155,38 @@ const nurseryBadge = (lint) => {
   return badge
 }
 
+const FIXED = {[SAFE]: 'safe fix', [SUGGESTION]: 'suggested fix'}
+
+const NOTED = {
+  [SAFE]: `<code>--fix</code> rewrites this one: the correction is
+  deterministic, and leaves the stylesheet meaning what it meant.`,
+  [SUGGESTION]: `<code>--fix-suggestions</code> rewrites this one, and a plain
+  <code>--fix</code> leaves it alone: the correction changes what the
+  stylesheet does, or is one of several the check would accept.`,
+  [`${SAFE} ${SUGGESTION}`]: `<code>--fix</code> rewrites this one where the
+  correction is deterministic and <code>--fix-suggestions</code> where it is
+  not, which of the two it is depending on where the construct stands.`,
+}
+
+const tiered = (lint) => {
+  return TIERS.filter((tier) => [lint.fix ?? []].flat().includes(tier))
+}
+
+const fixBadge = (lint) => {
+  return tiered(lint)
+    .map((tier) => ` <span class="fix-${tier}">${FIXED[tier]}</span>`)
+    .join('')
+}
+
+const fixNote = (lint) => {
+  const tiers = tiered(lint)
+  let note = ''
+  if (tiers.length > 0) {
+    note = `\n  <p class="fix-note">${NOTED[tiers.join(' ')]}</p>`
+  }
+  return note
+}
+
 const escaped = (xpath) => xpath.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const nurseryNote = (lint) => {
@@ -180,7 +238,8 @@ const generate = function() {
     return `  <tr>
     <td><a href="checks/${name}.html">${name}</a></td>
     <td>${kind}</td>
-    <td>${severityBadge(lint.severity)}${nurseryBadge(lint)}</td>
+    <td>${severityBadge(lint.severity)}${fixBadge(lint)}${
+  nurseryBadge(lint)}</td>
     <td>${lint.message}</td>
   </tr>`
   }).join('\n')
@@ -245,9 +304,9 @@ ${indexRows}
     }
     const checkBody = `  <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    ${severityBadge(lint.severity)}${nurseryBadge(lint)}
+    ${severityBadge(lint.severity)}${fixBadge(lint)}${nurseryBadge(lint)}
     ${expressions(kind, lint)}
-  </div>${nurseryNote(lint)}
+  </div>${fixNote(lint)}${nurseryNote(lint)}
   <div class="check-content">
 ${mdHtml}
   </div>`
