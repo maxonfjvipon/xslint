@@ -9,6 +9,13 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Withhold `using-namespace-axis` where the axis stands as a step of a `match`
+  pattern, the advice it carries being one nobody can follow there: a pattern
+  is matched by walking up from a node rather than evaluated, so neither
+  `in-scope-prefixes()` nor `namespace-uri-for-prefix()` can stand where such
+  a step does. A predicate of that same pattern holds an ordinary expression
+  and is reported as it always was. The check leaves the nursery (#632).
+
 - Narrow `mode-or-priority-without-match` to a template that carries a `name`,
   so one matchless template draws one defect where it drew two. A template
   with neither `match` nor `name` is `template-has-no-name-or-match`'s to
@@ -31,8 +38,8 @@ publication date only; detailed notes begin with the Unreleased section.
   question. `text-outside-xsl-text` leaves the nursery (#881).
 
 - Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-seven checks no open issue reports wrong about code a processor
-  accepts. The other eleven carry a `nursery:` mark naming that issue, so the
+  fifty-eight checks no open issue reports wrong about code a processor
+  accepts. The other ten carry a `nursery:` mark naming that issue, so the
   tier is read off the checks themselves and grows as tickets close; grading a
   check verbatim in the config re-admits it, where a glob does not (#581).
 

@@ -85,7 +85,6 @@ const NURSERY = {
   'unused-function': '#498',
   'unused-named-template': '#498',
   'unused-variable': '#498',
-  'using-namespace-axis': '#632',
   'with-param-use-in-invalid-parent-node': '#566',
 }
 
