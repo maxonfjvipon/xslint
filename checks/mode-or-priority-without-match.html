@@ -87,17 +87,17 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-error">error</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:template[not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]</code>
+    <span class="severity-error">error</span>
+    <code class="xpath">//xsl:template[(@name or @_name) and not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #550, which draws a second defect on one matchless template.</p>
   <div class="check-content">
 <h1>Use @mode or @priority in Template without @match</h1>
-<p>An <code>xsl:template</code> that has no <code>match</code> attribute must have no <code>mode</code> attribute
-and no <code>priority</code> attribute. In a named template they have no meaning, since
-it is called by name rather than selected among several templates.</p>
+<p>A template carrying a <code>name</code> and no <code>match</code> is invoked by name, so <code>mode</code> and
+<code>priority</code> have nothing to decide: both of them only ever choose between the
+templates a <code>match</code> pattern made candidates for a node. A processor does not
+ignore them either — it refuses the module as a static error (XTSE0500), so
+the stylesheet does not run at all. Either give the template the <code>match</code> the
+two attributes are about, or drop them and call it by name.</p>
 <p>Incorrect:</p>
 <pre><code class="language-xsl">&lt;xsl:template name=&quot;oo&quot; priority=&quot;2&quot; mode=&quot;qq&quot;&gt;
   &lt;!--body--&gt;
