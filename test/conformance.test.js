@@ -6,6 +6,7 @@
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const {GAP} = require('../src/tokens')
 const {splitOf} = require('../src/selectors')
+const {REFERENCES} = require('../src/linters/corpus-linter')
 const {kinds} = require('../src/resources/checks.json')
 const {DECIMAL, XSLT} = require('../src/xsl-version')
 const {walked} = require('../src/tree')
@@ -80,10 +81,7 @@ const NURSERY = {
   'empty-variable': '#851',
   'function-use-in-xslt-1': '#851',
   'modern-construct-in-xslt-1': '#851',
-  'unreachable-function': '#498',
-  'unused-function': '#498',
-  'unused-named-template': '#498',
-  'unused-variable': '#498',
+  'unused-named-template': '#851',
   'with-param-use-in-invalid-parent-node': '#851',
 }
 
@@ -836,8 +834,8 @@ describe('conformance', function() {
         `${drifted.join(', ')}`,
     )
   })
-  it('anchors every reference template against text at one end', function() {
-    const loose = names('corpus')
+  it('names a kind of reference the corpus linter reads', function() {
+    const foreign = names('corpus')
       .map((name) => ({
         name,
         reference: yaml.parsedFromFile(
@@ -845,21 +843,15 @@ describe('conformance', function() {
         ).reference,
       }))
       .filter((check) => check.reference)
-      .filter((check) => {
-        const stands = check.reference.indexOf('{name}')
-        return (stands > 0) ===
-          (stands + '{name}'.length < check.reference.length)
-      })
+      .filter((check) => !REFERENCES.includes(check.reference))
       .map((check) => check.name)
     assert.deepStrictEqual(
-      loose, [],
-      `${loose.join(', ')} anchors {name} against text at neither end or at ` +
-        'both, where the index in src/linters/corpus-linter.js reads the ' +
-        'name from the one side the text stands on. Against neither, the ' +
-        'mark is the empty string, which indexOf finds at every offset and ' +
-        'answers the length for past the end rather than -1, so the scan ' +
-        'never advances and the run hangs. Against both, the far side is ' +
-        'never matched and a declaration that is used is reported as dead',
+      foreign, [],
+      `${foreign.join(', ')} names a reference that is none of ` +
+        `${REFERENCES.join(', ')}, the kinds the token scan in ` +
+        'src/linters/corpus-linter.js reads off a usage value. An index ' +
+        'built for a word no scan answers holds no name at all, so every ' +
+        'declaration in the corpus is reported as dead',
     )
   })
   it('names both quotes of a literal it compares text with', function() {

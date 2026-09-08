@@ -288,8 +288,8 @@ reach for.
 Nothing that depends on the outer loop alone is computed in the inner one, and a
 `no-restricted-syntax` selector holds the one place that mattered: a call to
 `referencing` inside a `usages` scan in `src/linters/corpus-linter.js`. The
-names a usage value holds depend on that value and the check's template, not on
-the declaration being judged, so reading them per (declaration, usage) pair
+names a usage value holds depend on that value and the kind of reference the
+check names, not on the declaration being judged, so reading them per pair
 reads them across the product of the two — 1207 names against 72,077 attributes
 over DocBook-XSL, which is 98% of what that stage spent. Build the index once
 with `indexed` and ask it for the declaration's name. The selector named
@@ -483,7 +483,7 @@ Cross-file rule — `src/resources/checks/corpus/<name>.yaml`:
 ```yaml
 declaration: <XPath selecting declared nodes that carry an @name>
 usage: <XPath selecting the used names, across the whole corpus>
-reference: "<optional substring template; {name} stands for the @name>"
+reference: <optional call|variable — the kind of reference to read>
 scoped: <optional true>
 reachable: <optional true>
 severity: warning|error
@@ -491,8 +491,12 @@ message: <one sentence>
 ```
 
 Without `reference`, a `declaration` is a defect when its `@name` matches no
-`usage` value by exact identity. With `reference`, the match is by substring:
-plain (defect when the string occurs nowhere, counting the declaration's own
+`usage` value by exact identity. With `reference`, every `usage` value is lexed
+as XPath and the `@name` is looked for among the names its tokens reference: a
+`call` is a name opening a bracket or standing behind a `#`, a `variable` a name
+standing behind a `$`. So a name inside a string literal or a comment references
+nothing, and a gap in front of the bracket hides nothing (#498). The match is
+plain (a defect when nothing references the name, counting the declaration's own
 body), `reachable: true` (follows the call graph — a defect when referenced yet
 never reached from outside every declaration body), or `scoped: true` (counts
 usage only within the declaration's subtree, or an importing file). Because usage

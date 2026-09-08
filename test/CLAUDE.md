@@ -768,7 +768,11 @@ lines it caps every other file at (#825).
 
 `insists(xpath)` — whether fontoxpath refuses an expression over its own strictness rather than over
 anything malformed in it: a `namespace::` axis, ExprWhitespace around an axis separator,
-ExprWhitespace inside a node test (#615, #639). It is the account that replaced the respelling
+ExprWhitespace inside a node test, and ExprWhitespace behind the `$` of a variable reference
+(#615, #639, #498) — that last class arbitrated rather than assumed, SaxonJ-HE 12.9 answering
+`select="$ spaced"` in a 2.0 sheet where xsltproc refuses it, XPath 1.0 making
+`VariableReference` a single ExprToken and 2.0 two terminals a gap may stand between. It is the
+account that replaced the respelling
 retry #738 deleted, and it is a test-side module because a run has no use for it — nothing in `src/`
 asks what one engine insists on. Read off the token stream, which is what tells the axis of
 `1-namespace::x` from the one name of `a-namespace::x`, the lexer having already decided which a `-`

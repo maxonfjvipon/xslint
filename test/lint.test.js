@@ -92,8 +92,15 @@ describe('lint (programmatic API)', function() {
         [source('fix/variable-or-param-with-select-spelled-oddly.xsl')],
         {stable: true},
       ).map((defect) => defect.name),
-      ['not-using-output', 'unused-function-template-parameter'].concat(
-        Array(6).fill('variable-or-param-with-select-and-content'),
+      [
+        'not-using-output',
+        'unused-function-template-parameter',
+        'variable-or-param-with-select-and-content',
+      ].concat(
+        Array(5).fill([
+          'unused-variable',
+          'variable-or-param-with-select-and-content',
+        ]).flat(),
       ),
     )
   })

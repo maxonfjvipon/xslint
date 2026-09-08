@@ -73,6 +73,22 @@ const DROPPED = [
 ]
 
 /**
+ * Expressions whose gap stands between a `$` and the name it makes a variable
+ * reference of, each paired with where that reference sits. XPath 2.0 spells
+ * the two as separate terminals and SaxonJ-HE 12.9 evaluates every one of
+ * these, where 1.0 makes `VariableReference` a single ExprToken, the reading
+ * xsltproc holds every version to (#498).
+ * @type {Array.<Array.<string>>}
+ */
+const BOUND = [
+  ['$ spaced', 'standing on its own'],
+  ['concat(\'a\', $ buried)', 'buried in a call'],
+  ['$ thrice + $ thrice + $ thrice', 'three of them in one expression'],
+  ['$(: c :)tight', 'behind a comment rather than a gap'],
+  ['$\n wrapped', 'behind the newline a wrapped attribute puts there'],
+]
+
+/**
  * Expressions whose gap is one of the characters JavaScript counts as
  * whitespace and XML's `S` production does not, each paired with the gap and
  * the place it sits in. ExprWhitespace is those four characters, so a gap
@@ -149,6 +165,15 @@ describe('strictness', function() {
       )
     })
   })
+  BOUND.forEach(function([xpath, where]) {
+    it(`names the gap behind a dollar ${where}`, function() {
+      assert.ok(
+        insists(xpath),
+        `${xpath} is not accounted for, though XPath 2.0 spells whitespace ` +
+          'between a variable reference\'s two terminals',
+      )
+    })
+  })
   ALIEN.forEach(function([xpath, gap]) {
     it(`cannot name ${gap}`, function() {
       assert.ok(
@@ -191,9 +216,18 @@ describe('strictness', function() {
         'engine allows and the class must leave alone',
     )
   })
+  it('cannot read the engine as taking a gap behind a dollar', function() {
+    assert.deepEqual(
+      BOUND.filter(([xpath]) => compiles(xpath))
+        .map(([xpath, where]) => `${xpath} (${where})`),
+      [],
+      'the engine takes one of these as it stands, so the class excuses a ' +
+        'refusal nobody makes and would leave a real one unaccounted for',
+    )
+  })
   it('cannot name a spelling that is not XPath at all', function() {
     assert.deepEqual(
-      SPACED.concat(DROPPED)
+      SPACED.concat(DROPPED, BOUND)
         .filter(([xpath]) => parsed(xpath, '3.0').fault !== '')
         .map(([xpath, where]) => `${xpath} (${where})`),
       [],
