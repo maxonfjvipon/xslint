@@ -627,10 +627,10 @@ went green. A table with its ratchet also came to 31 lines where the cap left 13
 gate is also what brought `xml:space` into
 `SHADOWLESS`, `ancestor::*[@xml:space][1]` being a bare clause the negated half never read.
 
-A third group wanted the attribute's **value** rather than its writer, and that is the rest of
-#851. Four version gates climbed to the nearest element declaring one and then read `@version`
-for the value, so a shadow `_version` answered the presence test #849 had just given them and
-gave `number(...)` nothing: `NaN` clears no floor, so `empty-variable`,
+A third group wanted the attribute's **value** rather than its writer, and that is the rest
+of #851. Four version gates climbed to the nearest element declaring one and then read
+`@version` for the value, so a shadow `_version` answered the presence test #849 had just given
+them and gave `number(...)` nothing: `NaN` clears no floor, so `empty-variable`,
 `function-use-in-xslt-1`, `modern-construct-in-xslt-1` and
 `with-param-use-in-invalid-parent-node` all went quiet over a module Saxon compiles. Beside
 them, `importsOf` tested `hasAttribute('href')`, so a shadow href built no edge and left that
