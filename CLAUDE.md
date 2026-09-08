@@ -39,6 +39,7 @@ npx mocha test/xslint.deep.test.js --timeout 10000   # one test file
 npx mocha test/xslint.deep.test.js --grep sentence   # tests matching a pattern
 npx grunt docs                                       # regenerate the docs/ site
 npx grunt checks                                     # rebuild src/resources/checks.json
+npx grunt readme                                     # restate the figures README.md reads off the tree
 npm run coverage                                     # 100% branch gate (CI)
 ```
 
@@ -750,7 +751,9 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   fix tier touches the wiring and the docs — not the motive.
 - **Docs sync.** A behavior change must also update `README.md` (user-facing:
   usage and the flags themselves, never the checks a flag covers), this file
-  (architecture), and the docs site (`npx grunt docs`).
+  (architecture), and the docs site (`npx grunt docs`). What the README states
+  of the tree — what the corpora drew, how many checks a kind holds — is
+  `npx grunt readme`'s to write and `test/readme.test.js`'s to refuse (#896).
 
 ### No maturity flag
 
@@ -1014,6 +1017,7 @@ one of them.
 | `scripts/audit.js` | Judges what `npm audit` read for the nightly job: an advisory, a clean tree, or a registry that answered nothing |
 | `scripts/budget.js` | Judges what a corpus cost the nightly tier against its budget, from both sides |
 | `scripts/snapshot.js` | Judges what a corpus drew against the report committed beside it, and rewrites that report on `--write` |
+| `scripts/readme.js` | The figures `README.md` states of the tree, off the corpus reports and `checks.json`, written by `npx grunt readme` |
 | `test/conformance.test.js` | Enforces naming, motives, selector hygiene, the retirement of the `mature` flag, the suite's own shape, and the length a guide states of the file the line cap is lifted off |
 | `test/guides.js` | The guides as data: the chain a turn loads on its way to one file, what that chain may cost, and how a claim standing in one is read |
 | `test/guides.test.js` | The guides themselves: a bar on what a chain of them costs a turn, the index held to the tree from both sides, and the counts a guide states of a list in the code |
@@ -1028,3 +1032,4 @@ one of them.
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
 | `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with; every version the README pins of its own release reached by a rewrite of the `up` job |
 | `test/manifest.test.js` | What `package.json` declares, held to what a grunt wrapper runs, what this repository's own JavaScript imports, and the coordinates it states of itself |
+| `test/readme.test.js` | Every figure the README states, held to the tree, found exactly once, and naming a check that still exists |

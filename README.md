@@ -72,12 +72,17 @@ Browse the full [check catalog](https://xslint.github.io/xslint/).
 Pointed at core stylesheets from the three most widely-used XSLT projects —
 [DocBook-XSL](https://github.com/docbook/xslt10-stylesheets) (1.0),
 [TEI](https://github.com/TEIC/Stylesheets) (2.0), and
-[DITA-OT](https://github.com/dita-ot/dita-ot) (1.0/2.0), 70 files in all —
-xslint surfaced **1,974 findings across 22 different checks, with no false
-positives from its validators**: 106 `xsl:choose` blocks with no
-`xsl:otherwise`, 67 unused named templates, 40 stylesheet functions never
-called, and more. Real stylistic and logical findings in code that has shipped
-for decades.
+[DITA-OT](https://github.com/dita-ot/dita-ot) (1.0/2.0) — xslint surfaced
+**10,488 findings across 43 different checks in 867 stylesheets, with no false
+positives from its validators**: 3,300 pieces of literal text outside
+`xsl:text`, 639 `xsl:choose` blocks with no `xsl:otherwise`, and 586 template
+and function parameters nothing reads. Real stylistic and logical findings in
+code that has shipped for decades.
+
+Every figure above is read off the reports committed under
+`test/resources/corpora/`, which a nightly job re-lints at the pinned commits
+and diffs line for line — so a number here is one the tree still draws, and
+the build fails while it is not.
 
 ## Installation
 
@@ -373,9 +378,11 @@ Linters:
   (`redundant-import`).
   Lint the whole project at once so these checks can see every caller and every
   imported module.
-- **Formatting** checks read each XPath expression as a stream of tokens and
-  flag stylistic noise — currently redundant whitespace (a doubled space, or a
-  space leading or trailing the expression).
+- **Formatting** checks are written in code rather than as a declarative
+  selector — their YAML tunes only `severity` and `message`. Most read the
+  parse tree of one expression; the rest read the document or the import
+  graph. The kind holds 24 checks today, and the [check catalog][checks]
+  teaches every one of them.
 
 Every check that reads an expression reads it from an XPath or pattern attribute
 of an XSLT element (`select`, `test`, `match`, …) or from an attribute value
@@ -433,9 +440,9 @@ before sending us your pull request please make sure all your tests pass:
 npm test
 ```
 
-Most of those seconds go to the three `*.deep.test.js` files, which run the
+Most of those seconds go to the `*.deep.test.js` files, which run the
 command-line tool in a child process. While you are still working, run the rest
-of the suite on its own — it finishes in about a second:
+of the suite on its own — it holds most of the tests and starts no process:
 
 ```bash
 npm run fast

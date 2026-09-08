@@ -58,6 +58,32 @@ calls the script and still times with the clock a tick is written in; `test/budg
 runs the file the way the shell does, since the exit code is the whole of what arms the gate and a
 verdict returned to nobody leaves the tier as unable to fail as #785 found it.
 
+## `scripts/readme.js`
+
+Reads the figures `README.md` states of this repository off the tree that answers them: what the
+three committed corpus reports drew, and how many checks a kind of `checks.json` holds. It is
+`snapshot.js`'s shape one document over — the same reports, asked what they *found* rather than
+whether they changed — but it takes the `checks` target's tier rather than snapshot's, since the
+thing being kept current is a hand-written file and not a generated one. So `npx grunt readme` is
+the rewrite and `test/readme.test.js` is the refusal; there is no `--write`, no exit code, and so
+no deep test needing a child process to read one. Release-time stamping was the other candidate
+and is the wrong tier: `up.yml` rewrites the `xslint@` pins that way and should keep them, but a
+figure refreshed only at a release stands wrong for the whole cycle behind it, which is the
+interval these rotted in — 1,974 findings against 10,488, 22 checks against 43, 70 files against
+867, and one check overstated by two and a half, all four of them under eighteen green jobs
+(#896).
+
+`FIGURES` is the table, each row a pattern and the number the tree reads: the prose is the anchor
+and the digits the capture, so rewording a sentence around a figure reddens where reflowing its
+paragraph does not, every gap in an anchor reading as the line break a wrap may have put there.
+`NAMED` is the three rows that count one check apiece, keyed by the check's own name so the gate
+can hold each to a check `checks.json` still holds — a renamed one otherwise counting nothing and
+reading as a check that has stopped firing. What no generator can write is the half #780 was
+about: the sentence claiming the Formatting kind reads each expression as a stream of tokens,
+which is the shape those checks were migrated *off* through Phase 4 of #644, so a reader who
+trusted it went looking for the wrong thing. That one is prose, corrected by hand; only its count
+belongs here.
+
 ## `scripts/snapshot.js`
 
 Judges what linting a corpus *drew* against the report committed beside it, which is the same tier

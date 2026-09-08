@@ -9,6 +9,30 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Read the figures `README.md` states of this repository off the tree that
+  answers them, rather than off a hand that restated them at a landing. Four
+  numbers in one sentence stood between two-fold and twelve-fold understated —
+  1,974 findings against the 10,488 the committed corpus reports hold, 22
+  checks against 43, and 70 files against the 867 they name — while the one
+  qualitative clause among them, *no false positives from its validators*,
+  stayed true, which is the worst arrangement available: a reader who checks
+  the one falsifiable claim finds it holds. Two more figures sat in the same
+  blind spot, a count of the deep test files and a promise about how long the
+  fast half takes, and both are gone rather than corrected, a figure nothing
+  measures being prose. `npx grunt readme` writes the rest off the corpus
+  reports and `checks.json`, and the suite refuses the file while they
+  disagree (#896).
+
+- Say what a Formatting check is rather than what one was. The README
+  described the kind as reading each XPath expression as a stream of tokens
+  and flagging redundant whitespace — one check out of the two dozen the
+  directory holds, and the shape the rest were migrated off through Phase 4 of
+  the parser work, so a reader who trusted the sentence went looking for the
+  wrong thing. The kind is a check whose detection is written in code rather
+  than as a declarative selector, its YAML tuning only `severity` and
+  `message`. The enumeration is gone and the count is read off the tree
+  (#780).
+
 - Hold every coordinate this repository states of itself to the one its
   manifest declares — the npm name and the repository URL, each read by the
   one pattern out of the field that declares it and out of every tracked

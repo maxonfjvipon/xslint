@@ -50,6 +50,13 @@ module.exports = function(grunt) {
     grunt.log.writeln(require('./scripts/generate-checks').generate())
   })
   grunt.registerTask(
+    'readme', 'Restate the figures the README reads off the tree',
+    function() {
+      const readme = require('./scripts/readme')
+      grunt.log.writeln(readme.generate(readme.README))
+    },
+  )
+  grunt.registerTask(
     'fast', 'Lint, then run every test that starts no process',
     ['eslint', 'mochacli:fast'],
   )
