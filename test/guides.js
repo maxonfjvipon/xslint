@@ -100,7 +100,7 @@ const NEARBY = 80
  * than one of ours: Claude Code warns past 150,000 characters of them. What
  * arrives against it is a chain and not a pair — the root guide, and the
  * guide of every directory down to the file a turn touches, each injected
- * once — and the dearest reads 139,731, which is 0.93 (#750, #660, #825).
+ * once — and the dearest reads 136,527, which is 0.91 (#750, #660, #825).
  * @type {number}
  */
 const LOADED = 150000
@@ -211,7 +211,7 @@ const DERIVED = [
         '+which is (0[.]\\d\\d)',
       'g',
     ),
-    carriers: ['test/CLAUDE.md', 'test/guides.js'],
+    carriers: ['test/guides.test.js', 'test/guides.js'],
     truth: () => [thousands(dearest()), (dearest() / LOADED).toFixed(2)],
   },
   {
@@ -223,19 +223,19 @@ const DERIVED = [
   },
   {
     claim: new RegExp('([\\d,]*\\d) for `src/linters/CLAUDE[.]md`', 'g'),
-    carriers: ['test/CLAUDE.md'],
+    carriers: ['test/guides.test.js'],
     truth: () => [thousands(allowed('src/linters/CLAUDE.md'))],
   },
   {
     claim: new RegExp(`holds the root itself to ([\\d,]*\\d)`, 'g'),
-    carriers: ['test/CLAUDE.md'],
+    carriers: ['test/guides.test.js'],
     truth: () => [thousands(LOADED - (dearest() - sized('CLAUDE.md')))],
   },
   {
     claim: new RegExp(
       `What that leaves is ([\\d,]*\\d) characters of${GAP}+headroom`, 'g',
     ),
-    carriers: ['test/CLAUDE.md'],
+    carriers: ['test/guides.test.js'],
     truth: () => [thousands(LOADED - ROOM - dearest())],
   },
   {
@@ -244,7 +244,7 @@ const DERIVED = [
         '`test/`',
       'g',
     ),
-    carriers: ['test/CLAUDE.md'],
+    carriers: ['test/guides.test.js'],
     truth: () => [thousands(CARRIED - loaded('test/CLAUDE.md'))],
   },
 ]

@@ -155,10 +155,11 @@ accepts, use `--stable`:
 xslint --stable
 ```
 
-It withholds the nine checks in the *nursery* — the ones whose [check
-page][checks] names the open issue keeping them there — and reports the other
-fifty-nine. A check leaves the nursery when its issue closes, so the tier only
-ever grows, and grading one by name in `.xslint.yml` re-admits it.
+It withholds the checks in the *nursery* — the ones whose [check
+page][checks] names the open issue keeping them there. No check is in it
+today, so the flag reports all sixty-eight; a check joins when an issue
+reports it wrong about code a processor accepts, leaves when that issue
+closes, and grading one by name in `.xslint.yml` re-admits it meanwhile.
 
 ## Configuration
 
