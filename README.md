@@ -156,10 +156,11 @@ xslint --stable
 ```
 
 It withholds the checks in the *nursery* — the ones whose [check
-page][checks] names the open issue keeping them there. No check is in it
-today, so the flag reports all sixty-eight; a check joins when an issue
-reports it wrong about code a processor accepts, leaves when that issue
-closes, and grading one by name in `.xslint.yml` re-admits it meanwhile.
+page][checks] names the open issue keeping them there. The nursery holds no
+checks today, so `--stable` reports all sixty-eight checks; a check joins
+when an issue reports it wrong about code a processor accepts, leaves when
+that issue closes, and grading one by name in `.xslint.yml` re-admits it
+meanwhile.
 
 ## Configuration
 

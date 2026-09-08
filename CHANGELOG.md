@@ -9,6 +9,20 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Hold the two counts a `--stable` run turns on to `checks.json`, which three
+  documents state and nothing read. The gate that counts a list a document
+  names reached list constants alone and spelled numbers only as far as
+  twenty-three, so the size of the nursery and of the tier beside it were
+  prose: the release notes said fifty-four of them when this was filed, then
+  fifty-seven, then fifty-nine, against a tree that reports sixty-eight — a
+  live figure restated by hand at three landings and wrong after every one.
+  `LENGTHS` derives both off one walk of the checks now, `checks` joins the
+  nouns a claim may be spelled with, and the vocabulary reaches ninety-nine
+  with `no` standing for the none an empty nursery has. Nursing one check
+  reddens both documents that count it, and the entry that drifted states no
+  live figure at all — a changelog records what a change did, where what a
+  tier reports is a fact about the tree (#895).
+
 - Read a version and a name through their shadow spelling, so an XSLT 3.0
   stylesheet writing `_version` is judged the way one writing `version` is.
   Any attribute of an XSLT element has that second spelling, whose value is an
@@ -134,11 +148,11 @@ publication date only; detailed notes begin with the Unreleased section.
   `normalized` of our own, so one tree held both answers to the same
   question. `text-outside-xsl-text` leaves the nursery (#881).
 
-- Add `--stable` (and `stable:` in `.xslint.yml`), which reports only the
-  fifty-nine checks no open issue reports wrong about code a processor
-  accepts. The other nine carry a `nursery:` mark naming that issue, so the
-  tier is read off the checks themselves and grows as tickets close; grading a
-  check verbatim in the config re-admits it, where a glob does not (#581).
+- Add `--stable` (and `stable:` in `.xslint.yml`), which withholds the
+  *nursery* — the checks an open issue reports wrong about code a processor
+  accepts. Each carries a `nursery:` mark naming that issue, so the tier is
+  read off the checks themselves and grows as tickets close; grading a check
+  verbatim in the config re-admits it, where a glob does not (#581).
 
 - **Breaking:** rename `null-output-from-stylesheet` to
   `template-writes-nothing`, and ask it of every template rather than only a
