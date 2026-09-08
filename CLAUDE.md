@@ -918,12 +918,12 @@ the 22 and could only ever ask whether the string appeared.
   validator and linter.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
   **nursery**, the checks an open issue reports wrong about code a processor
-  accepts — none of the sixty-eight since #851, which is the release bar and
-  no claim that a check is finished. Each says so itself, in a `nursery:` mark
-  opening with that issue's number, so the tier is derived from the tree and
-  empties as tickets close. A check the config grades **verbatim** is
-  re-admitted; a glob grades and vouches for nothing, and the run says which
-  check it leaves withheld (#581, #851).
+  accepts. The nursery holds no checks since #851, so `--stable` reports
+  sixty-eight checks — the release bar, and no claim that a check is finished.
+  Each says so itself, in a `nursery:` mark opening with that issue's number,
+  so the tier is derived from the tree and empties as tickets close. A check
+  the config grades **verbatim** is re-admitted; a glob grades and vouches for
+  nothing, and the run says which check it leaves withheld (#581, #851).
 - **Config**: `.xslint.yml` (found by walking up, or `--config <path>`) can turn
   rules `off`, re-grade severity, `exclude:` file globs, and default
   `max-warnings`/`log-level`/`quiet`/`stable`. Flags override the file overrides

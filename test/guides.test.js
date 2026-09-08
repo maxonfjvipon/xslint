@@ -29,7 +29,7 @@
  * the top of `src/grammar.js` and `src/syntax.js` — 24,681 characters. A turn
  * touching `test/` ran it close ever since, until #811's wildcard phase moved
  * this guide's nightly-tier note into `test/budget.test.js`; the dearest
- * reads 136,527, which is 0.91, and is `src/linters/`'s once more. What
+ * reads 136,565, which is 0.91, and is `src/linters/`'s once more. What
  * answers a chain reaching the bar is that move again, a module's derivation
  * into the file-header note of the module itself, and never a bar widened to
  * fit what has grown past it: a docblock holds five lines of description
@@ -37,7 +37,7 @@
  * one instead. A `CEILING` of half the bar stood beside it until it was seen
  * to be a gate no tree could fail: the root stands in every chain, so the
  * chain holding it above weighs each other guide against the bar less what
- * stands over it — 26,530 for `src/linters/CLAUDE.md`, where half of the bar
+ * stands over it — 26,492 for `src/linters/CLAUDE.md`, where half of the bar
  * is 75,000 — and holds the root itself to 85,086, a number derived from the
  * dearest chain rather than chosen. A gate no tree can fail is removed and
  * not kept (#750, #660). All four of those figures — the chain, its ratio,
@@ -99,7 +99,7 @@
  * cap allows and its note is 190 more, and `max-lines` counts comments, so a
  * section can outgrow the file it is about and relief has a floor — what
  * answers that one is the note being cut, not moved. What that leaves is
- * 3,473 characters of headroom, off a chain that is `src/linters/`'s own once
+ * 3,435 characters of headroom, off a chain that is `src/linters/`'s own once
  * more rather than `test/CLAUDE.md`'s: the merge behind #811's bracket phase
  * breached the bar by 844 with neither branch having crossed it alone, and
  * the root's `src/xslint.js` derivation moved into `src/CLAUDE.md` to answer
@@ -112,7 +112,7 @@
  * again, on the dearest note that guide holds rather than on the newest, or a
  * change's own note where that change fires it: the nightly tier's derivation
  * stands at the top of `test/budget.test.js` since, and this one at the top
- * of this file behind it, 7,024 characters out of every chain through `test/`
+ * of this file behind it, 6,986 characters out of every chain through `test/`
  * to date and none out of the dearest without them. The relief that bought
  * lasted one ticket again, and the third breach is the plainest of the three:
  * #884 gave `scripts/` a third script and so the root a third index row, and
@@ -162,6 +162,22 @@
  * written on rather than an exception to it: `MEASURED` names this file now,
  * so a figure is read where its prose went, a claim relocated out of every
  * document the gate reads being a claim kept nowhere (#851).
+ *
+ * What that gate reached was list constants alone, and the vocabulary it
+ * read them with stopped at twenty-three, so the two numbers a user acts
+ * on — how many checks `--stable` withholds and how many it reports —
+ * answered to nothing. The `--stable` entry in the release notes is where
+ * that shows: it said fifty-four when #895 was filed, fifty-seven and then
+ * fifty-nine as marks came off, and sixty-eight was the truth by the time
+ * anything asked, a live figure restated by hand at three landings and
+ * wrong after every one. `LENGTHS` holds the nursery and the tier now,
+ * both off one walk of `checks.json`, `checks` is among the nouns a claim
+ * may be spelled with, and the vocabulary reaches ninety-nine with `no`
+ * standing for the none an empty nursery has, which is the claim the tree
+ * makes today and one no number word spells. The entry itself states no
+ * count at all: what a change did is a record, where what a tier reports
+ * is a fact about the tree, and the second belongs to the documents a gate
+ * reads (#895).
  */
 
 const {allFilesFrom} = require('../src/helpers')
@@ -232,6 +248,26 @@ const elements = function(check) {
 }
 
 /**
+ * Every check a run reads, whatever kind declares it: the four kinds are one
+ * namespace to a user, and a claim about how many there are is a claim about
+ * all of them.
+ * @return {Array.<object>} - The checks, as `checks.json` holds them
+ */
+const checked = function() {
+  return Object.values(kinds).flatMap((kind) => Object.values(kind))
+}
+
+/**
+ * The checks the nursery holds, which is the ones carrying a `nursery:` mark
+ * naming the open issue that reports them wrong. The tier is the rest, so both
+ * counts follow from the same walk and neither can be stated apart from it.
+ * @return {Array.<object>} - The checks `--stable` withholds
+ */
+const nursed = function() {
+  return checked().filter((check) => Object.hasOwn(check, 'nursery'))
+}
+
+/**
  * Each list as a document may name it, paired with what it holds — a constant
  * of ours, or a check, whose list is the elements its own selector names.
  * `NAMED` is `ATTRIBUTES` as a set, so it counts to the same and answers to a
@@ -244,22 +280,47 @@ const LENGTHS = new Map([
   ['NAMED', ATTRIBUTES.length],
   ['UNINDEXED', unindexed()],
   ['missing-or-empty-name', elements('missing-or-empty-name')],
+  ['nursery', nursed().length],
+  ['stable', checked().length - nursed().length],
 ])
 
 /**
- * The words a count is spelled with, paired with what each counts to. A `Map`
- * and not an object, because membership is the whole of what is asked of it and
- * `'constructor' in {}` answers true: an object judges a claim about "the
- * constructor names" against `Object` itself rather than reading past a word
- * that is no number, so the prototype chain decides what the prose is about.
- * @type {Map.<string, number>}
+ * The words a unit and a teen are spelled with, in the order they count.
+ * @type {Array.<string>}
  */
-const NUMBERS = new Map([
+const UNITS = [
   'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
-  'seventeen', 'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two',
-  'twenty-three',
-].map((word, index) => [word, index + 1]))
+  'seventeen', 'eighteen', 'nineteen',
+]
+
+/**
+ * The words a ten is spelled with, which is where the vocabulary used to stop
+ * short: it reached twenty-three, so the one claim in the tree counting checks
+ * rather than list entries — sixty-eight of them — was read as a word that is
+ * no number and asserted against nothing (#895).
+ * @type {Array.<string>}
+ */
+const TENS = [
+  'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety',
+]
+
+/**
+ * The words a count is spelled with, paired with what each counts to, from
+ * none to ninety-nine. A `Map` and not an object, because membership is the
+ * whole of what is asked of it and `'constructor' in {}` answers true: an
+ * object reads the prototype chain where the prose says "the constructor
+ * names", so a word that is no number decides what a claim is about.
+ * @type {Map.<string, number>}
+ */
+const NUMBERS = new Map([['no', 0]].concat(
+  UNITS.map((word, index) => [word, index + 1]),
+  TENS.flatMap((ten, index) => [[ten, (index + 2) * 10]].concat(
+    UNITS.slice(0, 9).map(
+      (unit, over) => [`${ten}-${unit}`, (index + 2) * 10 + over + 1],
+    ),
+  )),
+))
 
 describe('guides', function() {
   it('walks the tree for the guides standing beside the code', function() {
@@ -403,7 +464,7 @@ describe('guides', function() {
     )
     const counted = new RegExp(
       `([a-z-]+)${GAP}+` +
-        '(?:names|attributes|descendant scans|selectors|XSLT elements)',
+        '(?:names|attributes|descendant scans|selectors|XSLT elements|checks)',
     )
     for (const file of DOCUMENTS) {
       for (const [, list, after] of worded(file).matchAll(near)) {
