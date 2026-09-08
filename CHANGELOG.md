@@ -9,6 +9,20 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Hold every coordinate this repository states of itself to the one its
+  manifest declares — the npm name and the repository URL, each read by the
+  one pattern out of the field that declares it and out of every tracked
+  file, so a coordinate stated anywhere and the coordinate declared are the
+  same string or the suite is red. Nothing but a reader had ever compared
+  them, and the URI binding our own `xslint:` prefix still named the owner
+  the move to the `xslint` organisation left behind, one owner out of date
+  with the three fields beside it in the manifest. The scope stays the
+  personal one, decided rather than defaulted into: what a rename buys is
+  discoverability, and what it costs is a coordinate frozen across two
+  published integrations and an action, a deprecated alias standing behind
+  it, and a second name for a tool everything else already calls xslint
+  (#337).
+
 - Hold the two counts a `--stable` run turns on to `checks.json`, which three
   documents state and nothing read. The gate that counts a list a document
   names reached list constants alone and spelled numbers only as far as
