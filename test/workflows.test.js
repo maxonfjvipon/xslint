@@ -70,11 +70,33 @@
  * matter, since a third nightly copying the block would pool with
  * whichever it copied and neither the scope gates above nor a yamllint
  * pass says a word about it.
+ *
+ * The `up` job is a reporter of the same kind, one document out. It rewrites
+ * the version references in `README.md` on every tag, and it anchored on the
+ * npm coordinate alone: `xslint@[0-9.]+` reaches the two `@maxonfjvipon/xslint`
+ * pins and walks past the pre-commit `rev:`, which carries no `xslint@` in
+ * front of it. So the job rewrote two of three and reported success — `sed`
+ * says nothing about matching nothing, and `create-pull-request` opens nothing
+ * where the tree is unchanged, which is a pin the job cannot reach reading
+ * exactly like a pin already current. The `rev:` stood at `0.0.11` for three
+ * releases and 735 commits, and anybody who copied that block got July's hook
+ * (#897).
+ *
+ * The gate asks four questions of the job, and none of them is the tag — which
+ * a checkout fetching one commit does not carry, and which a release would
+ * redden master over until the job's own pull request merged. Every version the
+ * README states of this repository agrees with every other, every one of them
+ * is reached by a pattern the job actually spells, no pattern reaches a version
+ * somebody else releases, and no pattern reaches nothing at all. `FOREIGN` is
+ * the table holding the last two apart, and the fifth question is asked of it:
+ * red from both sides like every exemption list here, an entry naming a version
+ * the README has stopped stating fails as loudly as an unreached pin.
  */
 
 const {allFilesFrom, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
+const fs = require('fs')
 
 /**
  * Where the workflows stand. Every convention here is machine-enforced, and
@@ -169,6 +191,77 @@ const JOBS = allFilesFrom(WORKFLOWS)
  */
 const LABELS = JOBS.flatMap((job) => job.labels)
 
+/**
+ * The README as a reader copies from it, line by line. It is the one document
+ * in the tree that states this repository's released version rather than
+ * reading it, so nothing but a rewrite keeps it current (#897).
+ * @type {Array.<string>}
+ */
+const README = fs.readFileSync(
+  path.resolve(__dirname, '..', 'README.md'), 'utf-8',
+).split('\n')
+
+/**
+ * Every three-part version the README states, beside the line carrying it.
+ * @type {Array.<{line: string, where: number, version: string}>}
+ */
+const STATED = README.flatMap(
+  (line, index) => Array.from(line.matchAll(/[0-9]+[.][0-9]+[.][0-9]+/g))
+    .map((found) => ({line: line, where: index + 1, version: found[0]})),
+)
+
+/**
+ * Each version the README states of somebody else, against what it is instead.
+ * A version of ours and one of theirs are the same three numbers and only the
+ * sentence around them says which, so an entry is a pattern over the line.
+ * Every other version there is a pin of this repository's own release.
+ * @type {{[carrying: string]: string}}
+ */
+const FOREIGN = {
+  'xslint/xslint-action@': 'the tag of the action, cut beside this repository',
+  'SARIF': 'the version of the log format, which OASIS sets and not us',
+  '^0[.]0[.]0$': 'the placeholder src/version.js carries until a release',
+}
+
+/**
+ * Whether a line of the README carries a version somebody else releases.
+ * @param {string} line - One line of it
+ * @return {boolean} - Whether an entry of `FOREIGN` claims that line
+ */
+const foreign = function(line) {
+  return Object.keys(FOREIGN).some((one) => new RegExp(one).test(line))
+}
+
+/**
+ * Every version the README pins of this repository's own release, which are
+ * the ones a rewrite has to reach and which have to agree with each other.
+ * @type {Array.<{line: string, where: number, version: string}>}
+ */
+const PINNED = STATED.filter((one) => !foreign(one.line))
+
+/**
+ * The job that rewrites those pins on every tag, parsed.
+ * @type {object}
+ */
+const UP = yaml.parsedFromFile(path.join(WORKFLOWS, 'up.yml'))
+
+/**
+ * The left side of every substitution that job spends on the README, which is
+ * the whole of what decides which pin it reaches. `sed` is silent about
+ * matching nothing, so a pin no pattern covers and a pin already current read
+ * the same from outside: the job rewrote two of three references for three
+ * releases and reported success each time (#897).
+ * @type {Array.<RegExp>}
+ */
+const REWRITES = (UP.jobs.up.steps ?? [])
+  .map((step) => step.run ?? '')
+  .flatMap(
+    (script) => Array.from(
+      script.matchAll(new RegExp('sed -E -i "s/([^/]+)/', 'g')),
+    ),
+  )
+  .map((found) => new RegExp(found[1]))
+
 describe('workflows', function() {
   it('grants every job the scope its own steps write with', function() {
     assert.deepEqual(
@@ -225,4 +318,53 @@ describe('workflows', function() {
         'stands for nothing and this list reads like a rule in force',
     )
   })
+
+  it('states one version wherever the README names its own release',
+    function() {
+      assert.deepStrictEqual(
+        PINNED.filter((one) => one.version !== PINNED[0].version)
+          .map((one) => `README.md:${one.where}`),
+        [],
+        'cannot pin two versions of one repository in one README, a reader copying whichever block they land on (#897)',
+      )
+    })
+
+  it('rewrites every version the README pins of its own release', function() {
+    assert.deepStrictEqual(
+      PINNED.filter((one) => !REWRITES.some((rule) => rule.test(one.line)))
+        .map((one) => `README.md:${one.where}`),
+      [],
+      'cannot leave a version pin outside every pattern the up job rewrites with, a pin nothing reaches going stale in silence (#897)',
+    )
+  })
+
+  it('rewrites nothing the README states of somebody else', function() {
+    assert.deepStrictEqual(
+      STATED.filter((one) => foreign(one.line))
+        .filter((one) => REWRITES.some((rule) => rule.test(one.line)))
+        .map((one) => `README.md:${one.where}`),
+      [],
+      'cannot rewrite a version this repository does not release to a tag of ours (#897)',
+    )
+  })
+
+  it('holds no rewrite the README has stopped carrying', function() {
+    assert.deepStrictEqual(
+      REWRITES.filter((rule) => !README.some((line) => rule.test(line)))
+        .map((rule) => rule.source),
+      [],
+      'cannot keep a pattern no line of the README answers, a rewrite matching nothing being the failure it was written to prevent (#897)',
+    )
+  })
+
+  it('names among the foreign versions only ones the README states',
+    function() {
+      assert.deepStrictEqual(
+        Object.keys(FOREIGN).filter(
+          (one) => !STATED.some((other) => new RegExp(one).test(other.line)),
+        ),
+        [],
+        'cannot exempt a version the README has stopped stating (#897)',
+      )
+    })
 })

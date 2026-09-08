@@ -392,11 +392,11 @@ cheap ones would each pay for the size one of them needs; the nightly tier would
 budget overrun, a night late and over a corpus chosen for something else. So
 `test/import-linter.test.js` times the one check over a chain of 200 stylesheets and again over 800,
 and fails past a growth of **8** — the geometric middle of the 4.0 a single pass predicts and the
-16.0 a walk-per-edge predicts, and of the two measured distributions with it, 4.34 to 4.66 over
-eight runs of the test against 14.58 to 16.22 over eight more. Putting the walk back fails it three
-times of three, at 15.10, 15.26 and 15.32. It costs a third of a second, timing one stage over a
-chain it builds itself rather than a whole pipeline over a corpus every stage reads — which is what
-lets it ask about a corpus five times the size of the one the first tier can afford.
+16.0 a walk-per-edge predicts, and of the two distributions the capped clock measures, 4.23 to 4.46
+over eight runs of the test against a walk put back failing it three times of three, at 14.75, 14.78
+and 15.10 (#906). It costs a third of a second, timing one stage over a chain it builds itself
+rather than a whole pipeline over a corpus every stage reads — which is what lets it ask about a
+corpus five times the size of the one the first tier can afford.
 
 What a window holds is sixty-four passes over the short chain and sixteen over the long one, not one
 apiece, because a reading has to clear the clock's own granularity and one platform's is coarse.
@@ -408,7 +408,7 @@ dropped non-finite reading does not cover. Sixty-four of them make each window s
 milliseconds, four ticks even there, and the fine-clocked platforms gain by it too: a window of one
 pass needed a whole measurement discarded in front of it, the way the speed gate does, and read the
 growth 3.10 to 4.56 over ten runs even so, where a window of sixty-four is warm by its own fourth
-pass and reads 4.34 to 4.66 with no warm-up at all.
+pass and reads the band above with no warm-up at all.
 
 The second tier is the nightly one, and its derivation stands at the top of `test/budget.test.js`
 rather than here, the tables it is under being that file's: `corpora.yml` times DocBook-XSL, TEI
@@ -669,13 +669,13 @@ that 0.87 of the bar while a turn touching `src/linters/` was loading 157,504 an
 two dearest notes moved one step further down, out of `src/CLAUDE.md` and into the top of
 `src/grammar.js` and `src/syntax.js` — 24,681 characters. A turn touching `test/` ran it close
 ever since, until #811's wildcard phase moved this guide's nightly-tier note into
-`test/budget.test.js`; the dearest reads 139,907, which is 0.93, and is `src/linters/`'s once
+`test/budget.test.js`; the dearest reads 139,731, which is 0.93, and is `src/linters/`'s once
 more. What answers a chain reaching the bar is that move again, a module's derivation into the
 file-header note of the module itself, and never a bar widened to fit what has grown past it: a
 docblock holds five lines of description since #832, so prose that has outgrown a guide does not
 simply move into one instead. A `CEILING` of half the bar stood beside it until it
 was seen to be a gate no tree could fail: the root stands in every chain, so the chain holding it
-above weighs each other guide against the bar less what stands over it — 23,150 for
+above weighs each other guide against the bar less what stands over it — 23,326 for
 `src/linters/CLAUDE.md`, where half of the bar is 75,000 — and holds the root itself to 80,546, a
 number derived from the dearest chain rather than chosen. A gate no tree can fail is removed and
 not kept (#750, #660). All four of those figures — the chain, its ratio, and the two allowances —
@@ -723,7 +723,7 @@ times in one. Ten notes moved to make the bar quiet — `xpath-linter.js`, `root
 one. An eleventh was refused by the valve rather than chosen against: `test/conformance.test.js` stands
 at 992 lines and its note is 150 more, and `max-lines` counts comments, so a section can outgrow the
 file it is about and relief has a floor — what answers that one is the note being cut, not moved.
-What that leaves is 93 characters of headroom, off a chain that is `src/linters/`'s own once
+What that leaves is 269 characters of headroom, off a chain that is `src/linters/`'s own once
 more rather than this file's: the merge behind #811's bracket phase breached the bar by 844 with
 neither branch having crossed it alone, and the root's `src/xslint.js` derivation moved into
 `src/CLAUDE.md` to answer it — 2,147 characters out of every chain but the three standing under
@@ -732,8 +732,8 @@ and the merge behind the wildcard phase breached it again by 162 with neither br
 crossed it alone either — the same arithmetic a second time, which is what a shared budget does
 to two branches that each measured themselves alone. What answered it was the move again, on the
 dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 49
-characters out of every chain through `test/` and none out of the one that is dearest without it.
+fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 245
+characters out of every chain through `test/` to date and none out of the dearest without it.
 The relief that bought lasted one ticket again, and the third breach is the plainest of the
 three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands
 in every chain, so 141 characters written there put `src/linters/`'s chain 34 past a bar the dearest

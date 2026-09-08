@@ -727,20 +727,20 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   helps, how to migrate by hand. It must not name a fix tier, mention
   `--fix`/`--fix-suggestions`/report-only, or describe scanner or parser
   internals: whether a check is fixable is data — the `fix:` its own YAML
-  declares, which `README.md` lists and the docs site renders as a badge — never
-  motive prose (#604, #899). Keep the prose true to the selector: do not write "such as"
-  for a closed list, call any `/`-prefixed match the "root template", or claim a
-  hand-fix is loss-less when it shifts template priority or a value's type. Only
-  motive existence is machine-checked today; turning the example pair into a
-  `conformance.test.js` gate is pending the motive cleanup (#552).
+  declares, which the docs site renders as a badge — never motive prose
+  (#604, #899, #898). Keep the prose true to the selector: do not write "such
+  as" for a closed list, call any `/`-prefixed match the "root template", or
+  claim a hand-fix is loss-less when it shifts template priority or a value's
+  type. Only motive existence is machine-checked today; turning the example
+  pair into a `conformance.test.js` gate is pending the motive cleanup (#552).
 - **Motive sync.** When you touch what a check flags — its severity, its version
   scope, the constructs it leaves alone — re-read its motive and update it. The
   motive is where the end user learns the construct's harm and hand-fix; a
   behavior change with an untouched motive is presumed a bug. A change to only the
-  fix tier touches the wiring, `README.md`, and docs — not the motive.
+  fix tier touches the wiring and the docs — not the motive.
 - **Docs sync.** A behavior change must also update `README.md` (user-facing:
-  usage, the `--fix`/suggestion lists), this file (architecture), and the docs
-  site (`npx grunt docs`).
+  usage and the flags themselves, never the checks a flag covers), this file
+  (architecture), and the docs site (`npx grunt docs`).
 
 ### No maturity flag
 
@@ -920,41 +920,35 @@ the 22 and could only ever ask whether the string appeared.
 - **Inline directives**: XML comments `xslint-disable-next-line`,
   `xslint-disable-line`, `xslint-disable-file`, each with optional space-separated
   rule names (`src/directives.js`); an unused directive is reported.
-- **Fix tiers**: a defect is fixable when it carries
-  `fix: {line, col, value, replacement, suggestion?}`. A code-based linter never
-  sees an expression the XPath validator refused, since #750 stages every one of
-  them over what the validator *kept*, so there is nothing there to fix and
-  nothing to report either. `defect` held a gate of its own from #636 to then —
-  it took the whole corpus, reported what it found in refused text and withheld
-  only the fix, because rewriting text no processor parses is how
-  `select="child::"` became `select=""` — and the exclusion made that condition
-  one no call could fail. A declarative fix never passes
-  through `defect` — `src/linters/xpath-linter.js` attaches it from
-  `src/fixers.js` — so
-  it is gated there instead, against the same `expressionsOf` derivation: no fix
-  is offered on an attribute whose expression the grammar refuses, nor on the
+- **Fix tiers**: a defect is fixable when it carries `fix: {line, col, value,
+  replacement, suggestion?}`. A code-based linter never sees an expression the
+  XPath validator refused, since #750 stages every one of them over what the
+  validator *kept*, so there is nothing there to fix and nothing to report
+  either. A declarative fix never passes through `defect` —
+  `src/linters/xpath-linter.js` attaches it from `src/fixers.js` — so it is
+  gated there instead, against the same `expressionsOf` derivation: no fix is
+  offered on an attribute whose expression the grammar refuses, nor on the
   element carrying it, since a fixer names the attribute it wants inside itself
   where no gate can see it (#651). That gate stays, because a declarative
-  selector reads the document rather than the expressions the validator kept, and
-  so can still match an attribute holding text nobody parses. Withholding every
-  fix on such an element is
-  deliberate over-reach: an element holding an expression no processor parses is
-  not worth tidying. What "refuses" means moved underneath every gate at
-  #732 without any of them changing: `isValid` — in `src/syntax.js` since #577,
-  where the parse it reads is kept — asks `src/grammar.js` at the
-  version in force rather than fontoxpath at 3.1, so a `cast as` in a
-  `version="1.0"` sheet now withholds the fix it used to be offered. Which tier a
-  fix lands in is its check's `fix:` and not the linter's to say (see **Check
-  formats**): `--fix` applies the safe ones, `--fix-suggestions` those too, and
-  `--fix-dry-run` writes nothing.
+  selector reads the document rather than the expressions the validator kept,
+  and so can still match an attribute holding text nobody parses. Withholding
+  every fix on such an element is deliberate over-reach: an element holding an
+  expression no processor parses is not worth tidying. What "refuses" means
+  moved underneath every gate at #732 without any of them changing: `isValid` —
+  in `src/syntax.js` since #577, where the parse it reads is kept — asks
+  `src/grammar.js` at the version in force rather than fontoxpath at 3.1, so a
+  `cast as` in a `version="1.0"` sheet now withholds the fix it used to be
+  offered. Which tier a fix lands in is its check's `fix:` and not the linter's
+  to say (see **Check formats**): `--fix` applies the safe ones,
+  `--fix-suggestions` those too, and `--fix-dry-run` writes nothing.
   `src/fixer.js` locates each fix by decode-walking the raw source, so a `>`
-  written `&gt;` (#518) or a span shifted by an earlier entity (#525) still fixes,
-  and an already-edited span is skipped rather than corrupted. Two fixes whose
-  spans overlap cannot both be applied in one run (#571): the left-most wins,
-  the wider of two that start together wins, and the loser is announced and left
-  in the report for a later run — so a `.fixed.xsl` fixture may still hold a
-  defect, and every one of them is parsed back by `test/fixer.deep.test.js` to
-  prove no run left broken XML behind.
+  written `&gt;` (#518) or a span shifted by an earlier entity (#525) still
+  fixes, and an already-edited span is skipped rather than corrupted. Two fixes
+  whose spans overlap cannot both be applied in one run (#571): the left-most
+  wins, the wider of two that start together wins, and the loser is announced
+  and left in the report for a later run — so a `.fixed.xsl` fixture may still
+  hold a defect, and every one of them is parsed back by
+  `test/fixer.deep.test.js` to prove no run left broken XML behind.
 
 ## Key files
 
@@ -1016,9 +1010,9 @@ one of them.
 | `test/strictness.js` | `insists` — whether fontoxpath refuses an expression over its own strictness rather than over anything malformed in it |
 | `test/helpers.js` | The only door to a child process in the suite: `runXslint`, `xslintStatus`, `xslintStreams`, `xslintUnread`, `xcopped`, `walkedWith` |
 | `test/predicates.test.js` | The vocabulary held from both sides: every spelling it answers, and every one it refuses beside what puts that out of reach |
-| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers |
+| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers, and the README held to naming none of them |
 | `test/packs.js` | The one harness every pack directory is read through |
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
-| `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with |
+| `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with; every version the README pins of its own release reached by a rewrite of the `up` job |
 | `test/manifest.test.js` | What `package.json` declares, held to what a grunt wrapper runs and what this repository's own JavaScript imports |

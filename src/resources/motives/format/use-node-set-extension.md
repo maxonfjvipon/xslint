@@ -11,6 +11,13 @@ and the prefix a stylesheet binds to either is the author's to choose, so
 call. A `node-set` of your own, in a namespace of your own, is a different
 function and does whatever you wrote it to do.
 
+Unwrapping by hand is not always a matter of deleting the call and its
+brackets. The argument sat inside them, so one binding looser than a step
+still needs them wherever an expression stands around the call:
+`exsl:node-set($x | $y)/title` is `($x | $y)/title`, where dropping both
+brackets writes `$x | $y/title` — a union of `$x` with the titles under `$y`,
+which is another sequence altogether.
+
 Incorrect:
 
 ```xsl
