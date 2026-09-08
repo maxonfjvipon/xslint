@@ -52,23 +52,31 @@
  * off the **tokens**, and one lexing answers all four: a literal, an
  * unclosed literal and a comment are one token apiece and hold no name to
  * find, a gap is `TRIVIA` and read over, and the `#` stands where the
- * bracket does. A check names a **kind** of reference rather than a
- * template — `call` or `variable`, what `REFERENCES` holds — and one this
- * linter cannot read is refused by `kinded` where the template's shape
- * used to be, since an index built for it holds no name at all and would
- * report every declaration in the corpus dead. `test/conformance.test.js`
- * holds every check's `reference` to that list, so the refusal stands in
- * front of a check nobody has written yet. The kinds cost one pass between
- * them: `collected` builds every one of them out of a single lexing of the
- * usage set, a pass per kind lexing DocBook-XSL's 72,077 attributes twice
- * over, and a value holding none of `$`, `(` or `#` is never lexed at all,
- * most of an attribute set being no expression. A value holding a brace is
- * lexed twice, though, once whole and once for each expression its braces
- * enclose: an attribute the usage selector chooses may be an XPath
- * expression or an attribute value template, and `//@*` cannot tell which.
- * The two readings differ exactly where a brace stands inside a string
- * literal, which is where reading the whole value as one expression loses
- * a reference — DocBook-XSL's `text="{$text} see '{$see}'"`, TEI's
+ * bracket does. Which question is asked of a token first is part of the
+ * reading: `$pick(41)` is XPath 3.1's dynamic call, a call on the
+ * *variable*, so a name a `$` stands in front of is a variable however
+ * tight the bracket behind it is. Asking the bracket first answered one
+ * token two ways at once — the variable it uses reported dead, and a
+ * function of that name marked used — so the `$` is asked before the
+ * bracket, and asked of both spellings, `$my:pick(` lexing as one
+ * `user_function` token where `$pick(` lexes as a name. A check names a
+ * **kind** of reference rather than a template — `call` or `variable`,
+ * what `REFERENCES` holds — and one this linter cannot read is refused by
+ * `kinded` where the template's shape used to be, since an index built for
+ * it holds no name at all and would report every declaration in the corpus
+ * dead. `test/conformance.test.js` holds every check's `reference` to that
+ * list, so the refusal stands in front of a check nobody has written yet.
+ * The kinds cost one pass between them: `collected` builds every one of
+ * them out of a single lexing of the usage set, a pass per kind lexing
+ * DocBook-XSL's 72,077 attributes twice over, and a value holding none of
+ * `$`, `(` or `#` is never lexed at all, most of an attribute set being no
+ * expression. A value holding a brace is lexed twice, though, once whole
+ * and once for each expression its braces enclose: an attribute the usage
+ * selector chooses may be an XPath expression or an attribute value
+ * template, and `//@*` cannot tell which. The two readings differ exactly
+ * where a brace stands inside a string literal, which is where reading the
+ * whole value as one expression loses a reference — DocBook-XSL's
+ * `text="{$text} see '{$see}'"`, TEI's
  * `context="tei:param[parent::tei:model/@behaviour='{$B}']"` and DITA-OT's
  * `src="url('{concat($artworkPrefix, $image)}')"` each name a variable a
  * processor evaluates and the tokens of the value do not. So the names of
@@ -187,11 +195,12 @@ const inScope = function(check, declaration, usage) {
 const REFERENCES = ['call', 'variable']
 
 /**
- * The kinds a called name is lexed as — a prefixed name tight against its
- * bracket is one token of its own, and every other spelling is a plain name.
+ * The kinds a name is lexed as, called or carried by a `$` alike — a prefixed
+ * name tight against its bracket is one token of its own, and every other
+ * spelling is a plain name.
  * @type {Array.<string>}
  */
-const CALLED = [TOKENS.NAME, TOKENS.USER_FUNCTION]
+const NAMES = [TOKENS.NAME, TOKENS.USER_FUNCTION]
 
 /**
  * What may stand behind a called name: the bracket a call opens with, or the
@@ -246,9 +255,9 @@ const readings = function(value) {
 /**
  * Every name a usage value references, by the kind of reference it is: a name
  * a `$` stands in front of is a variable, one a bracket or a `#` stands behind
- * is a call. Read off the tokens and never off the text, so a gap XPath lets
- * stand inside a call is read over and a name inside a string literal or a
- * comment is no reference at all, those being one token apiece (#498).
+ * is a call, and the `$` is asked first. Read off the tokens and never off the
+ * text, so a gap inside a call is read over and a name inside a string literal
+ * or a comment is no reference at all, those being one token apiece (#498).
  * @param {string} value - Usage value
  * @return {Map.<string, Set.<string>>} - The names it references, by kind
  */
@@ -258,12 +267,12 @@ const referencing = function(value) {
     const tokens = tokenized(reading)
       .filter(({type}) => !TRIVIA.includes(type))
     tokens.forEach((token, at) => {
-      if (CALLED.includes(token.type) && at + 1 < tokens.length &&
-        OPENS.includes(tokens[at + 1].type)) {
-        names.get('call').add(token.value)
-      } else if (token.type === TOKENS.NAME && at > 0 &&
+      if (NAMES.includes(token.type) && at > 0 &&
         tokens[at - 1].type === TOKENS.DOLLAR) {
         names.get('variable').add(token.value)
+      } else if (NAMES.includes(token.type) && at + 1 < tokens.length &&
+        OPENS.includes(tokens[at + 1].type)) {
+        names.get('call').add(token.value)
       }
     })
   }

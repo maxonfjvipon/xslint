@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-function
+found:
+  amount: 1
+  positions: [ [ 0, 3, 3 ] ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:my="urn:my" version="3.0">
+      <xsl:function name="my:pick">
+        <xsl:sequence select="1"/>
+      </xsl:function>
+      <xsl:variable name="my:pick" select="abs#1"/>
+      <xsl:template match="/">
+        <xsl:value-of select="$my:pick(41)"/>
+      </xsl:template>
+    </xsl:stylesheet>

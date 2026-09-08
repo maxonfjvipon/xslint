@@ -40,16 +40,18 @@ publication date only; detailed notes begin with the Unreleased section.
   `my:pick#1` called nothing either; and a mark inside a string literal or a
   comment is a name no processor evaluates, so `concat('$quoted', 'x')` and
   `1 (: $commented :)` each kept a genuinely unused declaration alive. One
-  lexing answers all four, and a check names a **kind** of reference rather
-  than a substring template — `reference: call` or `reference: variable` —
-  `kinded` refusing a word this linter reads no kind for, since an index built
-  for one holds no name at all and would report every declaration in the
-  corpus dead. A value holding a brace is read twice, once whole and once for
-  each expression its braces enclose, an attribute the usage selector chooses
-  being an XPath expression or an attribute value template with nothing to
-  tell which. Three checks leave the nursery, and the corpora gain one report:
-  TEI's `$q`, named nowhere but inside the string literals of a `replace()`
-  (#498).
+  lexing answers all four, and the `$` is asked before the bracket,
+  `$pick(41)` being XPath 3.1's dynamic call on the variable rather than a
+  call to a function of that name. A check names a **kind** of reference
+  rather than a substring template — `reference: call` or
+  `reference: variable` — `kinded` refusing a word this linter reads no kind
+  for, since an index built for one holds no name at all and would report
+  every declaration in the corpus dead. A value holding a brace is read twice,
+  once whole and once for each expression its braces enclose, an attribute the
+  usage selector chooses being an XPath expression or an attribute value
+  template with nothing to tell which. Three checks leave the nursery, and the
+  corpora gain one report: TEI's `$q`, named nowhere but inside the string
+  literals of a `replace()` (#498).
 
 - Judge a stylesheet embedded below the document element, which
   `missing-version-in-stylesheet` reached with neither of its arms. An
