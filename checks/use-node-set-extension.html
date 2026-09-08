@@ -128,6 +128,12 @@ and the prefix a stylesheet binds to either is the author&#39;s to choose, so
 <code>exsl:node-set</code>, <code>msxsl:node-set</code> and <code>common:node-set</code> can all be the same
 call. A <code>node-set</code> of your own, in a namespace of your own, is a different
 function and does whatever you wrote it to do.</p>
+<p>Unwrapping by hand is not always a matter of deleting the call and its
+brackets. The argument sat inside them, so one binding looser than a step
+still needs them wherever an expression stands around the call:
+<code>exsl:node-set($x | $y)/title</code> is <code>($x | $y)/title</code>, where dropping both
+brackets writes <code>$x | $y/title</code> — a union of <code>$x</code> with the titles under <code>$y</code>,
+which is another sequence altogether.</p>
 <p>Incorrect:</p>
 <pre><code class="language-xsl">&lt;xsl:stylesheet version=&quot;2.0&quot;
   xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
