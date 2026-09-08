@@ -723,20 +723,20 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   helps, how to migrate by hand. It must not name a fix tier, mention
   `--fix`/`--fix-suggestions`/report-only, or describe scanner or parser
   internals: whether a check is fixable is data — the `fix:` its own YAML
-  declares, which `README.md` lists and the docs site renders as a badge — never
-  motive prose (#604, #899). Keep the prose true to the selector: do not write "such as"
-  for a closed list, call any `/`-prefixed match the "root template", or claim a
-  hand-fix is loss-less when it shifts template priority or a value's type. Only
-  motive existence is machine-checked today; turning the example pair into a
-  `conformance.test.js` gate is pending the motive cleanup (#552).
+  declares, which the docs site renders as a badge — never motive prose
+  (#604, #899, #898). Keep the prose true to the selector: do not write "such
+  as" for a closed list, call any `/`-prefixed match the "root template", or
+  claim a hand-fix is loss-less when it shifts template priority or a value's
+  type. Only motive existence is machine-checked today; turning the example
+  pair into a `conformance.test.js` gate is pending the motive cleanup (#552).
 - **Motive sync.** When you touch what a check flags — its severity, its version
   scope, the constructs it leaves alone — re-read its motive and update it. The
   motive is where the end user learns the construct's harm and hand-fix; a
   behavior change with an untouched motive is presumed a bug. A change to only the
-  fix tier touches the wiring, `README.md`, and docs — not the motive.
+  fix tier touches the wiring and the docs — not the motive.
 - **Docs sync.** A behavior change must also update `README.md` (user-facing:
-  usage, the `--fix`/suggestion lists), this file (architecture), and the docs
-  site (`npx grunt docs`).
+  usage and the flags themselves, never the checks a flag covers), this file
+  (architecture), and the docs site (`npx grunt docs`).
 
 ### No maturity flag
 
@@ -1006,7 +1006,7 @@ one of them.
 | `test/strictness.js` | `insists` — whether fontoxpath refuses an expression over its own strictness rather than over anything malformed in it |
 | `test/helpers.js` | The only door to a child process in the suite: `runXslint`, `xslintStatus`, `xslintStreams`, `xslintUnread`, `xcopped`, `walkedWith` |
 | `test/predicates.test.js` | The vocabulary held from both sides: every spelling it answers, and every one it refuses beside what puts that out of reach |
-| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers |
+| `test/tiers.test.js` | The tiers a check declares, held to the ones a run over `test/resources/fix` offers, and the README held to naming none of them |
 | `test/packs.js` | The one harness every pack directory is read through |
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
