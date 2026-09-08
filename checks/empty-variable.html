@@ -112,12 +112,9 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:variable[not(@select) and not(@_select) and not(node()) and not((@as or @_as) and (if (/xsl:stylesheet | /xsl:transform) then /*/@version else /*/@xsl:version) = ('2.0', '3.0'))]</code>
+    <span class="severity-warning">warning</span>
+    <code class="xpath">//xsl:variable[not(@select) and not(@_select) and not(node()) and not((@as or @_as) and xslint:version(.) &gt;= 2.0)]</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #851, whose version gate reads @version as text and so never sees the shadow spelling of it.</p>
   <div class="check-content">
 <h1>Empty <code>xsl:variable</code></h1>
 <p>An <code>xsl:variable</code> gets its value either from a <code>@select</code> attribute or from the
@@ -125,7 +122,7 @@ sequence constructor inside it. With neither, the variable binds to an empty
 string — almost always a mistake, and at best a confusing way to declare an
 empty value. State the value explicitly or drop the declaration.</p>
 <p>A variable that declares a type with <code>@as</code> is a different case and is not
-flagged <strong>in XSLT 2.0 or 3.0</strong>: <code>&lt;xsl:variable name=&quot;acc&quot; as=&quot;node()*&quot;/&gt;</code> binds
+flagged <strong>from XSLT 2.0 on</strong>: <code>&lt;xsl:variable name=&quot;acc&quot; as=&quot;node()*&quot;/&gt;</code> binds
 the empty <em>sequence</em> of that type on purpose — a deliberate empty accumulator,
 not an accidental empty string. The exclusion is version-scoped: in XSLT 1.0
 <code>@as</code> is not a recognized attribute, so it is inert and the variable still binds

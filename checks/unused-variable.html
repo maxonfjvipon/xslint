@@ -112,13 +112,10 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
+    <span class="severity-warning">warning</span>
     <code class="xpath">declaration: //xsl:variable[@name]</code>
     <code class="xpath">usage: //@*</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #498, whose reference detection matches a name as a substring rather than as a token.</p>
   <div class="check-content">
 <h1>Unused variable</h1>
 <p>A variable whose <code>$name</code> is referenced nowhere it is in scope — within its own

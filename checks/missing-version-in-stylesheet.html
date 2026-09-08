@@ -112,15 +112,12 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span> <span class="nursery">nursery</span>
-    <code class="xpath">/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))]</code>
+    <span class="severity-warning">warning</span> <span class="fix-suggestion">suggested fix</span>
+    <code class="xpath">/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))] | /*[not(self::xsl:*)]//(xsl:stylesheet | xsl:transform | xsl:package)[not(@version) and not(@_version)]</code>
   </div>
   <p class="fix-note"><code>--fix-suggestions</code> rewrites this one, and a plain
   <code>--fix</code> leaves it alone: the correction changes what the
   stylesheet does, or is one of several the check would accept.</p>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #705, which never judges a stylesheet embedded below the document element.</p>
   <div class="check-content">
 <h1>Missing version in stylesheet</h1>
 <p>Every stylesheet declares the XSLT version it conforms to, and one that declares
@@ -163,6 +160,24 @@ document is a transformation, which is the one thing it is not.</p>
 <pre><code class="language-xsl">&lt;html xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; xsl:version=&quot;2.0&quot;&gt;
     &lt;body&gt;&lt;xsl:value-of select=&quot;/page/title&quot;/&gt;&lt;/body&gt;
 &lt;/html&gt;
+</code></pre>
+<p>Incorrect:</p>
+<pre><code class="language-xsl">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;#style&quot;?&gt;
+&lt;page&gt;
+    &lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; id=&quot;style&quot;&gt;
+        &lt;xsl:template match=&quot;/&quot;&gt;&lt;xsl:value-of select=&quot;/page/title&quot;/&gt;&lt;/xsl:template&gt;
+    &lt;/xsl:stylesheet&gt;
+    &lt;title&gt;Report&lt;/title&gt;
+&lt;/page&gt;
+</code></pre>
+<p>Correct:</p>
+<pre><code class="language-xsl">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;#style&quot;?&gt;
+&lt;page&gt;
+    &lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; id=&quot;style&quot; version=&quot;1.0&quot;&gt;
+        &lt;xsl:template match=&quot;/&quot;&gt;&lt;xsl:value-of select=&quot;/page/title&quot;/&gt;&lt;/xsl:template&gt;
+    &lt;/xsl:stylesheet&gt;
+    &lt;title&gt;Report&lt;/title&gt;
+&lt;/page&gt;
 </code></pre>
 
   </div>

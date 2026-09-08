@@ -112,13 +112,10 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-warning">warning</span> <span class="nursery">nursery</span>
+    <span class="severity-warning">warning</span>
     <code class="xpath">declaration: //xsl:template[not(@match) and not(@_match)][@name][not(ends-with(@name, ':initial-template'))]</code>
-    <code class="xpath">usage: //xsl:call-template/@name</code>
+    <code class="xpath">usage: //xsl:call-template/@name | //xsl:call-template/@_name</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #498, whose reference detection matches a name as a substring rather than as a token.</p>
   <div class="check-content">
 <h1>Unused named template</h1>
 <p>A named template that is never invoked via <code>xsl:call-template</code> is dead code
@@ -127,6 +124,12 @@ and should be removed.</p>
 a template invoked from another file (via <code>xsl:import</code> or <code>xsl:include</code>) is
 not reported. The template is flagged only when no file calls it. Lint the
 whole project at once so the check can see every caller.</p>
+<p>A caller may spell the name as a shadow attribute — <code>_name=&quot;{&#39;footer&#39;}&quot;</code>,
+the form XSLT 3.0 allows for any attribute of its own elements — and that
+counts as a call. Where one of them names a template only a run can work out,
+any template in the project could be the one it calls, so nothing here is
+called dead and the check stays quiet over all of them until that name is
+readable where it stands.</p>
 <p>A template named <code>initial-template</code> in the XSLT namespace is the entry point
 XSLT 3.0 defines, invoked by the processor rather than by any
 <code>xsl:call-template</code>, so no stylesheet ever names it and it is left alone. The

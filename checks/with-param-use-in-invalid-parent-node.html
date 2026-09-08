@@ -112,12 +112,9 @@
 <body>
   <a class="back" href="../index.html">← all checks</a>
   <div class="meta">
-    <span class="severity-error">error</span> <span class="nursery">nursery</span>
-    <code class="xpath">//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][number(ancestor-or-self::*[(self::xsl:* and (@version or @_version)) or (not(self::xsl:*) and @xsl:version)][1] ! (if (self::xsl:*) then @version else @xsl:version)) &lt; 2]</code>
+    <span class="severity-error">error</span>
+    <code class="xpath">//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][xslint:version(.) &lt; 2.0]</code>
   </div>
-  <p class="nursery-note"><code>--stable</code> withholds this
-  check while an open issue reports it wrong about code a processor accepts:
-  #851, whose version gate reads @version as text and so goes quiet below a shadow spelling of it.</p>
   <div class="check-content">
 <h1>Using <code>xsl:with-param</code> in invalid parent node</h1>
 <p><code>xsl:with-param</code> supplies a value to the template a caller is invoking, so it
