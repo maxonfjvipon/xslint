@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-variable
+found:
+  amount: 0
+  positions: [ ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+      <xsl:template match="/">
+        <xsl:variable name="see" select="'a'"/>
+        <xsl:variable name="prefix" select="'b'"/>
+        <xsl:variable name="image" select="'c'"/>
+        <indexitem text="see '{$see}'"/>
+        <artwork src="url('{concat($prefix, $image)}')"/>
+      </xsl:template>
+    </xsl:stylesheet>

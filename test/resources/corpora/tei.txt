@@ -5461,6 +5461,7 @@ tools/timing-profile.xsl:52:13 not-creating-attribute-correctly
 txt/tei-to-text.xsl:2:1 missing-id-in-stylesheet
 txt/tei-to-text.xsl:2:1 too-many-templates
 txt/tei-to-text.xsl:131:4 short-names
+txt/tei-to-text.xsl:131:4 unused-variable
 verbatimxml/teitoverbatim.xsl:2:1 missing-id-in-stylesheet
 verbatimxml/teitoverbatim.xsl:2:1 not-using-output
 wordpress/wordpress-to-tei.xsl:2:1 missing-id-in-stylesheet
