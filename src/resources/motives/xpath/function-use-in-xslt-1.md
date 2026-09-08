@@ -1,11 +1,14 @@
 # Function use in a pre-2.0 stylesheet
 
 `xsl:function` was introduced in XSLT 2.0. A stylesheet that declares
-`version="1.0"` (or `1.1`, or no version at all) but defines an `xsl:function`
-cannot run on a 1.0 processor — the instruction does not exist there. The check
-fires whenever the root — `xsl:stylesheet` or `xsl:transform` — is not
-`version="2.0"` or `version="3.0"`, so an unversioned or `1.1` stylesheet is
-caught too, not only an explicit `1.0`.
+`version="1.0"` (or `1.1`) but defines an `xsl:function` cannot run on a 1.0
+processor — the instruction does not exist there. What decides it is the
+version in force over the function, which is the nearest one declared above it
+rather than the root's: XSLT lets `version` sit on any of its own elements and
+`xsl:version` on any literal result element, each setting the version of
+everything beneath. So a `1.1` stylesheet is caught as plainly as an explicit
+`1.0`, and one declaring no version at all names no processor to be wrong
+about — a missing version is its own fault, reported as itself.
 
 Either replace the function with an `xsl:template` that has a `name`, or raise
 the stylesheet to `version="2.0"`.

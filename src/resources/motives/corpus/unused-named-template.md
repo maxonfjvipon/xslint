@@ -8,6 +8,13 @@ a template invoked from another file (via `xsl:import` or `xsl:include`) is
 not reported. The template is flagged only when no file calls it. Lint the
 whole project at once so the check can see every caller.
 
+A caller may spell the name as a shadow attribute — `_name="{'footer'}"`,
+the form XSLT 3.0 allows for any attribute of its own elements — and that
+counts as a call. Where one of them names a template only a run can work out,
+any template in the project could be the one it calls, so nothing here is
+called dead and the check stays quiet over all of them until that name is
+readable where it stands.
+
 A template named `initial-template` in the XSLT namespace is the entry point
 XSLT 3.0 defines, invoked by the processor rather than by any
 `xsl:call-template`, so no stylesheet ever names it and it is left alone. The

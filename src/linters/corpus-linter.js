@@ -78,6 +78,7 @@
  */
 
 const {chosen, valued} = require('../selectors')
+const {staticOf} = require('../expressions')
 const {TOKENS, TRIVIA, tokenized} = require('../tokens')
 const {kinds} = require('../resources/checks.json')
 const {logger} = require('../logger')
@@ -128,19 +129,25 @@ const within = function(declaration, attribute) {
 }
 
 /**
- * Defects of a check that matches a declaration's name against the usage
- * values by exact identity: the name a `usage` selector yields is the name of
- * a declaration that is used. A named template defined in one file but invoked
- * from another is thus not flagged.
+ * Defects of a check matching a declaration's name against the usage values by
+ * exact identity, so a template invoked from another file is not flagged. A
+ * shadow usage is an attribute value template and read through `staticOf`; one
+ * no static reading places names any declaration there is, so it silences the
+ * check rather than calling every one of them dead (#851).
  * @param {Array.<{file: string, xsl: Document}>} corpus - Parsed stylesheets
  * @param {object} check - The check to apply
  * @return {Array.<object>} - Defects found
  */
 const byName = function(corpus, check) {
-  const used = new Set(corpus.flatMap(({xsl}) => valued(xsl, check.usage)))
-  return corpus.flatMap(({file, xsl}) => chosen(xsl, check.declaration)
-    .filter((node) => !used.has(node.getAttribute('name')))
-    .map((node) => defect(check, file, node)))
+  const used = new Set(corpus.flatMap(({xsl}) => valued(xsl, check.usage))
+    .map((value) => staticOf(value)))
+  let defects = []
+  if (!used.has('')) {
+    defects = corpus.flatMap(({file, xsl}) => chosen(xsl, check.declaration)
+      .filter((node) => !used.has(node.getAttribute('name')))
+      .map((node) => defect(check, file, node)))
+  }
+  return defects
 }
 
 /**

@@ -84,6 +84,11 @@ const SPLIT = [
     locals: [EVERY],
     tail: kinds.xpath['text-outside-xsl-text'].xpath.slice('//xsl:*'.length),
   },
+  {
+    xpath: kinds.xpath['function-use-in-xslt-1'].xpath,
+    locals: ['function'],
+    tail: '[xslint:version(.) < 2.0]',
+  },
 ]
 
 /**
@@ -126,7 +131,7 @@ const ATTRIBUTED = [
  * Selectors standing below an anchor: whatever a selector spells in front of
  * its descendant step, which the engine answers once for the document where
  * the sweep behind it costs a traversal per check. Each carries the anchor,
- * the local names the sweep yields and the tail. The fourth interposes a step,
+ * the local names the sweep yields and the tail. The second interposes a step,
  * so candidates stand below a child of the root (#811).
  * @type {Array.<{xpath: string, anchor: string, locals: Array.<string>,
  *  tail: string}>}
@@ -143,13 +148,6 @@ const ANCHORED = [
     anchor: '(/xsl:stylesheet | /xsl:transform)/*',
     locals: ['function', 'template'],
     tail: '[not(ancestor::xsl:override)]',
-  },
-  {
-    xpath: kinds.xpath['function-use-in-xslt-1'].xpath,
-    anchor: '/*[not((if (self::xsl:stylesheet or self::xsl:transform) then ' +
-      `@version else @xsl:version) = ('2.0', '3.0'))]`,
-    locals: ['function'],
-    tail: '',
   },
   {
     xpath: '/xsl:stylesheet//xsl:variable[@name]',
@@ -362,8 +360,8 @@ const MERGING = xml.parsedFromString(
  * Unions the door is judged on against the engine: the three checks written
  * as one, plus two buckets that interleave, one entered twice under
  * different tails, a branch written twice, one that finds nothing, and a
- * fourth whose 3.0 guard answers nothing. The last three set a wildcard
- * beside a name of its own namespace, which reaches all that name does.
+ * fourth whose version floor answers nothing at 3.0. The last three set a
+ * wildcard beside a name of its own namespace, reaching all that name does.
  * @type {Array.<string>}
  */
 const MERGED = [
@@ -424,17 +422,16 @@ const ANCHORING = xml.parsedFromString(
 )
 
 /**
- * Anchored selectors the door is judged on against the engine: the three
- * checks as written, one whose branches carry an anchor apiece, and one whose
- * anchor names an element the stylesheet does not hold. That last is the
- * assertion the others cannot make — an anchor answering nothing must answer
- * no candidates.
+ * Anchored selectors the door is judged on against the engine: the two checks
+ * as written, one whose branches carry an anchor apiece, and one whose anchor
+ * names an element the stylesheet does not hold. That last is the assertion
+ * the others cannot make — an anchor answering nothing must answer no
+ * candidates.
  * @type {Array.<string>}
  */
 const DESCENDED = [
   kinds.xpath['using-not-outermost-stylesheet'].xpath,
   kinds.xpath['function-template-is-not-child-of-stylesheet'].xpath,
-  kinds.xpath['function-use-in-xslt-1'].xpath,
   '/xsl:stylesheet/*//xsl:function | /xsl:stylesheet//xsl:transform',
   '/xsl:nothing//xsl:template',
 ]
@@ -522,6 +519,7 @@ const CANDIDATES = [
   '(@select)', '((@select))', '(@select and @as)', '(@select or @as)',
   '(count(*) = 1) and (count(a) = 1)', '@select and (@as or @mode)',
   '(@select) and //xsl:text', '(2) and @select', '(@name, @as)',
+  'xslint:version(.) < 2.0',
 ]
 
 /**
@@ -610,7 +608,7 @@ const APART = [
   },
   {
     xpath: kinds.xpath['modern-construct-in-xslt-1'].xpath,
-    why: 'nine named arms, a wildcard, and an anchor over all ten',
+    why: 'nine named arms, a wildcard, and a version guard over all ten',
   },
   {
     xpath: '//(xsl:template[not(contains(@match, ")"))] | xsl:variable)',
@@ -769,17 +767,16 @@ describe('selectors', function() {
   it('serves the named-attribute usage the fourth is written in', function() {
     assert.deepStrictEqual(
       splitOf(kinds.corpus['unused-named-template'].usage),
-      [
-        {
-          names: [{uri: XSLT, local: 'call-template'}],
-          attributes: [{uri: '', local: 'name'}],
-          anchor: '',
-          tail: '',
-          refused: '',
-        },
-      ],
+      ['name', '_name'].map((local) => ({
+        names: [{uri: XSLT, local: 'call-template'}],
+        attributes: [{uri: '', local: local}],
+        anchor: '',
+        tail: '',
+        refused: '',
+      })),
       'the usage selector naming one attribute of one element is not being ' +
-        'split off the engine',
+        'split off the engine, in both the spellings XSLT gives that ' +
+        'attribute: a branch apiece, since the walk holds each by name (#851)',
     )
   })
   UNIONS.forEach((one) => {

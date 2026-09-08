@@ -3,4 +3,4 @@
 ---
 xpath: "(//@version[parent::xsl:*][not(parent::xsl:output)] | //@xsl:version[not(parent::xsl:*)])[not(matches(xslint:normalize-space(.), '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$'))]"
 severity: error
-message: A declared version is not a number, so it names no XSLT version and every version-dependent check falls back to XSLT 1.0 here, the fixes it writes included. Declare it as a decimal, such as 2.0
+message: A declared version is not a number, so it names no XSLT version and no version gate under it clears its floor, leaving every check about a construct a later version introduced quiet rather than guessing. Declare it as a decimal, such as 2.0

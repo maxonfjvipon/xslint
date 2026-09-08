@@ -181,8 +181,9 @@ const CHECKS = [
 /**
  * The checks a stable run withholds, each paired with the open issue reporting
  * it wrong — read off the checks themselves, where a `nursery` mark names that
- * issue, so the tier is the tree's answer rather than a list kept beside it. A
- * whole name and never a substring, which is what `suppress` matches (#581).
+ * issue, so the tier is the tree's answer rather than a list kept beside it,
+ * and holds nothing wherever every such issue is closed. A whole name and
+ * never a substring, which is what `suppress` matches (#581, #851).
  * @type {Map.<string, string>}
  */
 const NURSERY = new Map(
@@ -326,15 +327,15 @@ const ranked = function(one, two) {
  * @param {Array.<{file: string, content: string}>} sources - Raw stylesheets,
  *  each as it was read, a byte order mark it opens with held aside by `parted`
  * @param {{suppress: Array.<string>, overrides: {[check: string]: string},
- *  stable: boolean, admitted: Array.<string>}} options - Substrings to skip,
- *  re-grades, the `NURSERY` gate, and the verbatim names it exempts (#581)
+ *  stable: boolean, admitted: Array.<string>, nursery: Map}} options - Skips,
+ *  re-grades, the tier gate, the names it exempts, and the marks it reads
  * @return {Array.<object>} - The defects that survive suppression
  */
 const lint = function(
   sources,
   {
     suppress = [], overrides = {}, stable = false,
-    admitted = Object.keys(overrides),
+    admitted = Object.keys(overrides), nursery = NURSERY,
   } = {},
 ) {
   const suppressions = validatedSuppressions(suppress)
@@ -377,9 +378,15 @@ const lint = function(
   }
   const gated = new Set()
   if (stable) {
-    for (const name of NURSERY.keys()) {
+    for (const [name, issue] of nursery) {
       if (!admitted.includes(name)) {
         gated.add(name)
+        if (overrides[name]) {
+          logger.warn(
+            `Rule '${name}' stays withheld under the stable tier, ` +
+              `a pattern grading it having named no check: ${issue}`,
+          )
+        }
       }
     }
   }
@@ -441,17 +448,6 @@ const xslint = function(pths, options) {
     content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
   const stable = options.stable ?? config.stable ?? false
-  if (stable) {
-    for (const check of Object.keys(overrides)) {
-      if (NURSERY.has(check) && !admitted.includes(check)) {
-        logger.warn(
-          `Rule '${check}' stays withheld under the stable tier, ` +
-            'a pattern grading it having named no check: ' +
-            `${NURSERY.get(check)}`,
-        )
-      }
-    }
-  }
   let reported = lint(sources, {
     suppress: [...options.suppress, ...disabled],
     overrides: overrides,

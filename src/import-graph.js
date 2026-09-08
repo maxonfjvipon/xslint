@@ -4,6 +4,7 @@
  */
 
 const path = require('path')
+const {staticOf} = require('./expressions')
 
 /**
  * The XSLT namespace, whose `import`/`include` elements pull in other modules.
@@ -23,9 +24,23 @@ const target = function(file, href) {
 }
 
 /**
+ * The module a reference names, or empty where it names none here. `href` is
+ * an attribute of an XSLT element, so `_href` spells it as readily and holds
+ * an attribute value template: a plain value is its own and a braced literal
+ * is what it quotes, while a value a processor works out at run time names
+ * nothing this walk can resolve (#851).
+ * @param {Element} element - An `xsl:import` or `xsl:include`
+ * @return {string} - The href it names, or empty
+ */
+const referenced = function(element) {
+  return element.getAttribute('href') ||
+    staticOf(element.getAttribute('_href') || '')
+}
+
+/**
  * Every `xsl:import`/`xsl:include` in the corpus, each with its declaring
- * file, declaring element, and the path its `@href` resolves to. No file is
- * read. A reference carrying no `@href` yields no import, joining an absent
+ * file, declaring element, and the path its href resolves to. No file is
+ * read. A reference naming no module yields no import, joining an absent
  * href onto a directory having taken the run's report down (#668, #597); each
  * carries the raw text a fix reads its span from (#793).
  * @param {Array.<{file: string, content: string, xsl: Document}>} corpus -
@@ -39,14 +54,15 @@ const importsOf = function(corpus) {
       .filter(
         (element) =>
           element.namespaceURI === XSLT &&
-          (element.localName === 'import' || element.localName === 'include') &&
-          element.hasAttribute('href'),
+          (element.localName === 'import' || element.localName === 'include'),
       )
-      .map((node) => ({
+      .map((node) => ({node: node, href: referenced(node)}))
+      .filter(({href}) => href !== '')
+      .map(({node, href}) => ({
         file: path.normalize(file),
         content: content,
         node: node,
-        to: target(file, node.getAttribute('href')),
+        to: target(file, href),
       })))
 }
 

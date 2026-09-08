@@ -135,7 +135,14 @@ const VERSIONED = {
   selector:
     "CallExpression[callee.name='versionOf'], ObjectPattern > Property[key.name='versionOf']",
   message:
-    "The version in force at a node is derived by climbing to the root, so it is asked once per node — by expressionsOf, which is climbing them anyway — and read off the {node, start, expression, pattern, version} record after that. parseOf asked it in front of the parse memo, so every gathered, textOf, calls and isValid the expression tier issued paid a fresh climb: 950,645 of them over DocBook-XSL, dearer than twenty-one of the twenty-four stages a run is made of (#845). Take found.version, and where a linter holds a node and no record — the DOM tier, which reads a walk rather than an expression — name its file beside src/attributes.js in the group below"
+    "The version in force at a node is derived by climbing to the root, so it is asked once per node — by expressionsOf, which is climbing them anyway — and read off the {node, start, expression, pattern, version} record after that. parseOf asked it in front of the parse memo, so every gathered, textOf, calls and isValid the expression tier issued paid a fresh climb: 950,645 of them over DocBook-XSL, dearer than twenty-one of the twenty-four stages a run is made of (#845). Take found.version, and where a linter holds a node and no record — the DOM tier, which reads a walk rather than an expression — name its file beside src/attributes.js in the group below, where src/xsl-version.js stands too, a module barred from asking the question it answers being a rule about nothing (#851)"
+};
+
+const QUOTED = {
+  selector:
+    "CallExpression[callee.property.name='slice'][arguments.length=2][arguments.0.value=1][arguments.1.operator='-'][arguments.1.argument.value=1]",
+  message:
+    "What a string literal holds is unquoted in src/tokens.js and nowhere else: cutting the delimiters off is half the answer, and the half a respelling drops is the doubling XPath escapes a quote with, so 'it''s' comes back holding two of them (#851). Three modules wanted it — src/syntax.js for a literal of a parse, src/predicates.js for one of a served predicate, src/expressions.js for the whole value of a shadow attribute — which is one answer, not three"
 };
 
 const GRADED = {
@@ -215,7 +222,7 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          VERSIONED, GRADED]
+          VERSIONED, GRADED, QUOTED]
     }
   },
   {
@@ -223,15 +230,15 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          VERSIONED]
+          VERSIONED, QUOTED]
     }
   },
   {
-    files: ["src/attributes.js"],
+    files: ["src/attributes.js", "src/xsl-version.js"],
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          GRADED]
+          GRADED, QUOTED]
     }
   },
   {
@@ -246,7 +253,7 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, VERSIONED,
-          GRADED]
+          GRADED, QUOTED]
     }
   },
   {
