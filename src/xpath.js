@@ -60,7 +60,7 @@ const {numbered} = require('./xsl-version')
  * Namespace URI of the xslint custom XPath functions.
  * @type {string}
  */
-const FUNCTIONS = 'https://github.com/maxonfjvipon/xslint'
+const FUNCTIONS = 'https://github.com/xslint/xslint'
 
 /**
  * Standard prefixes bound in every Xpath expression. When validating, an

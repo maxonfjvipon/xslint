@@ -1027,4 +1027,4 @@ one of them.
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
 | `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with; every version the README pins of its own release reached by a rewrite of the `up` job |
-| `test/manifest.test.js` | What `package.json` declares, held to what a grunt wrapper runs and what this repository's own JavaScript imports |
+| `test/manifest.test.js` | What `package.json` declares, held to what a grunt wrapper runs, what this repository's own JavaScript imports, and the coordinates it states of itself |

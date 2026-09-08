@@ -70,6 +70,24 @@
  * a command some script runs or dead weight — and a sweep gone blind reads
  * exactly like a manifest with nothing left over.
  *
+ * Two further questions are about the manifest's own coordinates rather than
+ * about its dependencies: the npm name and the repository URL. Each is read
+ * twice by a single pattern — once out of the field that declares it and once
+ * out of every file this repository tracks, the generator the site is built
+ * from among them — so a coordinate stated anywhere and the coordinate
+ * declared are the same string or the gate is red, and a sweep gone blind
+ * reads as a tree stating nothing rather than as a tree agreeing. Nothing
+ * but a reader had ever compared the two, and the URI binding our own XPath
+ * prefix was one owner out of date with the three fields beside it, still
+ * naming what the move to the `xslint` organisation left behind. A sibling
+ * never matches — `xslint-lsp` and `xslint-action` are repositories of their
+ * own — which is what the alphabet closing each pattern is for. The npm
+ * scope stays the personal one, decided rather than defaulted into: the
+ * discoverability a rename buys is real, and so is a coordinate frozen
+ * across two published integrations and an action, a deprecated alias
+ * behind it, and a second name for a tool everything else already calls
+ * xslint (#337).
+ *
  * It is a mocha test rather than an ESLint rule because `eslint.config.mjs`
  * stands in ESLint's own `ignores` (#789), so no rule of ours can see the one
  * file whose undeclared imports this is about.
@@ -116,6 +134,25 @@ const UNIMPORTED = {
   'grunt-mocha-cli': 'a task the Gruntfile loads by name',
   'patch-package': 'the postinstall step, run as a command',
 }
+
+/**
+ * The two coordinates this repository states of itself, each beside the
+ * manifest field that declares it. The dot is left out of the second
+ * pattern's closing alphabet, a `.git` suffix naming the same repository.
+ * @type {Array.<{what: string, pattern: RegExp, declares: string}>}
+ */
+const COORDINATES = [
+  {
+    what: 'npm coordinate',
+    pattern: /@[A-Za-z0-9._-]+\/xslint(?![A-Za-z0-9._-])/g,
+    declares: manifest.name,
+  },
+  {
+    what: 'repository URL',
+    pattern: /github\.com\/[A-Za-z0-9._-]+\/xslint(?![A-Za-z0-9_-])/g,
+    declares: manifest.repository.url,
+  },
+]
 
 /**
  * Where a module is named: the argument of a `require` or of a dynamic
@@ -217,6 +254,36 @@ const spelled = function(pairs) {
   return pairs.map((pair) => `${pair.wrapper} runs ${pair.tool}`).sort()
 }
 
+/**
+ * Every file this repository owns, which is where it states a coordinate of
+ * itself. The generated site is not, being built rather than tracked, so the
+ * generator standing here in its place is what a stale install line in front
+ * of a user answers to. This file is among them: a pattern whose own
+ * delimiters are escaped matches nothing it scans.
+ * @return {Array.<string>} - The paths, in no particular order
+ */
+const texts = function() {
+  return ['src', 'test', 'scripts', '.github']
+    .flatMap((dir) => allFilesFrom(path.join(ROOT, dir)))
+    .concat(fs.readdirSync(ROOT, {withFileTypes: true})
+      .filter((entry) => entry.isFile())
+      .map((entry) => path.join(ROOT, entry.name)))
+}
+
+/**
+ * Every distinct coordinate a pattern finds across some contents, sorted, so
+ * that what the tree states and what the manifest declares are compared by
+ * the one reading rather than by two.
+ * @param {RegExp} pattern - The shape a coordinate is written in
+ * @param {Array.<string>} contents - The texts to look through
+ * @return {Array.<string>} - The coordinates, sorted, without repetition
+ */
+const matched = function(pattern, contents) {
+  return [...new Set(
+    contents.flatMap((content) => content.match(pattern) ?? []),
+  )].sort()
+}
+
 describe('manifest', function() {
   it('pins every tool a grunt wrapper shares with the suite, and no other',
     function() {
@@ -257,6 +324,24 @@ describe('manifest', function() {
         'them the nested eslint 9 grunt-eslint pinned, and every rule in ' +
         'this project stood on the accident (#855)',
     )
+  })
+  COORDINATES.forEach(function(coordinate) {
+    it(`states the ${coordinate.what} the manifest declares, and no other`,
+      function() {
+        assert.deepEqual(
+          matched(
+            coordinate.pattern,
+            texts().map((file) => fs.readFileSync(file, 'utf-8')),
+          ),
+          matched(coordinate.pattern, [coordinate.declares]),
+          'this repository states a coordinate of itself that its manifest ' +
+            'declares nowhere, so a reader copies an install line or a link ' +
+            'that leads somewhere else: the URI binding our own XPath ' +
+            'prefix named the owner the organisation move left behind, and ' +
+            'nothing but a reader ever compared the two — while a sweep ' +
+            'gone blind reads as a tree stating no coordinate at all (#337)',
+        )
+      })
   })
   it('names every package it declares, or says what the package is for',
     function() {
