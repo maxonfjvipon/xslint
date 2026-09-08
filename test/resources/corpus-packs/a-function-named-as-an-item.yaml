@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-function
+found:
+  amount: 1
+  positions: [ [ 0, 13, 3 ] ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:my="urn:my" version="3.0">
+      <xsl:function name="my:named">
+        <xsl:sequence select="1"/>
+      </xsl:function>
+      <xsl:function name="my:inside">
+        <xsl:param name="one"/>
+        <xsl:sequence select="$one"/>
+      </xsl:function>
+      <xsl:function name="my:thrice">
+        <xsl:sequence select="3"/>
+      </xsl:function>
+      <xsl:function name="my:asvar">
+        <xsl:sequence select="4"/>
+      </xsl:function>
+      <xsl:variable name="my:asvar" select="5"/>
+      <xsl:template match="/">
+        <xsl:sequence select="my:named#0"/>
+        <xsl:sequence select="for-each(1, my:inside#1)"/>
+        <xsl:sequence select="(my:thrice#0, my:thrice#0, my:thrice#0)"/>
+        <xsl:sequence select="$my:asvar"/>
+      </xsl:template>
+    </xsl:stylesheet>

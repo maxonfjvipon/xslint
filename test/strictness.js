@@ -42,10 +42,10 @@ const spaced = function(token) {
 
 /**
  * Whether fontoxpath refuses the expression over its own strictness rather
- * than over anything malformed in it: a `namespace::` axis, ExprWhitespace
- * around an axis separator, and ExprWhitespace inside a node test (#615,
- * #639). It is no oracle of validity, and what may be excused is only the
- * grammar accepting where the engine refuses.
+ * than over anything malformed in it: a `namespace::` axis, or a gap XPath
+ * spells where the engine reads glued — around an axis separator, inside a
+ * node test, behind the dollar of a variable reference (#615, #639, #498).
+ * It is no oracle of validity, only the grammar accepting where it refuses.
  * @param {string} xpath - Xpath expression
  * @return {boolean} - True when the engine's own strictness is what refuses it
  */
@@ -59,7 +59,8 @@ const insists = function(xpath) {
       strict = true
     }
     if (TRIVIA.includes(token.type) && (
-      AXIS_KINDS.includes(solid.type) || brackets[brackets.length - 1]
+      AXIS_KINDS.includes(solid.type) || solid.type === TOKENS.DOLLAR ||
+        brackets[brackets.length - 1]
     )) {
       strict = true
     }

@@ -3,6 +3,86 @@
  * SPDX-License-Identifier: MIT
  */
 
+/*
+ * Orchestrates discovery, config, staging, output; exports the pure `lint`
+ * (package `main`), `fixed`, and `STAGES` — every linter the pipeline runs,
+ * named by its module and paired with what it is handed, derived from
+ * `LINTERS`/`EXPRESSION_LINTERS` rather than written out beside them so the
+ * speed gate cannot be measuring a list the run has moved on from.
+ *
+ * `lint` sorts what it hands back, by `ranked`: the file, then the line, the
+ * column, and the check that found it. Nothing about the run decides the order
+ * any more — not the order `allFilesFrom` handed the stylesheets over in, nor
+ * the order the linters happen to be wired in — which is what a report
+ * committed once and diffed against every night needs (#638). It is the
+ * **report** that is sorted and not the walk, deliberately: readdir answers in
+ * code-unit order on APFS already, so no fixture written here could turn red
+ * on a walk left unsorted, where a defect list ordered by stage reorders under
+ * any wiring change at all. `compared` ranks two strings the way
+ * `Array.prototype.sort` does with no comparator, never `localeCompare`, whose
+ * answer belongs to the collation data the runtime carries rather than to the
+ * report: it orders letters case-insensitively, so all three committed
+ * snapshots come back in a different order under it — TEI at its very first
+ * line, `Documentation/param.xsl` behind `bibtex/convertbib.xsl` where code
+ * units put it in front, DocBook at its 81st file and line 698, DITA-OT at its
+ * 12th file and line 66.
+ *
+ * The exit code it sets is `process.exitCode` and never `process.exit`, which
+ * ends the process where it stands and abandons every write the kernel has not
+ * taken: node's stdout is asynchronous to a pipe on POSIX — synchronous to a
+ * file, to a terminal, and to a pipe on Windows — so whether the report
+ * arrived whole depended on how fast the other end read it. Twenty stylesheets
+ * draw 720 defects here, 165,500 bytes of report: a file or a terminal takes
+ * all of it, a shell pipe whose reader stalls for two seconds takes 65,492
+ * bytes, and the socket `spawn` hands a child takes none at all. The exit code
+ * was right in each of those, so nothing announced the loss (#767). A
+ * `no-restricted-syntax` selector bans the call across the repository, nothing
+ * here having a use for it — the `catch` around the parse in `src/index.mjs`
+ * sets the same field. What pins it is a pair of runs whose reader stays
+ * paused until stderr says how many defects were found, counting the report's
+ * lines against that number: one report wider than the pipe and one narrower,
+ * since how wide a pipe the host gives is what decides which of the two shapes
+ * a run of this suite meets. The wide one leaves the run writing into a pipe
+ * nobody is emptying, which is the write `process.exit` abandons and the whole
+ * of what #767 is about — put back, it reports 312 of the 760 lines it
+ * counted. The narrow one is taken whole before the reader looks, so the run
+ * is over and the hazard is node's own rather than this project's: one
+ * `process.nextTick` after a child exits, `flushStdio` resumes every readable
+ * stdio stream of it, deliberately, so the stream can reach eof, and an
+ * untouched one is read and thrown away. A stalled reader must therefore own
+ * the data rather than leave it for that flush, which is `test/helpers.js`'s
+ * business and what the narrow row pins. Twenty stylesheets were the whole of
+ * the test until #822, so its verdict stood on the host's socket buffer and
+ * not on the run: those twenty are 147,620 bytes of report now, which fits
+ * whatever rultor's docker container gives, so the run finished first, node
+ * discarded the report, and eleven merges in a row read `-0` on a commit six
+ * GitHub runners passed.
+ *
+ * `NURSERY` is what `--stable` withholds, read off `checks.json` rather than
+ * written out here, each check naming the open issue that keeps it out (#581).
+ * Three things about the gate are deliberate, and each is a channel kept apart
+ * from one that already existed. It matches a **whole name**, where
+ * `suppressed` matches a substring and `unused-function` stands inside
+ * `unused-function-template-parameter`, which is settled. It exempts a name
+ * the config grades **verbatim** and never one a glob reached, which is what
+ * `admitted` is for beside `overrides`: that map is keyed by expanded names,
+ * so `'*': warning` would have exempted every one of them silently, a pattern
+ * about severity being no vouch for a check. It defaults to `overrides`'s
+ * keys, verbatim for an embedder calling `lint`, and a glob run says which of
+ * the checks it graded stay withheld. And it stands **after** the directive
+ * pass: a defect withheld in front of it is a defect the directive over it
+ * never suppressed, so `--stable` would call that directive unused and tell
+ * the author to delete the one line keeping the file quiet under the other
+ * tier. Since #851 the tier holds nothing: every issue reporting one of the
+ * sixty-eight checks wrong about code a processor accepts is closed, which is
+ * the release bar rather than a claim any of them is finished. What a member
+ * costs a run is therefore reached by handing `lint` a `nursery` of its own,
+ * an option beside `admitted`, since the tree's own holds no name to exercise
+ * it with and the gating loop is where the CLI used to keep a second copy of
+ * itself — it named the withheld checks a glob had graded from out there, one
+ * tier spelled in two places, and the copy is gone.
+ */
+
 const path = require('path')
 const fs = require('fs')
 const {allFilesFrom} = require('./helpers')
@@ -181,8 +261,9 @@ const CHECKS = [
 /**
  * The checks a stable run withholds, each paired with the open issue reporting
  * it wrong — read off the checks themselves, where a `nursery` mark names that
- * issue, so the tier is the tree's answer rather than a list kept beside it. A
- * whole name and never a substring, which is what `suppress` matches (#581).
+ * issue, so the tier is the tree's answer rather than a list kept beside it,
+ * and holds nothing wherever every such issue is closed. A whole name and
+ * never a substring, which is what `suppress` matches (#581, #851).
  * @type {Map.<string, string>}
  */
 const NURSERY = new Map(
@@ -326,15 +407,15 @@ const ranked = function(one, two) {
  * @param {Array.<{file: string, content: string}>} sources - Raw stylesheets,
  *  each as it was read, a byte order mark it opens with held aside by `parted`
  * @param {{suppress: Array.<string>, overrides: {[check: string]: string},
- *  stable: boolean, admitted: Array.<string>}} options - Substrings to skip,
- *  re-grades, the `NURSERY` gate, and the verbatim names it exempts (#581)
+ *  stable: boolean, admitted: Array.<string>, nursery: Map}} options - Skips,
+ *  re-grades, the tier gate, the names it exempts, and the marks it reads
  * @return {Array.<object>} - The defects that survive suppression
  */
 const lint = function(
   sources,
   {
     suppress = [], overrides = {}, stable = false,
-    admitted = Object.keys(overrides),
+    admitted = Object.keys(overrides), nursery = NURSERY,
   } = {},
 ) {
   const suppressions = validatedSuppressions(suppress)
@@ -377,9 +458,15 @@ const lint = function(
   }
   const gated = new Set()
   if (stable) {
-    for (const name of NURSERY.keys()) {
+    for (const [name, issue] of nursery) {
       if (!admitted.includes(name)) {
         gated.add(name)
+        if (overrides[name]) {
+          logger.warn(
+            `Rule '${name}' stays withheld under the stable tier, ` +
+              `a pattern grading it having named no check: ${issue}`,
+          )
+        }
       }
     }
   }
@@ -441,17 +528,6 @@ const xslint = function(pths, options) {
     content: fs.readFileSync(stylesheet, 'utf-8'),
   }))
   const stable = options.stable ?? config.stable ?? false
-  if (stable) {
-    for (const check of Object.keys(overrides)) {
-      if (NURSERY.has(check) && !admitted.includes(check)) {
-        logger.warn(
-          `Rule '${check}' stays withheld under the stable tier, ` +
-            'a pattern grading it having named no check: ' +
-            `${NURSERY.get(check)}`,
-        )
-      }
-    }
-  }
   let reported = lint(sources, {
     suppress: [...options.suppress, ...disabled],
     overrides: overrides,

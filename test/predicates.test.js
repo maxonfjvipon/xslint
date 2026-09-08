@@ -37,7 +37,7 @@
  * Neither table asks whether an answer is *correct*: that is `CANDIDATES`
  * in `test/selectors.test.js`, which asks fontoxpath what each spelling
  * selects over `candidates.xsl` and fails where serving answers anything
- * else — the oracle, 159 rows here against 32 before, and armed against the
+ * else — the oracle, 160 rows here against 32 before, and armed against the
  * engine before a line of the compiler existed. A row there is a question
  * rather than a claim, so enriching the fixture can only strengthen it; the
  * fixture grew five variables and a non-XSLT child so that presence, a
@@ -328,6 +328,11 @@ const REFUSED = [
   {
     text: '@name = xsl:text',
     why: 'that element on the far side of a comparison, a step and no path',
+  },
+  {
+    text: 'xslint:version(.) < 2.0',
+    why: 'the other function of ours, whose answer is an ancestor climb ' +
+      'rather than anything a bucket keeps beside a candidate',
   },
 ]
 

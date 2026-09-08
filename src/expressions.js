@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {tokenized, OPAQUE} = require('./tokens')
+const {tokenized, OPAQUE, TRIVIA, TOKENS, unquoted} = require('./tokens')
 
 /**
  * An expression with its string and comment spans blanked to spaces, so a
@@ -82,6 +82,47 @@ const enclosed = function(template) {
   return found
 }
 
+/**
+ * The tokens of the one expression a value is nothing but, where its braces
+ * open at the first character and close at the last, or none at all. A value
+ * holding text beside its expression is no such value, and neither is one
+ * holding two of them or a doubled brace, which encloses nothing.
+ * @param {string} template - The attribute value
+ * @return {Array.<object>} - Its solid tokens, or none
+ */
+const braced = function(template) {
+  const found = enclosed(template)
+  let carried = []
+  if (found.length === 1 && found[0].offset === 1 &&
+    found[0].offset + found[0].value.length === template.length - 1) {
+    carried = tokenized(found[0].value)
+      .filter((token) => !TRIVIA.includes(token.type))
+  }
+  return carried
+}
+
+/**
+ * The value a shadow attribute names statically, or empty where it names none.
+ * A shadow attribute is an attribute value template, so a plain value is its
+ * own — `_version="2.0"` names 2.0 — and one whose braces hold a string
+ * literal names what that literal holds. Anything else is a processor's answer
+ * at run time, and empty is a value no name, version or href of one has.
+ * @param {string} template - The attribute value
+ * @return {string} - What it names, or empty where nothing static does
+ */
+const staticOf = function(template) {
+  let value = template
+  if (template.includes('{') || template.includes('}')) {
+    const carried = braced(template)
+    value = ''
+    if (carried.length === 1 && carried[0].type === TOKENS.STRING) {
+      value = unquoted(carried[0])
+    }
+  }
+  return value
+}
+
 module.exports = {
   enclosed,
+  staticOf,
 }

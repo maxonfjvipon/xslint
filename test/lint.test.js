@@ -21,6 +21,35 @@ const source = function(name) {
 }
 
 /**
+ * A nursery of one, standing for the marks the tree carries none of: what the
+ * tier does with a member is asked of the gate rather than of whichever check
+ * an open issue reports wrong today, so an empty nursery — the release bar,
+ * and where #851 leaves this one — is a tier still held to what it promises
+ * rather than a mechanism nothing exercises (#581, #851).
+ * @type {Map.<string, string>}
+ */
+const NURSED = new Map([['short-names', '#911, a check reported wrong']])
+
+/**
+ * What a run writes to standard error, the logger having no sink to hand a
+ * test: a warning is what the tier says of a check a glob graded, and the
+ * whole of what says the grade vouched for nothing.
+ * @param {function(): void} run - What to do while the stream is held
+ * @return {Array.<string>} - The lines it wrote
+ */
+const noted = function(run) {
+  const original = console.error
+  const lines = []
+  console.error = (...args) => lines.push(args.join(' '))
+  try {
+    run()
+  } finally {
+    console.error = original
+  }
+  return lines
+}
+
+/**
  * The two fixtures whose eighth line holds a pattern the grammar refuses: one
  * whose text no grammar reads at all, one that reads as a fine expression and
  * as no pattern. Neither draws a word about its `//` any more — the checks that
@@ -62,22 +91,35 @@ describe('lint (programmatic API)', function() {
     )
   })
   it('withholds every nursery check under the stable tier', function() {
+    assert.ok(
+      !lint(
+        [source('stylesheets/xsl-with-some-violations.xsl')],
+        {stable: true, nursery: NURSED},
+      ).some((defect) => defect.name === 'short-names'),
+      'cannot withhold a check the nursery marks, where the tier reports ' +
+        'only what no open issue says is wrong about code a processor accepts',
+    )
+  })
+  it('keeps every check where no stable tier is asked for', function() {
     assert.deepEqual(
       lint(
         [source('stylesheets/xsl-with-some-violations.xsl')],
-        {stable: true},
+        {nursery: NURSED},
       ).map((defect) => defect.name),
       [
         'setting-value-of-variable-incorrectly',
         'short-names',
         'starts-with-double-slash',
+        'unused-named-template',
       ],
     )
   })
-  it('keeps every check where no stable tier is asked for', function() {
+  it('reports the same under the stable tier as the tree stands', function() {
     assert.deepEqual(
-      lint([source('stylesheets/xsl-with-some-violations.xsl')])
-        .map((defect) => defect.name),
+      lint(
+        [source('stylesheets/xsl-with-some-violations.xsl')],
+        {stable: true},
+      ).map((defect) => defect.name),
       [
         'setting-value-of-variable-incorrectly',
         'short-names',
@@ -90,10 +132,17 @@ describe('lint (programmatic API)', function() {
     assert.deepEqual(
       lint(
         [source('fix/variable-or-param-with-select-spelled-oddly.xsl')],
-        {stable: true},
+        {stable: true, nursery: NURSED},
       ).map((defect) => defect.name),
-      ['not-using-output', 'unused-function-template-parameter'].concat(
-        Array(6).fill('variable-or-param-with-select-and-content'),
+      [
+        'not-using-output',
+        'unused-function-template-parameter',
+        'variable-or-param-with-select-and-content',
+      ].concat(
+        Array(5).fill([
+          'unused-variable',
+          'variable-or-param-with-select-and-content',
+        ]).flat(),
       ),
     )
   })
@@ -101,8 +150,8 @@ describe('lint (programmatic API)', function() {
     assert.ok(
       lint(
         [source('stylesheets/xsl-with-some-violations.xsl')],
-        {stable: true, overrides: {'unused-named-template': 'error'}},
-      ).some((defect) => defect.name === 'unused-named-template'),
+        {stable: true, nursery: NURSED, overrides: {'short-names': 'error'}},
+      ).some((defect) => defect.name === 'short-names'),
       'cannot re-admit a nursery check the configuration grades outright, ' +
         'where a grade written against the name is the user asking for it',
     )
@@ -112,12 +161,38 @@ describe('lint (programmatic API)', function() {
       !lint(
         [source('stylesheets/xsl-with-some-violations.xsl')],
         {
-          stable: true, admitted: [],
-          overrides: {'unused-named-template': 'error'},
+          stable: true, nursery: NURSED, admitted: [],
+          overrides: {'short-names': 'error'},
         },
-      ).some((defect) => defect.name === 'unused-named-template'),
+      ).some((defect) => defect.name === 'short-names'),
       'cannot withhold a nursery check a grade reached through a glob, ' +
         'where the pattern names no check and vouches for none',
+    )
+  })
+  it('says which check a glob graded the tier withholds anyway', function() {
+    assert.match(
+      noted(() => lint(
+        [source('stylesheets/xsl-with-some-violations.xsl')],
+        {
+          stable: true, nursery: NURSED, admitted: [],
+          overrides: {'short-names': 'error'},
+        },
+      )).join(' '),
+      /short-names.*#911/,
+      'cannot name the check a glob graded and the tier withheld anyway, ' +
+        'beside the issue its mark stands on, so a grade that vouched for ' +
+        'nothing reads as a grade that took effect',
+    )
+  })
+  it('leaves a directive over a withheld check called used', function() {
+    assert.deepEqual(
+      noted(() => lint(
+        [source('directives/used.xsl')],
+        {stable: true, nursery: NURSED},
+      )).filter((line) => line.includes('Unused xslint-disable')),
+      [],
+      'cannot call a directive unused where the tier withheld the defect it ' +
+        'covers, the author having written it against a check that fires',
     )
   })
   it('exposes the fix engine for callers to apply', function() {

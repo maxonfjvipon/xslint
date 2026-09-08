@@ -4,7 +4,7 @@
  */
 
 /*
- * The fontoxpath environment, and the one function this project adds to it.
+ * The fontoxpath environment, and the two functions this project adds to it.
  * `xslint:normalize-space` is what every selector of ours spells where XPath
  * would say `normalize-space`, because fontoxpath's own is JavaScript's: it
  * trims and collapses on `\s`, so a no-break space, a line separator and an
@@ -34,6 +34,18 @@
  * which is why the vocabulary refuses a bare `normalize-space` outright and
  * serves only the `xslint:` spelling. Registering the function is what lets
  * it: the walk and the engine now read the same four characters.
+ *
+ * The second is `xslint:version`, and it is here for the reason the first is:
+ * the question has one answer and no selector could reach it. XSLT puts a
+ * version on any element and a shadow `_version` spells it as readily, so a
+ * root's own version misjudges every subtree raised or lowered against it —
+ * #618 settled that for `versionOf` and left four declarative gates reading
+ * the root, two of them against a list of spellings where a floor was meant,
+ * and two forking on the two root names where a third XSLT root takes the
+ * plain attribute (#851). The function hands them `versionOf`'s own answer,
+ * `NaN` where nothing declares one, which clears no floor and so leaves a
+ * report unmade rather than inventing one against a stylesheet nothing here
+ * can read the version of.
  */
 
 const {
@@ -42,6 +54,7 @@ const {
   compileXPathToJavaScript, registerCustomXPathFunction,
 } = require('fontoxpath')
 const {normalized} = require('./tokens')
+const {numbered} = require('./xsl-version')
 
 /**
  * Namespace URI of the xslint custom XPath functions.
@@ -84,6 +97,19 @@ registerCustomXPathFunction(
   {namespaceURI: FUNCTIONS, localName: 'normalize-space'},
   ['xs:string?'], 'xs:string',
   (context, text) => normalized(text ?? ''),
+)
+
+/**
+ * `xslint:version`, the version in force at a node, which a declarative gate
+ * compares as a floor. XSLT sets it on any element and a shadow `_version`
+ * spells it as readily, so no selector over the document answers it: a root's
+ * own misjudges every subtree raised or lowered against it, and a list of the
+ * spellings a gate must know is a second opinion about XSLT (#618, #851).
+ */
+registerCustomXPathFunction(
+  {namespaceURI: FUNCTIONS, localName: 'version'},
+  ['node()'], 'xs:double',
+  (context, node) => numbered(node),
 )
 
 /**

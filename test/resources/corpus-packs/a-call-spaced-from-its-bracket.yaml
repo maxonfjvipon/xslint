@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-function
+found:
+  amount: 1
+  positions: [ [ 0, 15, 3 ] ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:my="urn:my" version="2.0">
+      <xsl:function name="my:spaced">
+        <xsl:sequence select="1"/>
+      </xsl:function>
+      <xsl:function name="my:buried">
+        <xsl:sequence select="2"/>
+      </xsl:function>
+      <xsl:function name="my:thrice">
+        <xsl:sequence select="3"/>
+      </xsl:function>
+      <xsl:function name="my:tight">
+        <xsl:sequence select="4"/>
+      </xsl:function>
+      <xsl:function name="my:dead">
+        <xsl:sequence select="5"/>
+      </xsl:function>
+      <xsl:template match="/">
+        <xsl:value-of select="my:spaced (1)"/>
+        <xsl:value-of select="node()[my:buried (2)]"/>
+        <xsl:value-of select="my:thrice (1) + my:thrice (2) + my:thrice (3)"/>
+        <xsl:value-of select="my:tight(4)"/>
+      </xsl:template>
+    </xsl:stylesheet>

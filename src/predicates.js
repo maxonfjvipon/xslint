@@ -165,7 +165,7 @@
  */
 
 const {PREFIXES} = require('./xpath')
-const {TOKENS, TRIVIA, normalized} = require('./tokens')
+const {TOKENS, TRIVIA, normalized, unquoted} = require('./tokens')
 const {parsed} = require('./grammar')
 const {ASSUMED} = require('./syntax')
 
@@ -428,11 +428,7 @@ const held = function(tokens, node) {
   if (carried.length === 1 && carried[0].type === TOKENS.NUMBER) {
     answer = {value: Number(carried[0].value), numeric: true}
   } else if (carried.length === 1 && carried[0].type === TOKENS.STRING) {
-    const quote = carried[0].value.charAt(0)
-    answer = {
-      value: carried[0].value.slice(1, -1).replaceAll(`${quote}${quote}`, quote),
-      numeric: false,
-    }
+    answer = {value: unquoted(carried[0]), numeric: false}
   }
   return answer
 }

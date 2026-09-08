@@ -5,70 +5,100 @@
 
 /*
  * Loads `checks/corpus/*.yaml`; cross-file rules. A cross-file check asks
- * one question of every declaration against every usage, so both sides grow
- * with the project and the work is their product; three things made that
- * product far dearer than it is. A usage selector is now evaluated once for
- * each corpus and xpath (`across`) rather than once for each check naming
- * it — three of the four checks give `//@*`, and choosing every attribute
- * of DocBook-XSL's 291 stylesheets costs 1.7 seconds, so the run spent five
- * answering one question three times over. A reference string was built
- * once for each declaration rather than once per pair, and the usages
- * holding it scanned once for each *distinct* reference, DocBook-XSL
- * declaring 3436 variables under 1207 names; and the cheap test led,
- * `within` climbing to the document root for every pair it rejects where
- * one `includes` rejects almost every pair. Together those took the four
- * checks from 35.0 to 10.2 seconds over that corpus and the whole run from
- * 40.2 to 29.8 (#755). What they left standing was the product itself, the
- * scan still being every distinct name against every usage — 1207 against
- * 72,077 attributes, 87 million substring tests, and 98% of what the stage
- * spent, `unused-variable` alone accounting for 13.58 of its 13.81 seconds
- * of scanning. The index is what retires it (#783). `referencing` reads
- * each usage value once for a template and yields the names it
- * *references*; `indexed` maps each name to the usages holding it, once for
- * a usage set and template; and a declaration is a `Map.get` rather than a
- * scan. `corpus-linter` falls from 8.52 to 2.20 seconds over DocBook-XSL,
- * 6.26 to 1.21 over TEI and 1.37 to 0.56 over DITA-OT, taking the staged
- * run from 17.54 to 11.13, 14.33 to 9.34 and 4.48 to 3.62, and the stage
- * from half the run to a fifth of it. Speed is the smaller half. A
- * substring is not a reference: `includes('$row')` is answered by
- * `$rownum`, which is #776's defect on the other side of the same product,
- * so the fix and the speed-up are one edit and the report is not
- * byte-identical — four declarations that were silenced by a longer name
- * holding their characters are reported, `$page` behind `$pageid` and
+ * one question of every declaration against every usage, so both sides
+ * grow with the project and the work is their product; three things made
+ * that product far dearer than it is. A usage selector is now evaluated
+ * once for each corpus and xpath (`across`) rather than once for each
+ * check naming it — three of the four checks give `//@*`, and choosing
+ * every attribute of DocBook-XSL's 291 stylesheets costs 1.7 seconds, so
+ * the run spent five answering one question three times over. A reference
+ * string was built once for each declaration rather than once per pair,
+ * and the usages holding it scanned once for each *distinct* reference,
+ * DocBook-XSL declaring 3436 variables under 1207 names; and the cheap
+ * test led, `within` climbing to the document root for every pair it
+ * rejects where one `includes` rejects almost every pair. Together those
+ * took the four checks from 35.0 to 10.2 seconds over that corpus and the
+ * whole run from 40.2 to 29.8 (#755). What they left standing was the
+ * product itself, the scan still being every distinct name against every
+ * usage — 1207 against 72,077 attributes, 87 million substring tests, and
+ * 98% of what the stage spent, `unused-variable` alone accounting for
+ * 13.58 of its 13.81 seconds of scanning. The index is what retires it
+ * (#783). `referencing` reads each usage value once for a template and
+ * yields the names it *references*; `indexed` maps each name to the usages
+ * holding it, once for a usage set and template; and a declaration is a
+ * `Map.get` rather than a scan. `corpus-linter` falls from 8.52 to 2.20
+ * seconds over DocBook-XSL, 6.26 to 1.21 over TEI and 1.37 to 0.56 over
+ * DITA-OT, taking the staged run from 17.54 to 11.13, 14.33 to 9.34 and
+ * 4.48 to 3.62, and the stage from half the run to a fifth of it. Speed is
+ * the smaller half. A substring is not a reference: `includes('$row')` is
+ * answered by `$rownum`, which is #776's defect on the other side of the
+ * same product, so the fix and the speed-up are one edit and the report is
+ * not byte-identical — four declarations that were silenced by a longer
+ * name holding their characters are reported, `$page` behind `$pageid` and
  * `$target` behind `$targets` in DocBook-XSL, `$v` behind `$values` and
- * `$Heading` behind `$Heading1` in TEI, with none removed. A name is the
- * run of characters `NAMED` in `src/tokens.js` spells one with, borrowed
- * rather than a second opinion about what a name character is. What that
- * costs is a shape, which `anchoring` reads once for a template rather than
- * once per usage value and refuses where it is wrong: the index finds the
- * template's fixed text and takes the name from the side that text stands
- * on, so **exactly one** end may carry it. `${name}` and `{name}(` are the
- * two spellings, and both a bare `{name}` and an `a{name}b` are errors
- * rather than checks that half work. Neither half is theoretical. Text at
- * both ends leaves the far side unmatched, so a declaration something uses
- * is reported dead; text at neither leaves the mark empty, and `indexOf`
- * finds that at every offset and answers the *length* rather than -1 once
- * asked past the end, so the scan never advances and the whole run hangs
- * before it reports anything. `test/conformance.test.js` holds every check
- * to the same shape, which is the line that would have caught it — the
- * first spelling of that gate asked only that the template start or end
- * with `{name}`, which a bare `{name}` satisfies twice over, so the one
- * shape that hangs was the one shape the gate admitted. What #783 left
- * standing was the traversal itself, this being the one stage that reached
- * the engine directly: three of its four checks give `//@*` and the fourth
- * `//xsl:call-template/@name`, and neither is an axis a bucket of elements
- * can hold. It goes through `chosen` and `valued` in `src/selectors.js`
- * since #811, which serves both of those and its three element declarations
- * besides, so the stage falls from 2.26 s to 0.11 s over DocBook-XSL, 1.23
- * to 0.09 over TEI and 0.60 to 0.06 over DITA-OT — a tenth to a twentieth
- * of what it cost, taking the staged run down 25%, 17% and 11% with the
- * report byte-identical on all three. Half a run was this stage over
- * DocBook-XSL when #755 was filed and it is 1.5% to 2.3% of one now, which
- * is why its entry in `SHARES` is gone rather than re-derived.
+ * `$Heading` behind `$Heading1` in TEI, with none removed. Text is what
+ * #783 read a name off, though, and text is the half that stayed wrong: it
+ * found a fixed mark and took the run of characters `NAMED` in
+ * `src/tokens.js` spells a name with beside it, so what stood between the
+ * two was invisible. XPath lets a gap stand in front of the bracket a call
+ * opens — the gap **Selector hygiene** calls part of a call, #621 being
+ * the ticket where one of our own selectors spent it — so `my:spaced (1)`
+ * called nothing this linter could see; a named function reference carries
+ * no bracket at all, so `my:pick#1` called nothing either; and a mark
+ * inside a string literal or a comment is a name no processor evaluates,
+ * so `concat('$quoted', 'x')` and `1 (: $commented :)` each kept a
+ * declaration alive that nothing uses. Two of those invent a defect
+ * against working code and two withhold one (#498). So a reference is read
+ * off the **tokens**, and one lexing answers all four: a literal, an
+ * unclosed literal and a comment are one token apiece and hold no name to
+ * find, a gap is `TRIVIA` and read over, and the `#` stands where the
+ * bracket does. Which question is asked of a token first is part of the
+ * reading: `$pick(41)` is XPath 3.1's dynamic call, a call on the
+ * *variable*, so a name a `$` stands in front of is a variable however
+ * tight the bracket behind it is. Asking the bracket first answered one
+ * token two ways at once — the variable it uses reported dead, and a
+ * function of that name marked used — so the `$` is asked before the
+ * bracket, and asked of both spellings, `$my:pick(` lexing as one
+ * `user_function` token where `$pick(` lexes as a name. A check names a
+ * **kind** of reference rather than a template — `call` or `variable`,
+ * what `REFERENCES` holds — and one this linter cannot read is refused by
+ * `kinded` where the template's shape used to be, since an index built for
+ * it holds no name at all and would report every declaration in the corpus
+ * dead. `test/conformance.test.js` holds every check's `reference` to that
+ * list, so the refusal stands in front of a check nobody has written yet.
+ * The kinds cost one pass between them: `collected` builds every one of
+ * them out of a single lexing of the usage set, a pass per kind lexing
+ * DocBook-XSL's 72,077 attributes twice over, and a value holding none of
+ * `$`, `(` or `#` is never lexed at all, most of an attribute set being no
+ * expression. A value holding a brace is lexed twice, though, once whole
+ * and once for each expression its braces enclose: an attribute the usage
+ * selector chooses may be an XPath expression or an attribute value
+ * template, and `//@*` cannot tell which. The two readings differ exactly
+ * where a brace stands inside a string literal, which is where reading the
+ * whole value as one expression loses a reference — DocBook-XSL's
+ * `text="{$text} see '{$see}'"`, TEI's
+ * `context="tei:param[parent::tei:model/@behaviour='{$B}']"` and DITA-OT's
+ * `src="url('{concat($artworkPrefix, $image)}')"` each name a variable a
+ * processor evaluates and the tokens of the value do not. So the names of
+ * both readings are unioned, since a reading too wide withholds a report
+ * where one too narrow invents one against working code (#498). What #783
+ * left standing was the traversal itself, this being the one stage that
+ * reached the engine directly: three of its four checks give `//@*` and
+ * the fourth `//xsl:call-template/@name`, and neither is an axis a bucket
+ * of elements can hold. It goes through `chosen` and `valued` in
+ * `src/selectors.js` since #811, which serves both of those and its three
+ * element declarations besides, so the stage falls from 2.26 s to 0.11 s
+ * over DocBook-XSL, 1.23 to 0.09 over TEI and 0.60 to 0.06 over DITA-OT —
+ * a tenth to a twentieth of what it cost, taking the staged run down 25%,
+ * 17% and 11% with the report byte-identical on all three. Half a run was
+ * this stage over DocBook-XSL when #755 was filed and it is 1.5% to 2.3%
+ * of one now, which is why its entry in `SHARES` is gone rather than re-
+ * derived.
  */
 
 const {chosen, valued} = require('../selectors')
-const {NAMED} = require('../tokens')
+const {enclosed, staticOf} = require('../expressions')
+const {TOKENS, TRIVIA, tokenized} = require('../tokens')
 const {kinds} = require('../resources/checks.json')
 const {logger} = require('../logger')
 
@@ -90,8 +120,8 @@ const CHECKS = Object.entries(kinds.corpus).map(([name, check]) => ({
 const SELECTED = new WeakMap()
 
 /**
- * Usages against the names they reference, per usage set and template, so the
- * corpus is read once for a template rather than once for a declaration.
+ * Usages against the names they reference, by kind and per usage set, so the
+ * corpus is lexed once rather than once for a declaration or for a kind.
  * @type {WeakMap.<Array, Map.<string, Map.<string, Array.<Node>>>>}
  */
 const INDEXED = new WeakMap()
@@ -118,19 +148,25 @@ const within = function(declaration, attribute) {
 }
 
 /**
- * Defects of a check that matches a declaration's name against the usage
- * values by exact identity: the name a `usage` selector yields is the name of
- * a declaration that is used. A named template defined in one file but invoked
- * from another is thus not flagged.
+ * Defects of a check matching a declaration's name against the usage values by
+ * exact identity, so a template invoked from another file is not flagged. A
+ * shadow usage is an attribute value template and read through `staticOf`; one
+ * no static reading places names any declaration there is, so it silences the
+ * check rather than calling every one of them dead (#851).
  * @param {Array.<{file: string, xsl: Document}>} corpus - Parsed stylesheets
  * @param {object} check - The check to apply
  * @return {Array.<object>} - Defects found
  */
 const byName = function(corpus, check) {
-  const used = new Set(corpus.flatMap(({xsl}) => valued(xsl, check.usage)))
-  return corpus.flatMap(({file, xsl}) => chosen(xsl, check.declaration)
-    .filter((node) => !used.has(node.getAttribute('name')))
-    .map((node) => defect(check, file, node)))
+  const used = new Set(corpus.flatMap(({xsl}) => valued(xsl, check.usage))
+    .map((value) => staticOf(value)))
+  let defects = []
+  if (!used.has('')) {
+    defects = corpus.flatMap(({file, xsl}) => chosen(xsl, check.declaration)
+      .filter((node) => !used.has(node.getAttribute('name')))
+      .map((node) => defect(check, file, node)))
+  }
+  return defects
 }
 
 /**
@@ -151,116 +187,139 @@ const inScope = function(check, declaration, usage) {
 }
 
 /**
- * The whole run of name characters beginning at an offset, which is the name
- * a `$` opens — `$rownum` names `rownum` and no shorter name inside it.
- * @param {string} value - Usage value
- * @param {number} at - Offset the run begins at
- * @return {string} - The run, empty where no name stands there
+ * The kinds of reference a check may name in its `reference`, which is what
+ * `referencing` reads off the tokens: a `call` is a name a bracket or a `#`
+ * stands behind, a `variable` one a `$` stands in front of.
+ * @type {Array.<string>}
  */
-const ahead = function(value, at) {
-  let till = at
-  while (till < value.length && NAMED.test(value[till])) {
-    till++
-  }
-  return value.slice(at, till)
-}
+const REFERENCES = ['call', 'variable']
 
 /**
- * The whole run of name characters ending at an offset, which is the name a
- * `(` closes — `myfoo(` calls `myfoo` and no shorter name inside it.
- * @param {string} value - Usage value
- * @param {number} at - Offset the run ends at
- * @return {string} - The run, empty where no name stands there
+ * The kinds a name is lexed as, called or carried by a `$` alike — a prefixed
+ * name tight against its bracket is one token of its own, and every other
+ * spelling is a plain name.
+ * @type {Array.<string>}
  */
-const behind = function(value, at) {
-  let from = at
-  while (from > 0 && NAMED.test(value[from - 1])) {
-    from--
-  }
-  return value.slice(from, at)
-}
+const NAMES = [TOKENS.NAME, TOKENS.USER_FUNCTION]
 
 /**
- * What a check's template anchors its name against: the fixed text a scan
- * finds, and which side of it the name stands on. Read once for a template
- * rather than once per usage value. Exactly one end carries that text, and a
- * template failing it is refused here rather than obeyed — neither end hangs
- * the run on an empty mark, both ends report a live declaration dead (#783).
- * @param {string} reference - The check's template, holding `{name}`
- * @return {{mark: string, precedes: boolean}} - The text and which side it is
+ * What may stand behind a called name: the bracket a call opens with, or the
+ * `#` of the named function reference XSLT 3.0 writes instead.
+ * @type {Array.<string>}
  */
-const anchoring = function(reference) {
-  const stands = reference.indexOf('{name}')
-  const opens = reference.slice(0, stands)
-  const closes = reference.slice(stands + '{name}'.length)
-  if ((opens.length > 0) === (closes.length > 0)) {
+const OPENS = [TOKENS.LPAREN, TOKENS.HASH]
+
+/**
+ * The characters a reference of any kind is spelled with, so a value holding
+ * none of them is never lexed — most of an attribute set holds no expression.
+ * @type {Array.<string>}
+ */
+const MARKS = ['$', '(', '#']
+
+/**
+ * The kind of reference a check names, refused here rather than obeyed where
+ * this linter reads no such kind: an index built for a word no scan answers
+ * holds no name at all, so every declaration in the corpus is reported dead.
+ * `test/conformance.test.js` holds every check's `reference` to that list, so
+ * this stands in front of a check nobody has written yet (#498).
+ * @param {string} reference - What the check's `reference` names
+ * @return {string} - The kind, where this linter reads one
+ */
+const kinded = function(reference) {
+  if (!REFERENCES.includes(reference)) {
     throw new Error(
-      `The reference template "${reference}" anchors the name against text ` +
-        'at neither end or at both, where exactly one end must carry it',
+      `The reference kind "${reference}" is none of ` +
+        `${REFERENCES.join(', ')}, so nothing would be read as a reference ` +
+        'and every declaration would be reported as dead',
     )
   }
-  let anchor = {mark: closes, precedes: false}
-  if (opens.length > 0) {
-    anchor = {mark: opens, precedes: true}
-  }
-  return anchor
+  return reference
 }
 
 /**
- * Every name a usage value references under a check's anchor — the names
- * behind each `$` for a variable, the names in front of each `(` for a call.
- * The name is the run of name characters beside the anchor's text, so a
- * reference is to the *whole* name and never to one spelled inside a longer
- * one: `$rownum` is no reference to `$row` (#783).
+ * The expressions a usage value holds: the value itself, and every expression
+ * its braces enclose where it holds one. An attribute the usage selector
+ * chooses may be an XPath expression or an attribute value template, and a
+ * selector giving `//@*` cannot tell which, so both readings are taken (#498).
  * @param {string} value - Usage value
- * @param {{mark: string, precedes: boolean}} anchor - What `anchoring` read
- * @return {Set.<string>} - The names it references
+ * @return {Array.<string>} - The expressions to read names off
  */
-const referencing = function(value, anchor) {
-  const names = new Set()
-  let at = value.indexOf(anchor.mark)
-  while (at !== -1) {
-    let name = behind(value, at)
-    if (anchor.precedes) {
-      name = ahead(value, at + anchor.mark.length)
-    }
-    if (name.length > 0) {
-      names.add(name)
-    }
-    at = value.indexOf(anchor.mark, at + 1)
+const readings = function(value) {
+  let found = [value]
+  if (value.includes('{')) {
+    found = found.concat(enclosed(value).map((brace) => brace.value))
+  }
+  return found
+}
+
+/**
+ * Every name a usage value references, by the kind of reference it is: a name
+ * a `$` stands in front of is a variable, one a bracket or a `#` stands behind
+ * is a call, and the `$` is asked first. Read off the tokens and never off the
+ * text, so a gap inside a call is read over and a name inside a string literal
+ * or a comment is no reference at all, those being one token apiece (#498).
+ * @param {string} value - Usage value
+ * @return {Map.<string, Set.<string>>} - The names it references, by kind
+ */
+const referencing = function(value) {
+  const names = new Map(REFERENCES.map((kind) => [kind, new Set()]))
+  for (const reading of readings(value)) {
+    const tokens = tokenized(reading)
+      .filter(({type}) => !TRIVIA.includes(type))
+    tokens.forEach((token, at) => {
+      if (NAMES.includes(token.type) && at > 0 &&
+        tokens[at - 1].type === TOKENS.DOLLAR) {
+        names.get('variable').add(token.value)
+      } else if (NAMES.includes(token.type) && at + 1 < tokens.length &&
+        OPENS.includes(tokens[at + 1].type)) {
+        names.get('call').add(token.value)
+      }
+    })
   }
   return names
 }
 
 /**
- * The usages referencing each name, built once for a usage set and template.
- * A declaration then costs a lookup rather than a scan of every usage: the
- * scan asked its question once per distinct name, which over DocBook-XSL is
+ * Every kind's index out of one lexing of the usage set, the memo below being
+ * per usage set: a pass for each kind would lex DocBook-XSL's 72,077
+ * attributes twice over, and a value holding none of the characters a
+ * reference is spelled with is never lexed at all (#498).
+ * @param {Array.<Node>} usages - Usage attributes across the corpus
+ * @return {Map.<string, Map.<string, Array.<Node>>>} - Usages by kind and name
+ */
+const collected = function(usages) {
+  const index = new Map(REFERENCES.map((kind) => [kind, new Map()]))
+  for (const usage of usages) {
+    if (MARKS.some((mark) => usage.value.includes(mark))) {
+      for (const [kind, mentioned] of referencing(usage.value)) {
+        const held = index.get(kind)
+        for (const name of mentioned) {
+          if (!held.has(name)) {
+            held.set(name, [])
+          }
+          held.get(name).push(usage)
+        }
+      }
+    }
+  }
+  return index
+}
+
+/**
+ * The usages referencing each name, by kind, built once for a usage set. A
+ * declaration then costs a lookup rather than a scan of every usage: the scan
+ * asked its question once per distinct name, which over DocBook-XSL is
  * `unused-variable` alone taking 1207 names against 72,077 attributes — 87
  * million substring tests, and 98% of what this stage spent scanning (#783).
  * @param {Array.<Node>} usages - Usage attributes across the corpus
- * @param {string} reference - The check's template, holding `{name}`
+ * @param {string} kind - Which kind of reference to look a name up under
  * @return {Map.<string, Array.<Node>>} - Usages against the names they hold
  */
-const indexed = function(usages, reference) {
+const indexed = function(usages, kind) {
   if (!INDEXED.has(usages)) {
-    INDEXED.set(usages, new Map())
+    INDEXED.set(usages, collected(usages))
   }
-  const held = INDEXED.get(usages)
-  if (!held.has(reference)) {
-    const anchor = anchoring(reference)
-    const index = new Map()
-    for (const usage of usages) {
-      for (const name of referencing(usage.value, anchor)) {
-        if (!index.has(name)) {
-          index.set(name, [])
-        }
-        index.get(name).push(usage)
-      }
-    }
-    held.set(reference, index)
-  }
-  return held.get(reference)
+  return INDEXED.get(usages).get(kind)
 }
 
 /**
@@ -291,12 +350,12 @@ const across = function(corpus, xpath) {
  * is rejected, so a structural test placed ahead of this one spent a full
  * ancestor walk to learn what the index already says (#755).
  * @param {Array.<Node>} usages - Usage attributes across the corpus
- * @param {object} check - The check to apply, carrying a `reference` template
+ * @param {object} check - The check to apply, carrying a `reference` kind
  * @param {Node} declaration - Declaring node
  * @return {Array.<Node>} - The usages referencing it
  */
 const mentioning = function(usages, check, declaration) {
-  return indexed(usages, check.reference)
+  return indexed(usages, kinded(check.reference))
     .get(declaration.getAttribute('name')) ?? []
 }
 
@@ -465,7 +524,8 @@ const lintByCorpus = function(corpus, suppressions = []) {
 }
 
 module.exports = {
-  anchoring,
+  REFERENCES,
+  kinded,
   lintByCorpus,
   names,
 }

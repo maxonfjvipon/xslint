@@ -9,6 +9,66 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Read a version and a name through their shadow spelling, so an XSLT 3.0
+  stylesheet writing `_version` is judged the way one writing `version` is.
+  Any attribute of an XSLT element has that second spelling, whose value is an
+  attribute value template a processor evaluates before the module compiles:
+  four version gates read `@version` as text and one cross-file check read
+  `@name` and `@href` the same way, so a sheet declaring `_version` cleared no
+  floor and drew no report at all, and a shadow `@href` built no import edge.
+  The version is one question now — `xslint:version(.)`, asked of the nearest
+  declaration rather than spelled out per selector — and a static attribute
+  value template is read wherever one may stand. A version no gate can place
+  answers `NaN`, so no floor is cleared and the report goes unmade rather than
+  guessed at, which is what `malformed-version-in-stylesheet`'s message and
+  motive now say. The conformance gate turns forward with it: a selector may
+  name a version attribute only where that attribute is the check's own
+  subject, the two `*-version-in-stylesheet` checks, since every other one
+  reads the version in force. Four checks leave the nursery and it holds
+  nothing, which is the release bar and no claim that any check is finished —
+  so the tier keeps its per-member code exercised through a nursery `lint`
+  takes as an option, and says which check a glob graded it withholds anyway
+  (#851).
+
+- Read a cross-file reference off the **tokens** rather than the raw attribute
+  text, which had four blind spots, two inventing a defect against working
+  code and two withholding one. The scan found a fixed mark and took the run
+  of name characters beside it, so whatever stood between the two was
+  invisible: XPath lets a gap stand in front of the bracket a call opens, so
+  `my:spaced (1)` called nothing the linter could see and the function was
+  reported dead; a named function reference carries no bracket at all, so
+  `my:pick#1` called nothing either; and a mark inside a string literal or a
+  comment is a name no processor evaluates, so `concat('$quoted', 'x')` and
+  `1 (: $commented :)` each kept a genuinely unused declaration alive. One
+  lexing answers all four, and the `$` is asked before the bracket,
+  `$pick(41)` being XPath 3.1's dynamic call on the variable rather than a
+  call to a function of that name. A check names a **kind** of reference
+  rather than a substring template — `reference: call` or
+  `reference: variable` — `kinded` refusing a word this linter reads no kind
+  for, since an index built for one holds no name at all and would report
+  every declaration in the corpus dead. A value holding a brace is read twice,
+  once whole and once for each expression its braces enclose, an attribute the
+  usage selector chooses being an XPath expression or an attribute value
+  template with nothing to tell which. Three checks leave the nursery, and the
+  corpora gain one report: TEI's `$q`, named nowhere but inside the string
+  literals of a `replace()` (#498).
+
+- Judge a stylesheet embedded below the document element, which
+  `missing-version-in-stylesheet` reached with neither of its arms. An
+  embedded stylesheet (XSLT 1.0 §2.7) is a document of data holding a real
+  module root, picked out by an `xml-stylesheet` instruction pointing at that
+  element's `id`: one arm asks an XSLT root for a plain `version`, the other
+  asks any other root for `xsl:version` unless it holds a module of its own —
+  the exclusion #849 wrote so that an embedded document's outer root is not
+  mistaken for a simplified stylesheet — so the outer root was correctly left
+  alone and the embedded module was reached by nothing at all. A second arm
+  reports it, anchored on a non-XSLT document element and so exactly
+  complementary to that else branch; the anchor is what keeps a module nested
+  inside another stylesheet to the one defect `using-not-outermost-stylesheet`
+  already draws at `error`. Both spellings of the attribute are asked and all
+  three XSLT roots named. The fixer needed no change, `missingVersion` forking
+  on the namespace already. The check leaves the nursery (#705).
+
 - Reach the pre-commit `rev:` in `README.md` from the `up` job, and bump the
   pin it left at `0.0.11` for three releases. That job rewrites the README on
   every tag, anchored on `xslint@[0-9.]+` — which the two npm coordinates carry

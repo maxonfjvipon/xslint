@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-variable
+found:
+  amount: 1
+  positions: [ [ 0, 7, 3 ] ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+      <xsl:variable name="spaced" select="1"/>
+      <xsl:variable name="buried" select="2"/>
+      <xsl:variable name="thrice" select="3"/>
+      <xsl:variable name="tight" select="4"/>
+      <xsl:variable name="dead" select="5"/>
+      <xsl:template match="/">
+        <xsl:value-of select="$ spaced"/>
+        <xsl:value-of select="concat('a', $ buried)"/>
+        <xsl:value-of select="$ thrice + $ thrice + $ thrice"/>
+        <xsl:value-of select="$tight"/>
+      </xsl:template>
+    </xsl:stylesheet>

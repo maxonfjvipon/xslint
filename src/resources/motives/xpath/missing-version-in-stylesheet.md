@@ -55,3 +55,27 @@ Correct:
     <body><xsl:value-of select="/page/title"/></body>
 </html>
 ```
+
+Incorrect:
+
+```xsl
+<?xml-stylesheet type="text/xsl" href="#style"?>
+<page>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="style">
+        <xsl:template match="/"><xsl:value-of select="/page/title"/></xsl:template>
+    </xsl:stylesheet>
+    <title>Report</title>
+</page>
+```
+
+Correct:
+
+```xsl
+<?xml-stylesheet type="text/xsl" href="#style"?>
+<page>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="style" version="1.0">
+        <xsl:template match="/"><xsl:value-of select="/page/title"/></xsl:template>
+    </xsl:stylesheet>
+    <title>Report</title>
+</page>
+```

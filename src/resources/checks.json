@@ -5,35 +5,31 @@
       "unreachable-function": {
         "declaration": "//xsl:function",
         "usage": "//@*",
-        "reference": "{name}(",
+        "reference": "call",
         "reachable": true,
         "severity": "warning",
-        "message": "A stylesheet function is called only from within a recursion cycle that nothing else enters, so it can never run. Remove it, or call it from a template.",
-        "nursery": "#498, whose reference detection matches a name as a substring rather than as a token"
+        "message": "A stylesheet function is called only from within a recursion cycle that nothing else enters, so it can never run. Remove it, or call it from a template."
       },
       "unused-function": {
         "declaration": "//xsl:function",
         "usage": "//@*",
-        "reference": "{name}(",
+        "reference": "call",
         "severity": "warning",
-        "message": "A stylesheet function is never called in any expression across the corpus. Remove it or call it.",
-        "nursery": "#498, whose reference detection matches a name as a substring rather than as a token"
+        "message": "A stylesheet function is never called in any expression across the corpus. Remove it or call it."
       },
       "unused-named-template": {
         "declaration": "//xsl:template[not(@match) and not(@_match)][@name][not(ends-with(@name, ':initial-template'))]",
-        "usage": "//xsl:call-template/@name",
+        "usage": "//xsl:call-template/@name | //xsl:call-template/@_name",
         "severity": "warning",
-        "message": "A named template is never invoked via xsl:call-template. Remove it or call it.",
-        "nursery": "#498, whose reference detection matches a name as a substring rather than as a token"
+        "message": "A named template is never invoked via xsl:call-template. Remove it or call it."
       },
       "unused-variable": {
         "declaration": "//xsl:variable[@name]",
         "usage": "//@*",
-        "reference": "${name}",
+        "reference": "variable",
         "scoped": true,
         "severity": "warning",
-        "message": "A variable is declared but never referenced by $name across the corpus. Remove it or use it.",
-        "nursery": "#498, whose reference detection matches a name as a substring rather than as a token"
+        "message": "A variable is declared but never referenced by $name across the corpus. Remove it or use it."
       }
     },
     "format": {
@@ -191,10 +187,9 @@
         "message": "An instruction element such as xsl:for-each or xsl:if has no content. Add content or remove the empty element."
       },
       "empty-variable": {
-        "xpath": "//xsl:variable[not(@select) and not(@_select) and not(node()) and not((@as or @_as) and (if (/xsl:stylesheet | /xsl:transform) then /*/@version else /*/@xsl:version) = ('2.0', '3.0'))]",
+        "xpath": "//xsl:variable[not(@select) and not(@_select) and not(node()) and not((@as or @_as) and xslint:version(.) >= 2.0)]",
         "severity": "warning",
-        "message": "An empty xsl:variable binds the empty string for no reason. Give it a @select or some content, or remove it.",
-        "nursery": "#851, whose version gate reads @version as text and so never sees the shadow spelling of it"
+        "message": "An empty xsl:variable binds the empty string for no reason. Give it a @select or some content, or remove it."
       },
       "function-complexity": {
         "xpath": "//xsl:function[count(.//xsl:*) > 50]",
@@ -207,10 +202,9 @@
         "message": "'xsl:function' or 'xsl:template' are used in the wrong places. Use 'xsl:function' and 'xsl:template' as child nodes of 'xsl:stylesheet'."
       },
       "function-use-in-xslt-1": {
-        "xpath": "/*[not((if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = ('2.0', '3.0'))]//xsl:function",
+        "xpath": "//xsl:function[xslint:version(.) < 2.0]",
         "severity": "error",
-        "message": "'xsl:function' requires XSLT 2.0 or later, but this stylesheet is not version 2.0 or 3.0. Use a named template, or set the version to 2.0.",
-        "nursery": "#851, whose version gate reads @version as text and so never sees the shadow spelling of it"
+        "message": "'xsl:function' requires XSLT 2.0 or later, and the version in force here is below that. Use a named template, or raise that version to 2.0."
       },
       "incorrect-use-of-boolean-constants": {
         "xpath": "//(xsl:if | xsl:when)[xslint:normalize-space(@test) = (\"'true'\", \"'false'\", '\"true\"', '\"false\"')]",
@@ -221,7 +215,7 @@
       "malformed-version-in-stylesheet": {
         "xpath": "(//@version[parent::xsl:*][not(parent::xsl:output)] | //@xsl:version[not(parent::xsl:*)])[not(matches(xslint:normalize-space(.), '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$'))]",
         "severity": "error",
-        "message": "A declared version is not a number, so it names no XSLT version and every version-dependent check falls back to XSLT 1.0 here, the fixes it writes included. Declare it as a decimal, such as 2.0"
+        "message": "A declared version is not a number, so it names no XSLT version and no version gate under it clears its floor, leaving every check about a construct a later version introduced quiet rather than guessing. Declare it as a decimal, such as 2.0"
       },
       "missing-id-in-stylesheet": {
         "xpath": "(/xsl:stylesheet | /xsl:transform)[not(@id) and not(@_id)]",
@@ -239,11 +233,10 @@
         "message": "The '@name' is missing or empty here, and neither is a QName, so no processor will load this stylesheet"
       },
       "missing-version-in-stylesheet": {
-        "xpath": "/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))]",
+        "xpath": "/*[if (self::xsl:*) then (not(@version) and not(@_version)) else (not(@xsl:version) and .//xsl:* and not(.//(xsl:stylesheet | xsl:transform | xsl:package)))] | /*[not(self::xsl:*)]//(xsl:stylesheet | xsl:transform | xsl:package)[not(@version) and not(@_version)]",
         "severity": "warning",
         "message": "The version attribute is missing on the stylesheet's root element. Declare it to specify the stylesheet version explicitly.",
-        "fix": "suggestion",
-        "nursery": "#705, which never judges a stylesheet embedded below the document element"
+        "fix": "suggestion"
       },
       "mode-or-priority-without-match": {
         "xpath": "//xsl:template[(@name or @_name) and not(@match) and not(@_match) and (@mode or @_mode or @priority or @_priority)]",
@@ -252,10 +245,9 @@
         "fix": "suggestion"
       },
       "modern-construct-in-xslt-1": {
-        "xpath": "/*[(if (self::xsl:stylesheet or self::xsl:transform) then @version else @xsl:version) = '1.0']//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[(@as or @_as) and not(self::xsl:function)])",
+        "xpath": "//(xsl:for-each-group | xsl:sequence | xsl:analyze-string | xsl:next-match | xsl:perform-sort | xsl:namespace | xsl:character-map | xsl:result-document | xsl:import-schema | xsl:*[(@as or @_as) and not(self::xsl:function)])[xslint:version(.) < 2.0]",
         "severity": "error",
-        "message": "This XSLT 2.0 construct is used in a stylesheet declared version 1.0, which a conformant 1.0 processor rejects. Use a 1.0 equivalent, or set the version to 2.0.",
-        "nursery": "#851, whose version gate reads @version as text and so never sees the shadow spelling of it"
+        "message": "This XSLT 2.0 construct stands where the version in force is below 2.0, which a conformant 1.0 processor rejects. Use a 1.0 equivalent, or raise that version to 2.0."
       },
       "name-starts-with-numeric": {
         "xpath": "//(xsl:variable | xsl:template)[matches(@name, '^[0-9]')] | //xsl:function[matches(@name, '^([^:]*:)?[0-9]')]",
@@ -356,10 +348,9 @@
         "message": "'xsl:when' and 'xsl:otherwise' are valid only as children of 'xsl:choose'. Move it into an 'xsl:choose', or use 'xsl:if'."
       },
       "with-param-use-in-invalid-parent-node": {
-        "xpath": "//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][number(ancestor-or-self::*[(self::xsl:* and (@version or @_version)) or (not(self::xsl:*) and @xsl:version)][1] ! (if (self::xsl:*) then @version else @xsl:version)) < 2]",
+        "xpath": "//xsl:with-param[not(parent::xsl:call-template or parent::xsl:apply-templates or parent::xsl:apply-imports or parent::xsl:next-match or parent::xsl:next-iteration)] | //xsl:with-param[parent::xsl:apply-imports][xslint:version(.) < 2.0]",
         "severity": "error",
-        "message": "xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:next-match, xsl:next-iteration, or an xsl:apply-imports whose nearest declared version is 2.0 or later. Move it into a call, or raise that version.",
-        "nursery": "#851, whose version gate reads @version as text and so goes quiet below a shadow spelling of it"
+        "message": "xsl:with-param is allowed only within xsl:call-template, xsl:apply-templates, xsl:next-match, xsl:next-iteration, or an xsl:apply-imports whose version in force is 2.0 or later. Move it into a call, or raise that version."
       },
       "with-param-without-name": {
         "xpath": "//xsl:with-param[not(@name) and not(@_name)]",

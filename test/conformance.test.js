@@ -6,6 +6,7 @@
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
 const {GAP} = require('../src/tokens')
 const {splitOf} = require('../src/selectors')
+const {REFERENCES} = require('../src/linters/corpus-linter')
 const {kinds} = require('../src/resources/checks.json')
 const {DECIMAL, XSLT} = require('../src/xsl-version')
 const {walked} = require('../src/tree')
@@ -26,7 +27,8 @@ const assert = require('assert')
  */
 const UNINDEXED = {
   'missing-id-in-stylesheet': 'the root itself, not a descendant sweep',
-  'missing-version-in-stylesheet': 'the root itself, not a descendant sweep',
+  'missing-version-in-stylesheet':
+    'a root arm beside a servable one, and a union is served whole or not at all',
   'stylesheet-has-no-templates': 'the root itself, not a descendant sweep',
   'too-many-templates': 'the root itself, not a descendant sweep',
 }
@@ -67,25 +69,6 @@ const RESOURCES = path.resolve(__dirname, 'resources')
  * @type {Array.<string>}
  */
 const KINDS = ['xpath', 'corpus', 'validation', 'format']
-
-/**
- * The checks `--stable` withholds, each beside the open issues its own YAML
- * names, read as those numbers rather than as a flag. A ratchet both ways: a
- * check joining the nursery, one whose ticket has changed, and one still
- * marked once its ticket closed all turn it red (#581, #637, #876).
- * @type {{[name: string]: string}}
- */
-const NURSERY = {
-  'empty-variable': '#851',
-  'function-use-in-xslt-1': '#851',
-  'missing-version-in-stylesheet': '#705',
-  'modern-construct-in-xslt-1': '#851',
-  'unreachable-function': '#498',
-  'unused-function': '#498',
-  'unused-named-template': '#498',
-  'unused-variable': '#498',
-  'with-param-use-in-invalid-parent-node': '#851',
-}
 
 /**
  * A ticket as this repository writes one.
@@ -239,6 +222,29 @@ const unshadowed = function(selector) {
 }
 
 /**
+ * A version attribute as a selector reads one, in both spellings XSLT gives it
+ * and the shadow form each wears. A gate over the version *in force* asks
+ * `xslint:version` instead, that being an answer no selector reaches: XSLT
+ * sets a version on any element, so one read off the root misjudges every
+ * subtree raised or lowered against it (#618, #851).
+ * @type {RegExp}
+ */
+const DECLARED = /@(?:xsl:)?_?version\b/
+
+/**
+ * The checks whose subject *is* the version attribute, beside what each reads
+ * it for. Nothing else may read one: four gates asked the root, two of them
+ * against a list of spellings where a floor was meant (#851). A ratchet both
+ * ways, `DECLARED` failing an unlisted reader and this table an entry that has
+ * stopped reading one.
+ * @type {{[name: string]: string}}
+ */
+const VERSIONED = {
+  'malformed-version-in-stylesheet': 'the attribute is what it reports on',
+  'missing-version-in-stylesheet': 'the attribute is what it reports missing',
+}
+
+/**
  * Each exemption table beside the question deciding whether its entries are
  * still needed, so one gate holds every table from the far side.
  * @type {Array.<{table: object, still: function(string): boolean}>}
@@ -246,6 +252,7 @@ const unshadowed = function(selector) {
 const EXEMPTED = [
   {table: COUNTING, still: (sel) => CHILDREN.test(sel) && !TEXTED.test(sel)},
   {table: EMITTED, still: (sel) => TEXTED.test(sel) && !PRESERVED.test(sel)},
+  {table: VERSIONED, still: (sel) => DECLARED.test(sel)},
 ]
 
 /**
@@ -446,12 +453,14 @@ describe('conformance', function() {
   })
   it('stands every nursery check on an open issue of its own', function() {
     assert.deepStrictEqual(
-      nursed(), NURSERY,
-      'the checks `--stable` withholds are not the checks the NURSERY table ' +
-        'of test/conformance.test.js names. A mark is a pointer at an open ' +
-        'issue reporting that check wrong, so it goes when the issue closes ' +
-        'and the tier only ever grows; a mark naming no issue asserts the ' +
-        'unfalsifiable finishedness the retired `mature` flag did (#581, #637)',
+      nursed(), {},
+      'a check carries a `nursery:` mark where the tier holds none: every ' +
+        'issue reporting one of the sixty-eight wrong about code a processor ' +
+        'accepts is closed, which is the release bar rather than a claim any ' +
+        'check is finished. A mark returning is a check reported wrong again: ' +
+        'it stands in the literal above beside the issue its own YAML names, ' +
+        'so an edited mark reddens as loudly as a stale one and the tier ' +
+        'empties again as the ticket closes (#581, #637, #851)',
     )
   })
   it('gives every rule check at least one test pack', function() {
@@ -836,8 +845,8 @@ describe('conformance', function() {
         `${drifted.join(', ')}`,
     )
   })
-  it('anchors every reference template against text at one end', function() {
-    const loose = names('corpus')
+  it('names a kind of reference the corpus linter reads', function() {
+    const foreign = names('corpus')
       .map((name) => ({
         name,
         reference: yaml.parsedFromFile(
@@ -845,21 +854,15 @@ describe('conformance', function() {
         ).reference,
       }))
       .filter((check) => check.reference)
-      .filter((check) => {
-        const stands = check.reference.indexOf('{name}')
-        return (stands > 0) ===
-          (stands + '{name}'.length < check.reference.length)
-      })
+      .filter((check) => !REFERENCES.includes(check.reference))
       .map((check) => check.name)
     assert.deepStrictEqual(
-      loose, [],
-      `${loose.join(', ')} anchors {name} against text at neither end or at ` +
-        'both, where the index in src/linters/corpus-linter.js reads the ' +
-        'name from the one side the text stands on. Against neither, the ' +
-        'mark is the empty string, which indexOf finds at every offset and ' +
-        'answers the length for past the end rather than -1, so the scan ' +
-        'never advances and the run hangs. Against both, the far side is ' +
-        'never matched and a declaration that is used is reported as dead',
+      foreign, [],
+      `${foreign.join(', ')} names a reference that is none of ` +
+        `${REFERENCES.join(', ')}, the kinds the token scan in ` +
+        'src/linters/corpus-linter.js reads off a usage value. An index ' +
+        'built for a word no scan answers holds no name at all, so every ' +
+        'declaration in the corpus is reported as dead',
     )
   })
   it('names both quotes of a literal it compares text with', function() {
@@ -915,25 +918,33 @@ describe('conformance', function() {
         'it reports for can disagree on what a version is',
     )
   })
-  it('reads @xsl:version too wherever a selector tests @version', function() {
-    const versioned = /@version/
-    for (const [kind, keys] of Object.entries(SELECTORS)) {
-      for (const name of names(kind)) {
-        const check = yaml.parsedFromFile(
-          path.join(CHECKS, kind, `${name}.yaml`),
-        )
-        for (const key of keys) {
-          if (check[key] && versioned.test(check[key])) {
+  it('reads a version attribute only where the attribute is the subject',
+    function() {
+      for (const [kind, keys] of Object.entries(SELECTORS)) {
+        for (const name of names(kind)) {
+          const check = yaml.parsedFromFile(
+            path.join(CHECKS, kind, `${name}.yaml`),
+          )
+          for (const key of keys) {
             assert.ok(
-              check[key].includes('@xsl:version'),
-              `${kind}/${name} tests @version but not @xsl:version, ` +
-                'so it misreads a simplified stylesheet',
+              !DECLARED.test(check[key] ?? '') ||
+                Object.hasOwn(VERSIONED, name),
+              `${kind}/${name} reads a version attribute in its ${key}, ` +
+                'where what a gate means is the version in force: XSLT sets ' +
+                'one on any element and a shadow `_version` spells it as ' +
+                'readily, so an answer read off the root misjudges every ' +
+                'subtree raised or lowered against it, and a list of the ' +
+                'spellings that clear a floor is a second opinion about ' +
+                'XSLT. Ask xslint:version(.), which hands back what ' +
+                'versionOf answers and NaN where nothing declares a version, ' +
+                'clearing no floor and so leaving the report unmade. Only a ' +
+                'check reporting on the attribute itself reads one, and it ' +
+                'says so in the VERSIONED table here (#618, #851)',
             )
           }
         }
       }
-    }
-  })
+    })
   it('cannot let a pack input hold nothing of XSLT', function() {
     for (const dir of fs.readdirSync(RESOURCES)
       .filter((one) => one.endsWith('-packs'))) {

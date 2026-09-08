@@ -223,7 +223,7 @@ before: 268 descriptions in 65 files stood past that bar, the dearest of them
 142 lines, so a derivation grew wherever one was written the way the cross-file
 linter's cost grew before #755 (#832). The bar is not a licence to respell what
 a block cannot hold as a `/* */` beside it either — such prose is cut and not
-moved, the dearest chain of guides standing at 0.93 of `LOADED` and reddening
+moved, the dearest chain of guides standing at 0.91 of `LOADED` and reddening
 well under it, so a guide is no place to put it either and the ticket number
 left standing in the surviving sentence is what keeps a derivation
 recoverable.
@@ -288,8 +288,8 @@ reach for.
 Nothing that depends on the outer loop alone is computed in the inner one, and a
 `no-restricted-syntax` selector holds the one place that mattered: a call to
 `referencing` inside a `usages` scan in `src/linters/corpus-linter.js`. The
-names a usage value holds depend on that value and the check's template, not on
-the declaration being judged, so reading them per (declaration, usage) pair
+names a usage value holds depend on that value and the kind of reference the
+check names, not on the declaration being judged, so reading them per pair
 reads them across the product of the two — 1207 names against 72,077 attributes
 over DocBook-XSL, which is 98% of what that stage spent. Build the index once
 with `indexed` and ask it for the declaration's name. The selector named
@@ -462,10 +462,12 @@ refused, an `xsl:select` or an `xsl:match` being an attribute no version allows
 there, and never a defect invented against working code.
 
 XPath binds prefix `xsl:` to the XSLT namespace; `xslint:` is where our own
-functions live, and `src/xpath.js` registers one: `xslint:normalize-space`,
+functions live, and `src/xpath.js` registers two: `xslint:normalize-space`,
 which every selector of ours spells because the engine's own collapses
-JavaScript's whitespace rather than XML's `S` — the note atop that module
-says which six of the seven selectors that cost, and how (#881).
+JavaScript's whitespace rather than XML's `S`, and `xslint:version`, the
+version in force at a node, which is a function for the same reason — no
+selector over the document answers it (#881, #851). The note atop that module
+says which six of the seven selectors the first cost, and how.
 
 ## Check formats
 
@@ -483,7 +485,7 @@ Cross-file rule — `src/resources/checks/corpus/<name>.yaml`:
 ```yaml
 declaration: <XPath selecting declared nodes that carry an @name>
 usage: <XPath selecting the used names, across the whole corpus>
-reference: "<optional substring template; {name} stands for the @name>"
+reference: <optional call|variable — the kind of reference to read>
 scoped: <optional true>
 reachable: <optional true>
 severity: warning|error
@@ -491,8 +493,12 @@ message: <one sentence>
 ```
 
 Without `reference`, a `declaration` is a defect when its `@name` matches no
-`usage` value by exact identity. With `reference`, the match is by substring:
-plain (defect when the string occurs nowhere, counting the declaration's own
+`usage` value by exact identity. With `reference`, every `usage` value is lexed
+as XPath and the `@name` is looked for among the names its tokens reference: a
+`call` is a name opening a bracket or standing behind a `#`, a `variable` a name
+standing behind a `$`. So a name inside a string literal or a comment references
+nothing, and a gap in front of the bracket hides nothing (#498). The match is
+plain (a defect when nothing references the name, counting the declaration's own
 body), `reachable: true` (follows the call graph — a defect when referenced yet
 never reached from outside every declaration body), or `scoped: true` (counts
 usage only within the declaration's subtree, or an importing file). Because usage
@@ -565,56 +571,62 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
 ### Mandatory rules
 
 - **Version-dependence.** If a check's detection or fix is valid only for
-  certain XSLT versions, the version test is part of the check. Read the version
-  off the record — `found.version`, which `expressionsOf` derives once per node
-  — and test it with `since` against a floor such as its `MODERN` (code) — a
-  version gate is a lower bound, not a list of spellings, so a construct 2.0
-  introduced is present in 4.0 too, and a hazard that begins where backwards
-  compatible behaviour stops only deepens after (#619) — never
+  certain XSLT versions, the version test is part of the check. Read the
+  version off the record — `found.version`, which `expressionsOf` derives once
+  per node — and test it with `since` against a floor such as its `MODERN`
+  (code) — a version gate is a lower bound, not a list of spellings, so a
+  construct 2.0 introduced is present in 4.0 too, and a hazard that begins
+  where backwards compatible behaviour stops only deepens after (#619) — never
   `documentElement.getAttribute('version')`, which an ESLint rule bans because
   it misses a simplified stylesheet's `xsl:version`. What a record carries is
-  the version at the **node under judgement**, not the document's: `version` may
-  sit on any XSLT element and `xsl:version` on any literal result element, each
-  setting the version of its own subtree, so a document-wide answer misjudges a
-  template raised or lowered against its root (#618). A `no-restricted-syntax`
-  selector bans the call anywhere but there, since it remembers nothing and
-  `parseOf` stood in front of the parse memo: every `gathered` and `isValid` the
-  expression tier issued paid a fresh climb, 950,645 of them over DocBook-XSL
-  and 6% to 10% of a staged run (#845). `versionOf` canonicalises the value too
-  — `version` is an `xs:decimal`, so `2`, `2.0` and `2.00` are one version and
-  answer `2.0` — and hands back anything it cannot place, which
-  `malformed-version-in-stylesheet` reports rather than let a gate guess (#614).
-  A declarative rule reads it structurally — `(/xsl:stylesheet |
-  /xsl:transform)/@version` on an XSLT root, `@xsl:version` on any other root (a
-  literal result element standing in as the stylesheet) — never a bare
-  `/*/@version` (blind to a simplified root) or a presence fallback `(@version |
-  @xsl:version)` (an SVG root's own `version` defeats it);
-  `test/conformance.test.js` fails a selector naming `@version` without
-  `@xsl:version`. That gate read only a *comparison* until #608 — its pattern
-  was `@version` followed by `=` — so `missing-version-in-stylesheet`, which
-  asks `not(@version)`, slipped past the very rule written to catch it and never
-  asked a simplified root for the `xsl:version` XSLT requires of it. It matches
-  any mention of `@version` now, presence test included. Fork on the
-  *namespace*, not on the two root names: `xsl:package` is a third XSLT root and
-  takes the plain `version` as much as `xsl:stylesheet` does, so a rule reading
-  `self::xsl:stylesheet or self::xsl:transform` demands `xsl:version` of a
-  package that already declares its version correctly. A fix follows the same
-  fork: `missing-version-in-stylesheet` writes a plain `version` on any XSLT
-  root and the namespaced one on a simplified root, under whichever prefix that
-  document binds — read with `lookupPrefix`, never assumed to be `xsl`. Where
-  check and fixer fork differently the pair is worse than either alone: this one
-  reported a package and then wrote a second `version` beside its first, turning
-  a valid module into a file no parser loads. A non-XSLT root is not a
-  simplified stylesheet on the strength of holding an `xsl:*` either — an
-  *embedded* stylesheet (XSLT 1.0 §2.7) is data around a real module root, which
-  declares its own version, so the else branch excludes a root holding one:
-  `not(.//(xsl:stylesheet | xsl:transform | xsl:package))`, one union step
-  rather than a descendant scan per name. Never emit a fix the declared version
-  cannot run; emit the version-appropriate form instead (`count(x) > 0` ->
-  `exists(x)` on 2.0+, `boolean(x)`/`x` on 1.0). A version-sensitive check with
-  no version guard is a bug. Verify a version-based *exclusion* fires on the
-  versions where its premise does not hold — an inert 2.0 attribute in a 1.0
-  sheet is still a defect.
+  the version at the **node under judgement**, not the document's: `version`
+  may sit on any XSLT element and `xsl:version` on any literal result element,
+  each setting the version of its own subtree, so a document-wide answer
+  misjudges a template raised or lowered against its root (#618). A
+  `no-restricted-syntax` selector bans the call anywhere but there, since it
+  remembers nothing and `parseOf` stood in front of the parse memo: every
+  `gathered` and `isValid` the expression tier issued paid a fresh climb,
+  950,645 of them over DocBook-XSL and 6% to 10% of a staged run (#845).
+  `versionOf` canonicalises the value too — `version` is an `xs:decimal`, so
+  `2`, `2.0` and `2.00` are one version and answer `2.0` — and hands back
+  anything it cannot place, which `malformed-version-in-stylesheet` reports
+  rather than let a gate guess (#614). A declarative rule asks
+  `xslint:version(.)`, which hands it what `versionOf` answers at the node
+  under judgement and `NaN` where nothing over that node declares a version —
+  a floor no `NaN` clears, so what is undeclared or malformed leaves the
+  report unmade rather than guessed at. `test/conformance.test.js` refuses a
+  selector naming a version attribute at all, in the two spellings XSLT gives
+  it and the shadow form each wears, and exempts the two checks reporting
+  **on** the attribute on a table beside it: four gates read `@version` off
+  the root as text, so a `_version` went unread and a version declared on a
+  template was judged by its root's (#618, #851). Those two read it
+  structurally — `(/xsl:stylesheet | /xsl:transform)/@version` on an XSLT
+  root, `@xsl:version` on any other root (a literal result element standing in
+  as the stylesheet) — never a bare `/*/@version` (blind to a simplified
+  root), a presence fallback `(@version | @xsl:version)` (an SVG root's own
+  `version` defeats it), or a comparison alone, which is what the gate before
+  this one read until #608 and how `missing-version-in-stylesheet`, which asks
+  `not(@version)`, slipped past the rule written to catch it. Fork on the
+  *namespace*, not on the two root names: `xsl:package` is a third XSLT root
+  and takes the plain `version` as much as `xsl:stylesheet` does, so a rule
+  reading `self::xsl:stylesheet or self::xsl:transform` demands `xsl:version`
+  of a package that already declares its version correctly. A fix follows the
+  same fork: `missing-version-in-stylesheet` writes a plain `version` on any
+  XSLT root and the namespaced one on a simplified root, under whichever
+  prefix that document binds — read with `lookupPrefix`, never assumed to be
+  `xsl`. Where check and fixer fork differently the pair is worse than either
+  alone: this one reported a package and then wrote a second `version` beside
+  its first, turning a valid module into a file no parser loads. A non-XSLT
+  root is not a simplified stylesheet on the strength of holding an `xsl:*`
+  either — an *embedded* stylesheet (XSLT 1.0 §2.7) is data around a real
+  module root, which declares its own version, so the else branch excludes a
+  root holding one: `not(.//(xsl:stylesheet | xsl:transform | xsl:package))`,
+  one union step rather than a descendant scan per name. Never emit a fix the
+  declared version cannot run; emit the version-appropriate form instead
+  (`count(x) > 0` -> `exists(x)` on 2.0+, `boolean(x)`/`x` on 1.0). A
+  version-sensitive check with no version guard is a bug. Verify a
+  version-based *exclusion* fires on the versions where its premise does not
+  hold — an inert 2.0 attribute in a 1.0 sheet is still a defect.
 - **Root-robustness.** A declarative rule that anchors on the stylesheet root must
   match both spellings: `(/xsl:stylesheet | /xsl:transform)[...]`, never
   `/xsl:stylesheet[...]` — they are exact synonyms in every version. Broaden a
@@ -702,9 +714,11 @@ Then run `npx grunt checks`, `npm test`, `npm run coverage`, and
   a predicate stands outside of, nor a **prefixed** wildcard, `xsl:*` being every
   bucket the walk holds under that URI rather than one; a cross-file check
   answers to a gate with no list at all, every one of its selectors being served
-  and a fifth belonging in that shape too. What keeps the four out is one shape
-  in each: a descending **predicate**, the axis being the root itself, one node,
-  and everything the selector costs standing inside the brackets.
+  and a fifth belonging in that shape too. What keeps three of the four out is
+  one shape: a descending **predicate**, the axis being the root itself, one
+  node, and everything the selector costs standing inside the brackets. The
+  fourth carries that shape in one arm of a union whose other arm the walk
+  serves, and a union is served whole or not at all (#705).
 - **Fix in the same change.** If a check is fixable, land the fix with the
   detection — never defer it. A declarative rule gets a `node => fix` builder in
   `src/fixers.js`; a code-based linter attaches the `fix` to its defect. Declare
@@ -903,11 +917,13 @@ the 22 and could only ever ask whether the string appeared.
 - **Suppress**: `xslint --suppress=<rule-substring>` matches names across every
   validator and linter.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
-  **nursery**, the nine of sixty-eight checks an open issue reports wrong
-  about code a processor accepts. Each says so itself, in a `nursery:` mark
+  **nursery**, the checks an open issue reports wrong about code a processor
+  accepts — none of the sixty-eight since #851, which is the release bar and
+  no claim that a check is finished. Each says so itself, in a `nursery:` mark
   opening with that issue's number, so the tier is derived from the tree and
-  grows as tickets close. A check the config grades **verbatim** is re-admitted;
-  a glob grades and vouches for nothing (#581).
+  empties as tickets close. A check the config grades **verbatim** is
+  re-admitted; a glob grades and vouches for nothing, and the run says which
+  check it leaves withheld (#581, #851).
 - **Config**: `.xslint.yml` (found by walking up, or `--config <path>`) can turn
   rules `off`, re-grade severity, `exclude:` file globs, and default
   `max-warnings`/`log-level`/`quiet`/`stable`. Flags override the file overrides
@@ -975,19 +991,19 @@ one of them.
 | `src/selectors.js` | `splitOf` — a declarative selector parted into the names a shared walk can serve as its axis and the tail the engine must answer; `chosen`, `valued` |
 | `src/predicates.js` | `predicateOf` — what one predicate of a served selector answers of a candidate, off the walk rather than the engine, or nothing where the engine must answer it |
 | `src/attributes.js` | `expressionsOf` — every expression a stylesheet carries; `PATTERNS`, and `whole` for a linter that narrows to one attribute |
-| `src/xsl-version.js` | `versionOf` and `since` — the version in force at a node, and a lower-bound gate over it |
+| `src/xsl-version.js` | `versionOf`, `numbered` and `since` — the version in force at a node, as text and as the number a declarative floor compares, and a lower-bound gate over it |
 | `src/tree.js` | One pass over a document, remembered against it: `walked`, `named`, `attributed`, `ranked`, `holding` |
 | `src/comparisons.js` | `comparedToZero` — the shared scan for a call compared with `0`/`1` (count, string-length) |
 | `src/booleans.js` | `coerced` and `unwrapped` — where nothing but an effective boolean value is taken, and what may stand there instead |
-| `src/expressions.js` | `enclosed` — the expressions an attribute value template holds in its braces |
-| `src/tokens.js` | Positioned XPath lexer (`tokenized`, `TOKENS`), preserving whitespace; owns `GAP`, `TRIVIA`, `OPAQUE`, `NAMED`, and `normalized`, the gap-collapsing XPath defines and the engine widens |
+| `src/expressions.js` | `enclosed` — the expressions an attribute value template holds in its braces; `staticOf`, what one names before a processor runs |
+| `src/tokens.js` | Positioned XPath lexer (`tokenized`, `TOKENS`), preserving whitespace; owns `GAP`, `TRIVIA`, `OPAQUE`, `NAMED`, `unquoted`, and `normalized`, the gap-collapsing XPath defines and the engine widens |
 | `src/grammar.js` | `parsed` and `matched` — the XPath 3.1 expression grammar and the pattern grammar, as recursive descent, at the version in force |
 | `src/syntax.js` | The one door between a record and its parse: `parseOf`, `isValid`, `gathered`, `textOf`, `calls`, `filters` |
 | `src/import-graph.js` | Resolves `xsl:import`/`xsl:include` hrefs: `importsOf`, `graphOf` |
 | `src/fixers.js` | Maps a declarative check name to a `node => fix` builder |
 | `src/fixes.js` | Shared fix builders reading the raw source: `deletion`, `substitution`, `excision`, `standsAt` |
 | `src/fixer.js` | Applies a defect's `fix` to source (decode-walk, verify-before-apply, end-to-start) |
-| `src/xpath.js` | The fontoxpath environment, and what we add to it: `PREFIXES`, the two evaluators, `satisfies`, `compiles`, and the `xslint:normalize-space` every selector of ours spells |
+| `src/xpath.js` | The fontoxpath environment, and what we add to it: `PREFIXES`, the two evaluators, `satisfies`, `compiles`, and the two functions a selector of ours reaches for, `xslint:normalize-space` and `xslint:version` |
 | `src/helpers.js` | XML parsing (expands internal-subset entities), YAML parsing, file recursion |
 | `src/resources/checks.json` | Every check as a run reads it, built from the YAML; never edited by hand |
 | `src/logger.js` | 4-level logger |

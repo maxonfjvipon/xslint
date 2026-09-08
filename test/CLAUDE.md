@@ -519,7 +519,9 @@ the bracket of `malformed-version-in-stylesheet`, whose two arms open on `//@ver
 `//@xsl:version` and needed both halves in one change, and five until its wildcard phase keyed a
 bucket on the namespace alone and `text-outside-xsl-text` came off: so no union of any spelling, no
 anchor, no attribute and no *prefixed* wildcard is a reason to be on the table any longer, and what
-is left is one shape four times over. Fifteen was the count before #556 gave
+is left is one shape three times over beside a fourth where it stands in one arm of a union: #705
+gave `missing-version-in-stylesheet` a descendant arm for the embedded module nothing judged, and
+a union is served whole or not at all. Fifteen was the count before #556 gave
 `using-disable-output-escaping` an element test, which took it off the table by making it servable
 rather than by anybody editing the list. A structural gate rather than a share
 bar, because a bar can only notice the cost after a selector has been written the broad way: a check
@@ -625,13 +627,31 @@ went green. A table with its ratchet also came to 31 lines where the cap left 13
 gate is also what brought `xml:space` into
 `SHADOWLESS`, `ancestor::*[@xml:space][1]` being a bare clause the negated half never read.
 
-A third group wants the value for the same reason and can only go quiet, never invent a defect,
-so it stays open. The version gates of `empty-variable`, `function-use-in-xslt-1` and
-`modern-construct-in-xslt-1` read `@version` as text; `versionOf` asks `getAttributeNS` then
-`getAttribute`, neither reaching a `_version`; and `importsOf` tests `hasAttribute('href')`, so a
-shadow href builds no edge and leaves that module out of every cross-file check. All of it wants
-a static evaluator for an attribute value template, which #851 holds now and a `nursery:` mark
-on all three names (#851).
+A third group wanted the attribute's **value** rather than its writer, and that is the rest
+of #851. Four version gates climbed to the nearest element declaring one and then read
+`@version` for the value, so a shadow `_version` answered the presence test #849 had just given
+them and gave `number(...)` nothing: `NaN` clears no floor, so `empty-variable`,
+`function-use-in-xslt-1`, `modern-construct-in-xslt-1` and
+`with-param-use-in-invalid-parent-node` all went quiet over a module Saxon compiles. Beside
+them, `importsOf` tested `hasAttribute('href')`, so a shadow href built no edge and left that
+module out of every cross-file check, and `byName` took a usage value for the name itself, so a
+`_name` holding `{$called}` was matched as those nine characters. What all six wanted is one
+answer no selector reaches — XSLT sets a version on any element — so `xslint:version` is a
+function of ours, and `staticOf` reads what an attribute value template names before a processor
+runs: a plain value is its own, a braced literal is what it quotes, anything else is the
+processor's. Which way each fails is deliberate and opposite: a version nothing places is `NaN`
+and the report goes unmade, where a usage nothing places silences a cross-file check over the
+whole corpus, a name a run works out being a name any declaration might carry.
+
+So the gate turns forward, on the ratchet the tables above are: `DECLARED` refuses a selector
+naming a version attribute in any of the four spellings, and `VERSIONED` names the two checks
+whose subject *is* that attribute, `malformed-version-in-stylesheet` and
+`missing-version-in-stylesheet`, each of which reddens when its own selector stops reading one.
+What stood there asked the opposite — that a selector naming `@version` name `@xsl:version`
+beside it, widened from a comparison to a presence test at #608 — which is a list of spellings
+where every check but those two means a floor. The nursery empties with it: `nursed()` is held
+to holding nothing, so a check reported wrong again brings its mark back beside the issue in the
+literal there, and the four checks these marks withheld are in the report at last (#581, #851).
 
 The line cap is held from a third side since #825. A file the cap is lifted off must have its
 length stated in a guide, and the number must be the one ESLint reads: `SPRAWLING`'s membership was
@@ -650,125 +670,20 @@ file stands at today, and a history spelled the other way is a stale claim it ri
 
 ## `test/guides.test.js`
 
-The size and the shape of the guides themselves, and so the one gate whose subject is this
-repository's own documentation (#821). The root guide held 198,202 characters before it, most of
-them a per-module archive loaded on every turn, including every turn that never opens the module;
-and the gate that read that file then — holding its counts of `ATTRIBUTES` and `PATTERNS` to the
-lists in the code — said nothing at all about its size, in the file that says every convention
-must be machine-enforced. What answers it is a relocation and never a summary, those derivations
-being what stops a later session loosening a bar that was placed on evidence: each note moved into
-the `CLAUDE.md` of the directory its module sits in, where it arrives when that directory is
-opened, and the root keeps the rules, the bars, and one line per file. `LOADED` is the 150,000
-characters the harness warns past, and what arrives against it is a **chain** and not a pair: the
-root guide, and the guide of every directory on the way down to a file the turn touches, each
-injected once. That was measured rather than assumed — two throwaway guides planted at
-`src/resources/` and `src/resources/motives/`, neither of them ever read as a file, both arrived
-the moment a motive under them was opened. The first spelling of the bar weighed the root against
-the dearest single guide instead, which is a whole directory short: it read 130,933 and called
-that 0.87 of the bar while a turn touching `src/linters/` was loading 157,504 and over it. So the
-two dearest notes moved one step further down, out of `src/CLAUDE.md` and into the top of
-`src/grammar.js` and `src/syntax.js` — 24,681 characters. A turn touching `test/` ran it close
-ever since, until #811's wildcard phase moved this guide's nightly-tier note into
-`test/budget.test.js`; the dearest reads 139,731, which is 0.93, and is `src/linters/`'s once
-more. What answers a chain reaching the bar is that move again, a module's derivation into the
-file-header note of the module itself, and never a bar widened to fit what has grown past it: a
-docblock holds five lines of description since #832, so prose that has outgrown a guide does not
-simply move into one instead. A `CEILING` of half the bar stood beside it until it
-was seen to be a gate no tree could fail: the root stands in every chain, so the chain holding it
-above weighs each other guide against the bar less what stands over it — 23,326 for
-`src/linters/CLAUDE.md`, where half of the bar is 75,000 — and holds the root itself to 80,546, a
-number derived from the dearest chain rather than chosen. A gate no tree can fail is removed and
-not kept (#750, #660). All four of those figures — the chain, its ratio, and the two allowances —
-follow from three file sizes, so one guide growing moves every one of them, and none of them
-turned red when one did: #811's fourth phase added 3,421 characters to `src/CLAUDE.md` and left
-the chain reading 140,286 where two documents still said 136,418, the allowances 3,868 out, and
-the ratio 0.94 where three places said 0.91. The bar itself was quiet throughout, as it is until
-150,000, which is why this is the third time the same class of figure has drifted. `DERIVED` in
-`test/guides.js` holds each of them now, red from both sides in the way `SPRAWLING` and
-`UNINDEXED` are: a figure the tree disagrees with fails, and so does a figure standing in a
-document the row does not name, since a claim nobody is reading is not a claim being kept. That
-second half is a **set** and not an `any`, which is the whole of it — the chain and its ratio are
-carried twice, `test/CLAUDE.md` having spelled its half "the dearest chain is that same one at"
-where `test/guides.js` says "the dearest reads", so a gate asking whether *some* file still
-matches was satisfied by the untouched one. Rewording only the first, to say 136,418 and 0.91
-again, left the figure wrong by 3,868 and the ratio by 0.03 with the suite reading 16 passing: the
-drift gate had
-stopped reading that sentence and the anchor gate was happy off the other file. Each row therefore
-names every file expected to carry it and the matched set is compared whole, so rewording either
-carrier fails, and so does the claim appearing in a document no row names. Growing a guide by
-4,000 characters fails all five rows at once. The asking is `matchAll` and never `test`, a global
-pattern leaving `lastIndex` where it stopped and answering `false` to the very next question about
-the same prose. The paragraph above stopped being advice while this change was being written: #846
-grew `src/linters/CLAUDE.md` by 3,113 and the merged chain read 150,437, so the bar failed on a tree
-whose two authors had each stayed under it. The prescribed relief is the one taken —
-`src/predicates.js`'s derivation went into the file-header note of `src/predicates.js`, 2,507
-characters out of the chain and none out of the record — which is the third note to move that way
-after `src/grammar.js` and `src/syntax.js`, and the first to move because the bar said so rather
-than in the change that wrote it. It said so a merge too late, though, which is the half #844
-answers: a gate that fires on the breach fires where the relief no longer fits, the tree having to
-be red for as long as a relocation takes to land. `ROOM` moves it off the breach, 10,000 characters
-of headroom, so a chain reddens at 140,000 while there is still room to answer it. It moves the bar
-rather than standing a second one beside it: a breach gate left at 150,000 could not fire while this
-one is green, which is what took `CEILING` out, so the two are one gate whose message names both
-numbers. It is measured off the tree's own growth rather than picked: over the 45 merges
-between #823 giving the chain its room back and this one, the most a day of ordinary work added to
-the dearest chain was 5,298, and 10,000 is 1.89 of that — inside the half-again-to-twice band every
-bar here answers to, and held to it from both sides by `GROWN`, since a margin under half again of a
-day is one a day crosses without warning and one past twice it reddens a tree with room to spare. A
-day is the unit because that is what a relocation takes to land, this tree merging three to eight
-times in one. Ten notes moved to make the bar quiet — `xpath-linter.js`, `root-template-linter.js`,
-`corpus-linter.js` and `output-linter.js` out of `src/linters/CLAUDE.md`, and `scaling.test.js`,
-`predicates.test.js`, `helpers.js`, `grammar-corpus.test.js`, `grammar-shapes.test.js` and
-`workflows.test.js` out of this
-one. An eleventh was refused by the valve rather than chosen against: `test/conformance.test.js` stands
-at 992 lines and its note is 150 more, and `max-lines` counts comments, so a section can outgrow the
-file it is about and relief has a floor — what answers that one is the note being cut, not moved.
-What that leaves is 269 characters of headroom, off a chain that is `src/linters/`'s own once
-more rather than this file's: the merge behind #811's bracket phase breached the bar by 844 with
-neither branch having crossed it alone, and the root's `src/xslint.js` derivation moved into
-`src/CLAUDE.md` to answer it — 2,147 characters out of every chain but the three standing under
-`src/`, of which #877 has spent 1,910 on what it derives there. So the relief lasted one ticket,
-and the merge behind the wildcard phase breached it again by 162 with neither branch having
-crossed it alone either — the same arithmetic a second time, which is what a shared budget does
-to two branches that each measured themselves alone. What answered it was the move again, on the
-dearest note this guide holds rather than on the newest, or a change's own note where that change
-fires it: the nightly tier's derivation stands at the top of `test/budget.test.js` since, 245
-characters out of every chain through `test/` to date and none out of the dearest without it.
-The relief that bought lasted one ticket again, and the third breach is the plainest of the
-three: #884 gave `scripts/` a third script and so the root a third index row, and the root stands
-in every chain, so 141 characters written there put `src/linters/`'s chain 34 past a bar the dearest
-had stood 107 short of. A row nobody would call prose is enough, which is the whole of what a
-shared budget means. The move again answered it, on the dearest note that guide held rather than
-on the newest — `output-linter.js`'s derivation into the file-header note of `output-linter.js`,
-3,276 characters out of that chain and none out of the record.
-That is what the chain carries less of against what it carried before the move, and not what the
-note weighs where it landed — a move out of a guide and into a docblock pays the comment prefixes
-and the reflow both, where the guide-to-guide move above is one number for either reading. The
-headroom is one of the same class, the fifth of them and the one that proves the point twice over —
-it stood outside the table and drifted 418 behind the rows in it with every one of them green, so it
-has a row of its own since #856, and the relief has one beside it since this phase — a live figure
-in the very paragraph about a live figure drifting being the one thing that cannot stand outside the
-table.
-The index answers to the tree from both sides, every path it names existing and every module under
-`src/` being named by a row — the twenty-one linters by one of them, the `*` standing for a name and
-never for a directory — and a note answers to the index and to its own directory both, so a
-derivation the root has stopped pointing at turns red, and so does one standing where the reader who
-needs it will never load it. `test/guides.js` is the walk itself rather than a list of the five,
-since a guide left off a hand-written list would take its claims out of every gate at once, and the
-reading of a claim stands beside the walk: `worded` flattening a wrapped paragraph into one line,
-`DOCUMENTS` naming the guides, the README and the release notes together, `NEARBY` bounding how
-far past a name a number may stand and still be a claim about it. Both gates ask it, so a count
-relocated into a guide is judged where it went, and so is the length a guide states of the file
-the line cap is lifted off, which is `test/conformance.test.js`'s to ask beside the cap it is an
-exemption from. The counts came the other way at that same sitting: `ATTRIBUTES` and `PATTERNS`
-are held to the lists in the code from here now, the file that held them having reached the 1000
-lines it caps every other file at (#825).
+Its derivation stands at the top of `test/guides.test.js` itself, for the reason it gives there:
+it was the dearest note this guide could move — `test/conformance.test.js`'s is refused by the
+line cap on the file it is about — and the chain through `test/` had reached the bar again, this
+change being one whose own prose put it there (#821, #851).
 
 ## `test/strictness.js`
 
 `insists(xpath)` — whether fontoxpath refuses an expression over its own strictness rather than over
 anything malformed in it: a `namespace::` axis, ExprWhitespace around an axis separator,
-ExprWhitespace inside a node test (#615, #639). It is the account that replaced the respelling
+ExprWhitespace inside a node test, and ExprWhitespace behind the `$` of a variable reference
+(#615, #639, #498) — that last class arbitrated rather than assumed, SaxonJ-HE 12.9 answering
+`select="$ spaced"` in a 2.0 sheet where xsltproc refuses it, XPath 1.0 making
+`VariableReference` a single ExprToken and 2.0 two terminals a gap may stand between. It is the
+account that replaced the respelling
 retry #738 deleted, and it is a test-side module because a run has no use for it — nothing in `src/`
 asks what one engine insists on. Read off the token stream, which is what tells the axis of
 `1-namespace::x` from the one name of `a-namespace::x`, the lexer having already decided which a `-`

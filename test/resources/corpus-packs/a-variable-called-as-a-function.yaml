@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: unused-variable
+found:
+  amount: 1
+  positions: [ [ 0, 6, 3 ] ]
+inputs:
+  - |-
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">
+      <xsl:variable name="called" select="abs#1"/>
+      <xsl:variable name="buried" select="abs#1"/>
+      <xsl:variable name="thrice" select="abs#1"/>
+      <xsl:variable name="dead" select="abs#1"/>
+      <xsl:template match="/">
+        <xsl:value-of select="$called(41)"/>
+        <xsl:value-of select="concat('a', $buried(41))"/>
+        <xsl:value-of select="$thrice(1) + $thrice(2) + $thrice(3)"/>
+      </xsl:template>
+    </xsl:stylesheet>

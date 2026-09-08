@@ -4,6 +4,7 @@
  */
 
 const {holding} = require('./tree')
+const {staticOf} = require('./expressions')
 
 /**
  * The XSLT namespace, which distinguishes a stylesheet root from a literal
@@ -77,10 +78,10 @@ const since = function(version, floor) {
 
 /**
  * The XSLT version the given element declares, or empty when it declares none.
- * An XSLT element spells it `version` and anything else — a literal result
- * element standing in as the stylesheet, or one raising a subtree — spells it
- * `xsl:version`, so the two are told apart by namespace. A serializing
- * element's belongs to the output.
+ * An XSLT element spells it `version`, or `_version` as any attribute of one
+ * may be spelled; anything else — a literal result element standing in as the
+ * stylesheet — spells it `xsl:version`, which has no shadow form, that being
+ * what makes such an element a stylesheet. A serializing element's is output's.
  * @param {Node} element - The element to read
  * @return {string} - The declared version, or empty
  */
@@ -90,7 +91,8 @@ const declaring = function(element) {
   if (xslt && element.localName === SERIALIZING) {
     declared = ''
   } else if (xslt) {
-    declared = element.getAttribute('version')
+    declared = element.getAttribute('version') ||
+      staticOf(element.getAttribute('_version') || '')
   }
   return declared
 }
@@ -114,6 +116,24 @@ const versionOf = function(node) {
   return canonical(found)
 }
 
+/**
+ * The version in force at a node as a number, or `NaN` where none is declared
+ * or what is declared is no decimal. A declarative gate compares it as a floor
+ * and `NaN` clears no comparison, so an absent or malformed version leaves a
+ * report unmade rather than inventing one against a stylesheet whose processor
+ * would otherwise have to be guessed at (#851).
+ * @param {Node} node - Any node of a stylesheet, or the document itself
+ * @return {number} - The version in force, or `NaN`
+ */
+const numbered = function(node) {
+  const version = versionOf(node)
+  let found = NaN
+  if (DECIMAL.test(version)) {
+    found = Number(version)
+  }
+  return found
+}
+
 module.exports = {
   XSLT,
   MODERN,
@@ -121,4 +141,5 @@ module.exports = {
   DECIMAL,
   since,
   versionOf,
+  numbered,
 }

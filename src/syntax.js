@@ -117,7 +117,7 @@
 
 const {parsed, matched} = require('./grammar')
 const {holding} = require('./tree')
-const {TOKENS, TRIVIA} = require('./tokens')
+const {TOKENS, TRIVIA, unquoted} = require('./tokens')
 const {KNOWN} = require('./xsl-version')
 
 /**
@@ -359,8 +359,7 @@ const stringOf = function(found, node) {
   const [token] = tokensOf(found, node)
   let string = null
   if (node.kind === 'literal' && token.type === TOKENS.STRING) {
-    string = token.value.slice(1, -1)
-      .replaceAll(`${token.value[0]}${token.value[0]}`, token.value[0])
+    string = unquoted(token)
   }
   return string
 }

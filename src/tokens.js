@@ -140,6 +140,20 @@ const normalized = function(text) {
 const QUOTES = '"\''
 
 /**
+ * The text a string literal holds: the delimiters dropped and the doubling
+ * XPath escapes one with undone. Whichever quote opens the literal is the one
+ * that doubles, so the character is read off the token rather than assumed —
+ * and it is one answer here rather than one wherever a literal is read, three
+ * modules having spelled the same slice and `replaceAll` (#851).
+ * @param {{value: string}} token - A `TOKENS.STRING` token
+ * @return {string} - What the literal holds
+ */
+const unquoted = function(token) {
+  const quote = token.value.charAt(0)
+  return token.value.slice(1, -1).replaceAll(`${quote}${quote}`, quote)
+}
+
+/**
  * Numeric characters that are included in the numeric literal.
  * @type {string}
  */
@@ -793,4 +807,5 @@ module.exports = {
   GAP,
   GAPS,
   normalized,
+  unquoted,
 }
