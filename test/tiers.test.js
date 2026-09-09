@@ -38,7 +38,7 @@
  * check at all, the gate below failing the moment a bullet comes back (#898).
  */
 
-const {lint} = require('../src/xslint')
+const {lint, suffixed} = require('../src/xslint')
 const {SAFE, SUGGESTION, TIERS} = require('../src/checks')
 const {kinds} = require('../src/resources/checks.json')
 const path = require('path')
@@ -46,11 +46,19 @@ const fs = require('fs')
 const assert = require('assert')
 
 /**
- * Where a fixable check stands its fixtures: one `.xsl` per case, beside the
- * `.fixed.xsl` a fixing run is expected to leave behind.
+ * Where a fixable check stands its fixtures: one stylesheet per case, beside
+ * the fixed one a fixing run is expected to leave behind.
  * @type {string}
  */
 const FIXTURES = path.resolve(__dirname, 'resources', 'fix')
+
+/**
+ * What marks the stylesheet a fixing run is expected to write, rather than the
+ * one it is given. It stands in front of the suffix rather than being one, so
+ * it is read where it is written and holds under either spelling of a name.
+ * @type {string}
+ */
+const FIXED = '.fixed.'
 
 /**
  * Every check carrying a `fix:`, whichever of the four kinds declares it.
@@ -94,7 +102,7 @@ const tierOf = function(fix) {
 const offered = function() {
   const found = new Map()
   for (const named of fs.readdirSync(FIXTURES)) {
-    if (named.endsWith('.xsl') && !named.endsWith('.fixed.xsl')) {
+    if (suffixed(named) && !named.includes(FIXED)) {
       const file = path.join(FIXTURES, named)
       const defects = lint([
         {file: file, content: fs.readFileSync(file, 'utf-8')},
