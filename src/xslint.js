@@ -58,6 +58,46 @@
  * suite green. They spell the two out, and a gate holds the two lists to each
  * other from both sides.
  *
+ * Which directories a run *never* opens is the other half of that, and it
+ * is the walk that answers rather than the configuration. `allFilesFrom`
+ * keeps a floor of its own, `SEALED` in `src/helpers.js`: a directory named
+ * `.git` or `node_modules` is not opened whatever it was asked for, neither
+ * holding a stylesheet anybody wrote. Beside it `sheets` hands the walk
+ * `pruned`, so a directory the configuration's `exclude:` covers whole is not
+ * descended either — where until #923 every pattern was read after the walk
+ * had already paid for what it covers, `excluded` being a filter over the
+ * list and not a prune of the walk. Two checkouts of different shape measure
+ * the two halves. This one is the floor's: 445,643 of the 482,562 entries a
+ * walk visits here stand inside a `.git` or a `node_modules`, 92% of it, and
+ * the walk costs milliseconds rather than the seconds it cost reading them.
+ * The eo repository is the pattern's: 612,166 entries for the 5,031
+ * stylesheets it reports, five seconds spent before a byte of XSL was read, of
+ * which the floor takes 4,662 and the two patterns eo already configures 1,452
+ * more — 1% between them, because 595,081 of those entries stand inside a
+ * gitignored `.claude`, 52 worktrees of the same checkout. One further line of
+ * `exclude:` covering that name at any depth takes the run to 10,971 entries
+ * and 68 milliseconds, and as a post-walk filter the same line buys nothing:
+ * that is what a prune is worth over a filter, and why the half a user can
+ * reach for is the pattern rather than the floor. What neither half reaches is
+ * the rest of what a `.gitignore` names, a walk that read one being a walk
+ * that asks git what it holds.
+ *
+ * A prune must not change *what* is reported, only what a run pays to report
+ * it, so `pruned` accepts one shape: `COVERING`, the trailing `/**` that
+ * covers every file the walk would hand back from under the directory. A bare
+ * `dir` is refused deliberately — it excludes no `dir/sheet.xsl`, so pruning
+ * on it would take a reported stylesheet out of the report — and the
+ * file-level `excluded` therefore stays exactly where it stood. A gate in
+ * `test/xslint.deep.test.js` holds the pair from the sound side: no row
+ * `pruned` accepts may leave a stylesheet under it that `excluded` keeps. What
+ * no report can show is the prune itself, a directory read and dropped saying
+ * precisely what one never opened says, so the two tests that pin it reach for
+ * the only observables there are — a predicate recording what the walk asked
+ * about, and a directory `chmod`ped unreadable, which every run before #923
+ * descended and died on. And a floor is worth what it says only while there is
+ * one walk to keep it, so `test/walk.deep.test.js` refuses a `readdir`
+ * anywhere else in `src/`.
+ *
  * The exit code it sets is `process.exitCode` and never `process.exit`, which
  * ends the process where it stands and abandons every write the kernel has not
  * taken: node's stdout is asynchronous to a pipe on POSIX — synchronous to a
@@ -372,32 +412,68 @@ const suffixed = function(file) {
 }
 
 /**
- * The stylesheets a path holds: the file itself, or every one a directory has
- * under it, keeping only what a stylesheet is named.
- * @param {string} pth - Path to a stylesheet or a directory holding some
- * @return {Array.<string>} - Paths of the stylesheets found
+ * The tail a pattern wears when it covers everything a directory holds, which
+ * is the one shape that makes the directory safe to leave unopened.
+ * @type {RegExp}
  */
-const sheets = function(pth) {
-  let files
-  if (fs.statSync(pth).isDirectory()) {
-    files = allFilesFrom(pth)
-  } else {
-    files = [pth]
-  }
-  return files.filter((file) => suffixed(file))
+const COVERING = /\/\*\*$/
+
+/**
+ * A path as an exclusion glob reads it: relative to the configuration's base
+ * directory and in posix form, so the patterns stay portable.
+ * @param {string} pth - Absolute path of a file or a directory
+ * @param {string} base - Directory the globs resolve against
+ * @return {string} - What a pattern is matched against
+ */
+const slashed = function(pth, base) {
+  return path.relative(base, pth).split(path.sep).join('/')
 }
 
 /**
- * Whether a file matches any exclusion glob, compared as a path relative to the
- * configuration's base directory in posix form so the patterns stay portable.
+ * Whether a file matches any exclusion glob.
  * @param {string} file - Absolute path of a stylesheet
  * @param {Array.<string>} patterns - Exclusion globs from the configuration
  * @param {string} base - Directory the globs resolve against
  * @return {boolean} - True when the file is excluded
  */
 const excluded = function(file, patterns, base) {
-  const relative = path.relative(base, file).split(path.sep).join('/')
-  return patterns.some((pattern) => minimatch(relative, pattern))
+  return patterns.some((pattern) => minimatch(slashed(file, base), pattern))
+}
+
+/**
+ * Whether a directory is one the walk may leave unopened, which it is when a
+ * pattern excludes everything under it rather than the directory alone: a
+ * `dir/**` covers every file the walk would find there, where a bare `dir`
+ * names a path no walk ever hands back and would take the stylesheets standing
+ * under it out of a report that keeps them (#923).
+ * @param {string} dir - Absolute path of a directory
+ * @param {Array.<string>} patterns - Exclusion globs from the configuration
+ * @param {string} base - Directory the globs resolve against
+ * @return {boolean} - True when nothing under it can be reported
+ */
+const pruned = function(dir, patterns, base) {
+  return patterns.some(
+    (pattern) => COVERING.test(pattern) &&
+      minimatch(slashed(dir, base), pattern.replace(COVERING, '')),
+  )
+}
+
+/**
+ * The stylesheets a path holds: the file itself, or every one a directory has
+ * under it, keeping only what a stylesheet is named. A directory the patterns
+ * cover whole is never opened, so an exclusion costs nothing rather than the
+ * walk it then throws away (#923).
+ * @param {string} pth - Path to a stylesheet or a directory holding some
+ * @param {Array.<string>} patterns - Exclusion globs from the configuration
+ * @param {string} base - Directory the globs resolve against
+ * @return {Array.<string>} - Paths of the stylesheets found
+ */
+const sheets = function(pth, patterns, base) {
+  let files = [pth]
+  if (fs.statSync(pth).isDirectory()) {
+    files = allFilesFrom(pth, (dir) => pruned(dir, patterns, base))
+  }
+  return files.filter((file) => suffixed(file))
 }
 
 /**
@@ -568,7 +644,9 @@ const xslint = function(pths, options) {
           `a stylesheet being named ${SUFFIXES.join(' or ')}`,
       )
     } else {
-      stylesheets = [...stylesheets, ...sheets(pth)]
+      stylesheets = [
+        ...stylesheets, ...sheets(pth, config.exclude, config.base),
+      ]
     }
   }
   stylesheets = stylesheets.filter(
@@ -639,3 +717,5 @@ module.exports.fixed = fixed
 module.exports.STAGES = STAGES
 module.exports.SUFFIXES = SUFFIXES
 module.exports.suffixed = suffixed
+module.exports.excluded = excluded
+module.exports.pruned = pruned

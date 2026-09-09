@@ -54,8 +54,8 @@ three platforms and two node versions, and `corpora`, which times a real run
 The suite comes in two halves, and the line between them is a child process. A
 **deep** test starts one — it runs `xslint` or `xcop` the way a user does — and
 is named `*.deep.test.js`; every other test stays in this process. Seven files
-are deep, and they still cost most of what the suite costs: 704 of the 3065
-tests, 11 of the 16 seconds. The other 2361 finish inside one, which is why
+are deep, and they still cost most of what the suite costs: 747 of the 3204
+tests, 10 of the 16 seconds. The other 2457 finish inside one, which is why
 `npm run fast` is the loop to work in and `npm test` the one to finish on. The
 deep target runs under `mocha --parallel`, so those seven files run at once and
 the slowest of them sets the clock — `xslint.deep.test.js` alone, whose 60 tests
@@ -941,7 +941,9 @@ the 22 and could only ever ask whether the string appeared.
   rules `off`, re-grade severity, `exclude:` file globs, and default
   `max-warnings`/`log-level`/`quiet`/`stable`. Flags override the file overrides
   the defaults (`src/config.js`). Unknown keys and no-match patterns are
-  reported.
+  reported. An `exclude:` covering a whole directory (`dir/**`) also stops the
+  walk descending it, so the pattern costs nothing rather than the walk it then
+  throws away (#923).
 - **Inline directives**: XML comments `xslint-disable-next-line`,
   `xslint-disable-line`, `xslint-disable-file`, each with optional space-separated
   rule names (`src/directives.js`); an unused directive is reported.
@@ -1017,7 +1019,7 @@ one of them.
 | `src/fixes.js` | Shared fix builders reading the raw source: `deletion`, `substitution`, `excision`, `standsAt` |
 | `src/fixer.js` | Applies a defect's `fix` to source (decode-walk, verify-before-apply, end-to-start) |
 | `src/xpath.js` | The fontoxpath environment, and what we add to it: `PREFIXES`, the two evaluators, `satisfies`, `compiles`, and the two functions a selector of ours reaches for, `xslint:normalize-space` and `xslint:version` |
-| `src/helpers.js` | XML parsing (expands internal-subset entities), YAML parsing, file recursion |
+| `src/helpers.js` | XML parsing (expands internal-subset entities), YAML parsing, file recursion that opens no `.git` and no `node_modules` |
 | `src/resources/checks.json` | Every check as a run reads it, built from the YAML; never edited by hand |
 | `src/logger.js` | 4-level logger |
 | `src/output.js` | `colorful(stream)`, the one gate on coloring, and the leveled prefixed `writer` both streams are written through |

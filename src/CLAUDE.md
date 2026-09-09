@@ -590,7 +590,11 @@ XML parsing (expands internal-subset entities), YAML parsing, file recursion. `a
 each subtree on with `flatMap` rather than spreading it into a `push`, since a spread hands every
 path over as an argument and V8 caps those at roughly 125 per kilobyte of stack: this repository's
 own checkout grew to 768,731 files and every run over it died with a `RangeError` before a byte of
-XSL was read, the walk being asked before anything is filtered for `.xsl` (#758). It refuses what
+XSL was read, the walk being asked before anything is filtered for `.xsl` (#758). It opens no
+directory named `.git` or `node_modules` either, `SEALED` being the floor it keeps whatever a caller
+asked and 92% of this checkout's own entries standing inside one; what a caller turns down beside
+that floor, and the measurement under both, stands at the top of `src/xslint.js` (#923). It refuses
+what
 `@xmldom/xmldom` would repair rather than reject: the level of a diagnostic is not consulted, since
 an attribute written without quotes arrives a mere `warning` and is then invented into a value
 (#574). Which sequences a document may not hold is `forbidden`'s question rather than the parser's,

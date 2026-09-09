@@ -111,19 +111,53 @@ const parserFor = function() {
 }
 
 /**
+ * The directories a walk never opens, whatever it was asked for. Neither holds
+ * a stylesheet anybody wrote and between them they hold 445,643 of the 482,562
+ * entries a walk over this repository's own checkout visits, so the floor is
+ * the walk's own rather than a question every caller has to remember to put
+ * (#923).
+ * @type {Array.<string>}
+ */
+const SEALED = ['.git', 'node_modules']
+
+/**
+ * What a walk refuses when its caller names nothing.
+ * @return {boolean} - False, no directory being refused
+ */
+const none = function() {
+  return false
+}
+
+/**
+ * Whether a directory is one the walk leaves shut: named on the floor it keeps
+ * whatever it was asked, or turned down by the caller's own question.
+ * @param {string} dir - Absolute path of a directory
+ * @param {function(string): boolean} refuses - What the caller turns down
+ * @return {boolean} - True when it must not be opened
+ */
+const sealed = function(dir, refuses) {
+  return SEALED.includes(path.basename(dir)) || refuses(dir)
+}
+
+/**
  * Every file under a directory, recursively, in the order the entries are read
  * and with each directory's own files standing where the directory does. The
- * subtree is joined on with `flatMap` rather than spread into a `push`, a
- * spread handing each path over as an argument and V8 capping those, which
- * killed a run over 768,731 files (#758).
+ * subtree is joined on with `flatMap` rather than spread into a `push`, which
+ * killed a run over 768,731 files (#758), and a sealed directory is never
+ * opened at all rather than read and dropped after (#923).
  * @param {string} dir - Directory path
+ * @param {function(string): boolean} refuses - Whether a directory is one this
+ *  caller wants left shut, asked of its absolute path before it is opened
  * @return {Array.<string>} - Every file it holds, at any depth
  */
-const allFilesFrom = function(dir) {
+const allFilesFrom = function(dir, refuses = none) {
   return fs.readdirSync(dir, {withFileTypes: true}).flatMap((entry) => {
-    let found = [path.resolve(dir, entry.name)]
-    if (entry.isDirectory()) {
-      found = allFilesFrom(path.join(dir, entry.name))
+    const whole = path.resolve(dir, entry.name)
+    let found = [whole]
+    if (entry.isDirectory() && sealed(whole, refuses)) {
+      found = []
+    } else if (entry.isDirectory()) {
+      found = allFilesFrom(whole, refuses)
     }
     return found
   })
@@ -326,6 +360,7 @@ const yamlFromString = function(str) {
 
 module.exports = {
   allFilesFrom,
+  SEALED,
   xml: {
     parsedFromFile: fromFile('XML', xmlFromString),
     parsedFromString: xmlFromString,
