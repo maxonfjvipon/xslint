@@ -27,9 +27,9 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           today="$(date +%F)"
-          sed -i "s/0\.0\.0/${VERSION}/" package.json
-          sed -i "s/0\.0\.0/${VERSION}/" src/version.js
-          sed -i "s/0000-00-00/${today}/" src/version.js
+          npm --no-git-tag-version version "${VERSION}"
+          sed -i "s/what: '0\.0\.0'/what: '${VERSION}'/" src/version.js
+          sed -i "s/when: '0000-00-00'/when: '${today}'/" src/version.js
       - run: npm test
       - run: npm run coverage
       - name: Publish to npm via OIDC
@@ -42,7 +42,8 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           node scripts/changelog-notes.js "${VERSION}" > notes.md
-          gh release edit "${VERSION}" --notes-file notes.md \
+          gh release edit "${VERSION}" --title "${VERSION}" \
+            --notes-file notes.md \
             || gh release create "${VERSION}" --title "${VERSION}" \
               --notes-file notes.md
       - name: Trigger the downstream release cascade
