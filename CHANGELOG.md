@@ -17,7 +17,10 @@ publication date only; detailed notes begin with the Unreleased section.
   nothing failed — the stamp runs after `npm install`, and `npm publish`
   installs no devDependencies. The field is `npm version`'s to write now, that
   command knowing which key it owns, and the two substitutions left over
-  `src/version.js` are held to reaching one place each. The release notes were
+  `src/version.js` are held to reaching one place each — beside a third gate
+  reading that module's own placeholders and holding each to exactly one
+  stamp, so a substitution deleted or retooled cannot pass by leaving the
+  other two nothing to weigh. The release notes were
   the other half: rultor publishes a release a minute before its build ends and
   writes the body again at the end, so the step bound to the tag push wrote the
   changelog and lost it — 0.0.12 and 0.1.0 carry rultor's commit log where
