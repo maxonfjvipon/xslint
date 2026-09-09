@@ -286,6 +286,16 @@ were waiting for a large enough corpus. An array literal is exempt because it
 spends no argument per element, so `[...one, ...two]` is the composition to
 reach for.
 
+What names a stylesheet is `SUFFIXES` in `src/xslint.js`, the two spellings
+`.xsl` and `.xslt`, asked through `suffixed` — a selector bans either suffix
+spelled into an `endsWith` or an equality anywhere in the repository, asking
+whether a string *ends* in one and never whether it spells one alone, a
+composite such as `.fixed.xsl` being how the third instance spelled it. One
+hard-coded spelling at the discovery filter left a `.xslt` named on the command
+line unread, reported as `Processed files: 0` and `No defects found` with a
+zero exit, and three sweeps over this tree's own fixtures carried the same
+literal (#924).
+
 Nothing that depends on the outer loop alone is computed in the inner one, and a
 `no-restricted-syntax` selector holds the one place that mattered: a call to
 `referencing` inside a `usages` scan in `src/linters/corpus-linter.js`. The

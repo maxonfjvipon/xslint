@@ -27,6 +27,37 @@
  * units put it in front, DocBook at its 81st file and line 698, DITA-OT at its
  * 12th file and line 66.
  *
+ * Which files a run reads is `SUFFIXES`, the two spellings a stylesheet is
+ * named with, asked through `suffixed` and nowhere else. It kept one of them
+ * until #924, and the filter runs over a single-element list as readily as
+ * over a walk, so naming a `.xslt` on the command line printed `Processed
+ * files: 0` and `No defects found` and left with a zero — the same bytes named
+ * `.xsl` drawing four defects — where a path that does not exist at least
+ * earns a warning. A project spelling its stylesheets that way therefore read
+ * a green CI job over a directory nothing in it had been opened, and the word
+ * stood nowhere in `README.md`, in `src/`, or in the suite for a user to learn
+ * it from. A **named** path matching none of them now earns that warning too,
+ * which is what keeps the silence from returning under a third extension; a
+ * **walk** stays quiet, having been handed a directory rather than a request,
+ * and a word per file that is not a stylesheet would bury a report under a
+ * repository's worth of them. A `no-restricted-syntax` selector bans a
+ * stylesheet suffix spelled into an `endsWith` or an equality anywhere in the
+ * repository, and caught three sweeps over this tree's own fixtures on first
+ * contact: `test/grammar-corpus.test.js`, which claims every expression the
+ * repository carries, and `test/tiers.test.js` and `test/fixer.deep.test.js`,
+ * both over the fix fixtures — every one of which would have missed such a
+ * file exactly as discovery did. What the selector asks is whether a string
+ * *ends* in one of the two, never whether it spells one alone, and the third
+ * sweep is the reason: it read `.fixed.xsl` whole, a composite an anchored
+ * pattern walks straight past, so the gate written against #924 carried #924's
+ * own blind spot until the anchor came off. Those two mark a fixed stylesheet
+ * `.fixed.` in front of the suffix rather than as one of them, so the marker
+ * holds under either spelling. What the rows asserting all this must not do is
+ * take the list from the code: derived from `SUFFIXES`, the row for a suffix
+ * went away with the suffix, so the one mutation they exist to catch left the
+ * suite green. They spell the two out, and a gate holds the two lists to each
+ * other from both sides.
+ *
  * The exit code it sets is `process.exitCode` and never `process.exit`, which
  * ends the process where it stands and abandons every write the kernel has not
  * taken: node's stdout is asynchronous to a pipe on POSIX — synchronous to a
@@ -326,18 +357,34 @@ const validatedSuppressions = function(suppressions) {
 }
 
 /**
- * Returns all .xsl files paths depending on provided path.
- * @param {string} pth - Path to a file or directory holding .xsl files
- * @return {Array.<string>} - Array of .xsl files paths
+ * The suffixes a stylesheet is named with, both spellings of the one thing.
+ * @type {Array.<string>}
  */
-const xsls = function(pth) {
+const SUFFIXES = ['.xsl', '.xslt']
+
+/**
+ * Whether a path names a stylesheet, by the suffix it carries.
+ * @param {string} file - Path of a file
+ * @return {boolean} - True when its suffix is one a stylesheet wears
+ */
+const suffixed = function(file) {
+  return SUFFIXES.some((suffix) => file.endsWith(suffix))
+}
+
+/**
+ * The stylesheets a path holds: the file itself, or every one a directory has
+ * under it, keeping only what a stylesheet is named.
+ * @param {string} pth - Path to a stylesheet or a directory holding some
+ * @return {Array.<string>} - Paths of the stylesheets found
+ */
+const sheets = function(pth) {
   let files
   if (fs.statSync(pth).isDirectory()) {
     files = allFilesFrom(pth)
   } else {
     files = [pth]
   }
-  return files.filter((file) => file.endsWith('.xsl'))
+  return files.filter((file) => suffixed(file))
 }
 
 /**
@@ -515,14 +562,19 @@ const xslint = function(pths, options) {
   for (const pth of pths) {
     if (!fs.existsSync(pth)) {
       logger.warn(`File or directory ${pth} does not exist`)
+    } else if (!fs.statSync(pth).isDirectory() && !suffixed(pth)) {
+      logger.warn(
+        `File ${pth} was not read, ` +
+          `a stylesheet being named ${SUFFIXES.join(' or ')}`,
+      )
     } else {
-      stylesheets = [...stylesheets, ...xsls(pth)]
+      stylesheets = [...stylesheets, ...sheets(pth)]
     }
   }
   stylesheets = stylesheets.filter(
     (file) => !excluded(file, config.exclude, config.base),
   )
-  logger.debug(`Found ${stylesheets.length} .xsl files to process`)
+  logger.debug(`Found ${stylesheets.length} stylesheets to process`)
   const sources = stylesheets.map((stylesheet) => ({
     file: stylesheet,
     content: fs.readFileSync(stylesheet, 'utf-8'),
@@ -585,3 +637,5 @@ module.exports = xslint
 module.exports.lint = lint
 module.exports.fixed = fixed
 module.exports.STAGES = STAGES
+module.exports.SUFFIXES = SUFFIXES
+module.exports.suffixed = suffixed

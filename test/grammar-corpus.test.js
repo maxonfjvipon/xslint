@@ -51,6 +51,7 @@ const {compiles} = require('../src/xpath')
 const {insists} = require('./strictness')
 const {expressionsOf} = require('../src/attributes')
 const {allFilesFrom, xml, yaml} = require('../src/helpers')
+const {suffixed} = require('../src/xslint')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
@@ -102,7 +103,7 @@ const gathered = function() {
   const found = {stylesheet: [], pack: [], selector: []}
   for (const dir of FIXTURES) {
     for (const file of allFilesFrom(dir)) {
-      if (file.endsWith('.xsl')) {
+      if (suffixed(file)) {
         found.stylesheet = found.stylesheet.concat(
           carried(fs.readFileSync(file, 'utf8')),
         )

@@ -6,6 +6,7 @@
 const {
   runXslint, xslintStatus, xslintStreams, xslintUnread,
 } = require('./helpers')
+const {SUFFIXES} = require('../src/xslint')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -30,6 +31,52 @@ const PIPES = [
     piped: 2,
   },
 ]
+
+/**
+ * The check a defect line ends with, in the parentheses the text reporter puts
+ * it in.
+ * @type {RegExp}
+ */
+const NAMED = /\(([a-z0-9-]+)\)\r?$/
+
+/**
+ * The names a stylesheet is read under, spelled here rather than taken from
+ * the code: a table derived from `SUFFIXES` loses a row when the list loses a
+ * suffix, so the one mutation these rows exist to catch left them green by
+ * taking one of them away. The gate below holds the two together.
+ * @type {Array.<string>}
+ */
+const SPELLINGS = ['.xsl', '.xslt']
+
+/**
+ * The stylesheet both spellings of a name are given, and the checks it draws.
+ * A suffix discovery does not know reads as a clean file rather than as one
+ * nothing looked at, so these same bytes drew four defects under one name and
+ * none at all under the other (#924).
+ * @type {{file: string, drawn: Array.<string>}}
+ */
+const SPELLED = {
+  file: 'test/resources/stylesheets/xsl-with-some-violations.xsl',
+  drawn: [
+    'setting-value-of-variable-incorrectly',
+    'short-names',
+    'starts-with-double-slash',
+    'unused-named-template',
+  ],
+}
+
+/**
+ * The checks a report names, one per defect it printed, in the order it
+ * printed them.
+ * @param {string} printed - What a run printed
+ * @return {Array.<string>} - The check names
+ */
+const drawn = function(printed) {
+  return printed.split('\n')
+    .map((line) => NAMED.exec(line))
+    .filter((found) => found !== null)
+    .map((found) => found[1])
+}
 
 describe('xslint', function() {
   it('should print its own version', function() {
@@ -166,6 +213,56 @@ describe('xslint', function() {
     const stdout = runXslint([file, dir])
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), file)} does not exist`))
     assert.ok(stdout.includes(`File or directory ${path.resolve(process.cwd(), dir)} does not exist`))
+  })
+  SPELLINGS.forEach((suffix) => {
+    it(`should read a stylesheet named ${suffix}`, function() {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+      const file = path.join(dir, `named${suffix}`)
+      fs.copyFileSync(SPELLED.file, file)
+      const printed = runXslint([file])
+      fs.rmSync(dir, {recursive: true, force: true})
+      assert.deepEqual(
+        drawn(printed),
+        SPELLED.drawn,
+        `xslint drew nothing over a stylesheet named ${suffix}, so the same ` +
+          'bytes read as four defects under one name and as a clean file ' +
+          'under the other (#924)',
+      )
+    })
+  })
+  it('should read every suffix the discovery admits', function() {
+    assert.deepEqual(
+      SUFFIXES,
+      SPELLINGS,
+      'discovery reads a suffix no row above names, or has stopped reading ' +
+        'one they do, so the rows asserting a stylesheet is found under its ' +
+        'own name are judging a list the code no longer holds (#924)',
+    )
+  })
+  it('should warn about a named file no suffix admits', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const file = path.join(dir, 'named.txt')
+    fs.copyFileSync(SPELLED.file, file)
+    const printed = runXslint([file])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(
+      printed.includes(`File ${file} was not read`),
+      'a stylesheet named on the command line under a suffix nothing reads ' +
+        'is skipped without a word, so the run says "No defects found" and ' +
+        'leaves with a zero (#924)',
+    )
+  })
+  it('should stay quiet about a file a walk stepped over', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    fs.copyFileSync(SPELLED.file, path.join(dir, 'named.txt'))
+    const printed = runXslint([dir])
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(
+      !printed.includes('was not read'),
+      'a directory walk complains about every file that is not a ' +
+        'stylesheet, so a run over a repository buries its report under one ' +
+        'warning per file nobody asked it to read (#924)',
+    )
   })
   it('should lint the parseable stylesheets and report the malformed ones', function() {
     const stdout = runXslint(['test/resources/malformed']);

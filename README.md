@@ -132,8 +132,13 @@ xslint
 To check specified files - provide them as arguments:
 
 ```bash
-xslint path/to/your/file1.xsl path/to/your/file2.xsl
+xslint path/to/your/file1.xsl path/to/your/file2.xslt
 ```
+
+Either spelling of the name is read, `.xsl` and `.xslt`. A directory is walked
+for both and everything else in it is stepped over, while a file named on the
+command line under any other suffix earns a warning rather than being counted
+as clean.
 
 You can suppress some [checks][checks] by using `--suppress` option:
 
