@@ -150,10 +150,11 @@
  * of them is one in 1.0 or 2.0, whose whole grammar is `IdKeyPattern` and a
  * union of relative paths — each is gated on `REWRITE` rather than admitted
  * everywhere, since a pattern accepted under a version with no production for
- * it is a stylesheet called valid that no processor loads. A `/` may stand
- * alone and a `//` may not, the step being what the descent descends to. A
- * bracketed branch is where a pattern parts from an expression rather than
- * borrowing it: 3.0's `StepExprP` admits one at *any* position in a path, so
+ * it is a stylesheet a conformant processor of that version refuses, whatever a
+ * newer one makes of it (#925). A `/` may stand alone and a `//` may not, the
+ * step being what the descent descends to. A bracketed branch is where a
+ * pattern parts from an expression rather than borrowing it: 3.0's `StepExprP`
+ * admits one at *any* position in a path, so
  * `a/(b | c)` is a pattern as much as `(b | c)/a` is, while the expression
  * grammar's own parenthesized step may only open a path (#711) — reading the
  * two alike refused a pattern XSLT admits. Its steps are narrower than an
@@ -167,11 +168,12 @@
  * `.` spells one from 3.0. Settling that took two processors and neither would
  * have done alone: SaxonJ-HE says what 3.0 refuses, with XTSE0340, but applies
  * its own 3.0 pattern syntax whatever the stylesheet declares — it admits
- * `self::a` and `.` at `version="1.0"` — so only xsltproc, being 1.0 only, can
- * say what an older version refuses. A processor shows that a construct is
- * admitted somewhere; only a version-aware one shows that a version refuses
- * it, which is the trap #717's arbitration fell into as well. Two more
- * borrowings from the expression grammar are paid back. A bracket is
+ * `self::a` and `.` at `version="1.0"` — so what an older version refuses takes
+ * a processor of that age, xsltproc for 1.0 and Saxon 9.1.0.8 for 2.0. A
+ * processor shows that a construct is admitted somewhere; only a version-aware
+ * one shows that a version refuses it, which is the trap #717's arbitration
+ * fell into as well. Two more borrowings from the expression grammar are paid
+ * back. A bracket is
  * `bracketed` rather than the expression grammar's parenthesized primary, so
  * it holds a `Pattern` — optionally, since `()` matches nothing and is a
  * pattern all the same — `(a | b)/c`, `(a)`, `(a[1])/b` and `(a | b)[1]` are

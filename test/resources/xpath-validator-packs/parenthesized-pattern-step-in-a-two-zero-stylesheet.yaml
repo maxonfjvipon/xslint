@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: syntax-newer-than-xslt-version
+# The shape this check was written for: XSLT 3.0 rebuilt patterns on the
+# expression grammar and admits a parenthesized step, which no earlier version
+# spells. Reported bare, buried behind a longer path, and three to one pattern,
+# where the offset must land on the first. The two neighbours are the hand-fix
+# itself — the same nodes as a union of whole paths — and a predicate whose own
+# brackets hold parentheses every version allows.
+found:
+  amount: 3
+  positions: [ [ 3, 50 ], [ 6, 29 ], [ 9, 24 ] ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:template match="metas/meta[head = 'also']/(tail|part)">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="root/(alpha|beta)/gamma/delta">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="(one|two)/(three|four)/(five|six)">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="metas/meta/tail | metas/meta/part">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="alpha[contains(., 'x')]/beta">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+  </xsl:stylesheet>

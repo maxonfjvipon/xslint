@@ -189,7 +189,7 @@ matters reaches the plugin too. Shortening that off-list is its own job; only
 
 A file stops at 1000 lines, counting the blank ones and the comments, since a
 reader scrolls past those as well. One file stands above it and is named in
-`SPRAWLING` in the config — `src/grammar.js`, 2170 lines of one function per
+`SPRAWLING` in the config — `src/grammar.js`, 2172 lines of one function per
 production of XPath 3.1 — rather than carrying a disable comment of its own, so
 what is exempted is one list a reviewer reads in the place the cap is set, not a
 mark to be found by opening every file. Neither half can rot in silence.
@@ -922,7 +922,7 @@ the 22 and could only ever ask whether the string appeared.
 - **Stable tier**: `--stable` (or `stable: true` in the config) withholds the
   **nursery**, the checks an open issue reports wrong about code a processor
   accepts. The nursery holds no checks since #851, so `--stable` reports
-  sixty-eight checks — the release bar, and no claim that a check is finished.
+  sixty-nine checks — the release bar, and no claim that a check is finished.
   Each says so itself, in a `nursery:` mark opening with that issue's number,
   so the tier is derived from the tree and empties as tickets close. A check
   the config grades **verbatim** is re-admitted; a glob grades and vouches for
@@ -980,7 +980,7 @@ one of them.
 | `src/directives.js` | Parses inline `xslint-disable-*` comment directives |
 | `src/reporters.js` | `reporterOf(format)` — `text`, `json`, `sarif`, or `github` output |
 | `src/validators/xsl-validator.js` | Builds the corpus; reports each non-well-formed stylesheet |
-| `src/validators/xpath-validator.js` | Splits the corpus's expressions into valid (kept, and the whole of what the expression linters are staged over) and malformed (reported) |
+| `src/validators/xpath-validator.js` | Splits the corpus's expressions into valid (kept, and the whole of what the expression linters are staged over) and refused, and parts a refusal in two: text no version admits, or syntax a later one does |
 | `src/linters/xpath-linter.js` | Loads `checks/xpath/*.yaml`, the per-file declarative kind; the dearest stage there is |
 | `src/linters/parameter-linter.js` | `unused-function-template-parameter`, over the walk rather than a substring |
 | `src/linters/element-linter.js` | `not-creating-element-correctly` |

@@ -19,19 +19,23 @@ expression rather than a second reading of one. A pattern is matched by walking
 `attribute` at every version, joined by `self`, `descendant`,
 `descendant-or-self` and `namespace` in XSLT 3.0, and never `parent`,
 `ancestor`, `ancestor-or-self`, `following`, `following-sibling`, `preceding` or
-`preceding-sibling`. A predicate inside it is an ordinary expression and may name
-any of them. A pattern is also a union of paths and nothing else, so `1 + 1`,
-`@a = 'b'` and `a, b` are all perfectly good expressions and none of them is a
-pattern a processor will load.
+`preceding-sibling`. Those seven a pattern may not name at any version, which
+is what makes one of them a syntax mistake rather than the version mismatch the
+next paragraph is about; the four XSLT 3.0 added are the language growing. A
+predicate inside it is an ordinary expression and may name any of them. A
+pattern is also a union of paths and nothing else, so `1 + 1`, `@a = 'b'` and
+`a, b` are all perfectly good expressions and none of them is a pattern a
+processor will load.
 
-The expression is read under the version the stylesheet declares, because the
+The expression is read under the version in force where it stands, because the
 same characters are a different language under a different one. `1 cast as
 xs:integer` is an expression in XSLT 2.0 and a syntax error in 1.0, where XPath
 has no `cast as` and reads the same text as the name `cast` beside the name
 `as`; `map {"a": 1}`, `$a => f()` and `a intersect b` are the same story at
-their own versions. So an expression reported here may be perfectly good XPath
-under a later version, and the fix is sometimes the stylesheet's `version`
-rather than the expression.
+their own versions. What is reported here is text no version of the language
+admits, so raising the stylesheet's `version` will not rescue it. An expression
+a later version does admit is a different defect — a promise broken about which
+language the stylesheet is written in — and is reported as that instead.
 
 Every prefix resolves while parsing, so an unknown prefix or a custom function
 is never mistaken for a syntax error. Neither is a static-type mismatch:

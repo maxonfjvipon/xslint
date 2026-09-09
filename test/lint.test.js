@@ -62,6 +62,23 @@ const UNREADABLE = [
   'refused/refused-pattern-that-parses-as-an-expression.xsl',
 ]
 
+/**
+ * Which of the validator's two refusals each line of one fixture draws. What
+ * parts them is whether a version later than the one in force admits the
+ * expression, so the fixture nests a `version` on three of its templates and
+ * asks the question at 1.0, 2.0 and 3.0 at once — a fault every version
+ * refuses being the text's own wherever it stands (#925).
+ * @type {Array.<Array>}
+ */
+const REFUSALS = [
+  [3, 'syntax-newer-than-xslt-version', 'a parenthesized pattern step at 2.0'],
+  [6, 'syntax-newer-than-xslt-version', 'a self axis pattern at 2.0'],
+  [10, 'syntax-newer-than-xslt-version', 'a cast under a 1.0 template'],
+  [11, 'invalid-xpath-expression', 'a fault no version admits at 1.0'],
+  [14, 'invalid-xpath-expression', 'a fault no version admits at 3.0'],
+  [16, 'invalid-xpath-expression', 'a pattern axis no version admits'],
+]
+
 describe('lint (programmatic API)', function() {
   it('returns defects for in-memory sources', function() {
     const defects = lint([source('stylesheets/xsl-with-some-violations.xsl')])
@@ -234,6 +251,19 @@ describe('lint (programmatic API)', function() {
           .filter((defect) => defect.line === 8)
           .map((defect) => defect.name),
         ['invalid-xpath-expression'],
+      )
+    })
+  })
+  REFUSALS.forEach(([line, check, what]) => {
+    it(`names the refusal of ${what} for what it is`, function() {
+      assert.deepEqual(
+        lint([source('refused/newer-than-the-declared-version.xsl')])
+          .filter((defect) => defect.line === line)
+          .map((defect) => defect.name),
+        [check],
+        `cannot report ${what} as anything but ${check}, the version in ` +
+          'force being what parts a stylesheet breaking a promise it made ' +
+          'from one holding a fault no version of the language admits',
       )
     })
   })

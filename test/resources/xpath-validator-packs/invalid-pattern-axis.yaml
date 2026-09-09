@@ -2,22 +2,32 @@
 # SPDX-License-Identifier: MIT
 ---
 pack: invalid-xpath-expression
+# A pattern is matched by walking up from a node, so an axis looking sideways or
+# upwards is one no version of the language has a production for — unlike the
+# axes XSLT 3.0 added, which are a version away rather than a fault. The root
+# declares the latest version this tool knows, so there is nothing later to
+# raise to and the refusal is the text's own. A predicate is an ordinary
+# expression and may name any axis it likes, which is the neighbour that must
+# stay quiet.
 found:
-  amount: 2
-  positions: [ [ 3, 24 ], [ 6, 26 ] ]
+  amount: 3
+  positions: [ [ 3, 24 ], [ 6, 29 ], [ 9, 24 ] ]
 input: |-
   <?xml version="1.0"?>
-  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-    <xsl:template match="self::alpha">
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">
+    <xsl:template match="following-sibling::alpha">
       <xsl:copy-of select="."/>
     </xsl:template>
-    <xsl:template match="a intersect b">
+    <xsl:template match="beta/parent::gamma">
       <xsl:copy-of select="."/>
     </xsl:template>
-    <xsl:template match="descendant::gamma" version="3.0">
+    <xsl:template match="ancestor-or-self::delta">
       <xsl:copy-of select="."/>
     </xsl:template>
-    <xsl:template match="delta/epsilon">
+    <xsl:template match="epsilon[preceding-sibling::zeta]">
+      <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="child::eta/attribute::theta">
       <xsl:copy-of select="."/>
     </xsl:template>
   </xsl:stylesheet>
