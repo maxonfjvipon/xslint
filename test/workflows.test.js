@@ -365,7 +365,7 @@ const STAMPED = 'src/version.js'
  * placeholder nobody has answered for (#917).
  * @type {Array.<string>}
  */
-const PLACEHELD = Array.from(
+const PLACEHOLDERS = Array.from(
   sourced(STAMPED).matchAll(/'([0-9][0-9.-]*)'/g),
 ).map((found) => found[1])
 
@@ -552,7 +552,7 @@ describe('workflows', function() {
   it('spends one stamp on every placeholder the stamped module carries',
     function() {
       assert.deepEqual(
-        PLACEHELD.filter(
+        PLACEHOLDERS.filter(
           (stands) => STAMPS.filter(
             (one) => one.rewrites === STAMPED &&
               literal(one.looks).includes(stands),
