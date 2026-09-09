@@ -9,6 +9,8 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+## 0.1.0 - 2026-09-09
+
 - Introduce `--stable` by what it is for rather than by the size of the set it
   withholds. The second sentence a reader met was that the nursery holds no
   checks, so a flag with a real purpose read as scaffolding around a feature
