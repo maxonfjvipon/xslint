@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>syntax-newer-than-xslt-version</title>
+  <style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #24292e;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+  h1 { font-size: 2rem; font-weight: 600; margin-bottom: 4px; }
+  h2 { font-size: 1.3rem; font-weight: 600; margin: 20px 0 8px; }
+  a { color: #0366d6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  p { margin: 8px 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.9rem; }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    font-weight: 600;
+  }
+  td { padding: 10px 12px; border: 1px solid #e1e4e8; vertical-align: top; }
+  tr:hover td { background: #f6f8fa; }
+  .severity-warning {
+    background: #fff8c5;
+    color: #9a6700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .severity-error {
+    background: #ffebe9;
+    color: #cf222e;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nursery {
+    background: #ddf4ff;
+    color: #0969da;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-suggestion {
+    background: #fbefff;
+    color: #8250df;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .fix-note {
+    background: #f6f8fa;
+    border-left: 4px solid #57606a;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
+  .nursery-note {
+    background: #ddf4ff;
+    border-left: 4px solid #0969da;
+    padding: 8px 12px;
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
+  .back { display: inline-block; margin-bottom: 24px; font-size: 0.9rem; }
+  .meta { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0 24px; flex-wrap: wrap; }
+  .xpath {
+    background: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    flex: 1;
+  }
+  pre { margin: 12px 0; border-radius: 6px; overflow-x: auto; }
+  code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; }
+  .check-content h1 { font-size: 1.6rem; margin-bottom: 8px; }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body>
+  <a class="back" href="../index.html">← all checks</a>
+  <div class="meta">
+    <span class="severity-error">error</span>
+    <code class="xpath">verified by the parser, not an XPath rule</code>
+  </div>
+  <div class="check-content">
+<h1>XPath syntax newer than the XSLT version in force</h1>
+<p>A stylesheet&#39;s <code>version</code> is a promise about which processors can run it. XPath
+grew with XSLT, so the same characters are a different language under a
+different version: <code>1 cast as xs:integer</code> is an expression in XSLT 2.0 and, in
+1.0, the name <code>cast</code> standing beside the name <code>as</code>. A pattern grew the same way,
+and further — XSLT 3.0 rebuilt patterns on the expression grammar, admitting a
+parenthesized step and the <code>self</code>, <code>descendant</code>, <code>descendant-or-self</code> and
+<code>namespace</code> axes that no earlier version has. Reach for one of those under a
+<code>version</code> that predates it and the stylesheet asks for a language its own
+declaration says it will not use, which a conformant processor of the declared
+version refuses to compile.</p>
+<p>Such a stylesheet usually runs anyway, and that is what makes the defect worth
+reporting rather than obvious. A 3.0 processor evaluates a <code>version=&quot;2.0&quot;</code>
+stylesheet exactly as if it said <code>version=&quot;3.0&quot;</code>; only <code>version=&quot;1.0&quot;</code> asks for
+a real backwards compatible mode. So every modern processor loads the file, the
+tests pass, and the promise is broken silently — until the stylesheet reaches a
+processor of the version it declares, or a build pins one, and it fails to
+compile there instead of at the desk of whoever wrote it. The syntax is not
+malformed and the fault is not in the expression: the expression and the
+<code>version</code> disagree, and either one of them can be the thing that moves.</p>
+<p>So there are two hand-fixes, and which is right is a question about the
+stylesheet rather than about the line. Raise the <code>version</code> to the one the
+construct needs, if nothing depends on running under the older one — that is
+the honest reading when the newer syntax was chosen deliberately. Or spell the
+construct the way the declared version allows and keep the promise. A
+parenthesized pattern step is a union of whole paths written short, so writing
+the paths out restores it at any version; the <code>self::</code> axis of a pattern is the
+node test standing alone; and an expression reaching for <code>cast as</code>, <code>intersect</code>
+or <code>if/then/else</code> has a 1.0 equivalent in <code>number()</code>, a predicate over a union,
+and a two-branch <code>xsl:choose</code>.</p>
+<p>Incorrect (a parenthesized pattern step is XSLT 3.0, and this promises 2.0):</p>
+<pre><code class="language-xsl">&lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; version=&quot;2.0&quot;&gt;
+  &lt;xsl:template match=&quot;metas/meta[head = &#39;also&#39;]/(tail|part)&quot;&gt;
+    &lt;xsl:value-of select=&quot;.&quot;/&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</code></pre>
+<p>Correct (the same nodes, as the union of whole paths every version spells):</p>
+<pre><code class="language-xsl">&lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; version=&quot;2.0&quot;&gt;
+  &lt;xsl:template match=&quot;metas/meta[head = &#39;also&#39;]/tail | metas/meta[head = &#39;also&#39;]/part&quot;&gt;
+    &lt;xsl:value-of select=&quot;.&quot;/&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</code></pre>
+<p>Correct as well, where the stylesheet has no reason to stay at 2.0 (say what it
+needs, and the pattern is legal as written):</p>
+<pre><code class="language-xsl">&lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; version=&quot;3.0&quot;&gt;
+  &lt;xsl:template match=&quot;metas/meta[head = &#39;also&#39;]/(tail|part)&quot;&gt;
+    &lt;xsl:value-of select=&quot;.&quot;/&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</code></pre>
+
+  </div>
+</body>
+</html>

@@ -135,17 +135,21 @@ expression rather than a second reading of one. A pattern is matched by walking
 <code>attribute</code> at every version, joined by <code>self</code>, <code>descendant</code>,
 <code>descendant-or-self</code> and <code>namespace</code> in XSLT 3.0, and never <code>parent</code>,
 <code>ancestor</code>, <code>ancestor-or-self</code>, <code>following</code>, <code>following-sibling</code>, <code>preceding</code> or
-<code>preceding-sibling</code>. A predicate inside it is an ordinary expression and may name
-any of them. A pattern is also a union of paths and nothing else, so <code>1 + 1</code>,
-<code>@a = &#39;b&#39;</code> and <code>a, b</code> are all perfectly good expressions and none of them is a
-pattern a processor will load.</p>
-<p>The expression is read under the version the stylesheet declares, because the
+<code>preceding-sibling</code>. Those seven a pattern may not name at any version, which
+is what makes one of them a syntax mistake rather than the version mismatch the
+next paragraph is about; the four XSLT 3.0 added are the language growing. A
+predicate inside it is an ordinary expression and may name any of them. A
+pattern is also a union of paths and nothing else, so <code>1 + 1</code>, <code>@a = &#39;b&#39;</code> and
+<code>a, b</code> are all perfectly good expressions and none of them is a pattern a
+processor will load.</p>
+<p>The expression is read under the version in force where it stands, because the
 same characters are a different language under a different one. <code>1 cast as xs:integer</code> is an expression in XSLT 2.0 and a syntax error in 1.0, where XPath
 has no <code>cast as</code> and reads the same text as the name <code>cast</code> beside the name
 <code>as</code>; <code>map {&quot;a&quot;: 1}</code>, <code>$a =&gt; f()</code> and <code>a intersect b</code> are the same story at
-their own versions. So an expression reported here may be perfectly good XPath
-under a later version, and the fix is sometimes the stylesheet&#39;s <code>version</code>
-rather than the expression.</p>
+their own versions. What is reported here is text no version of the language
+admits, so raising the stylesheet&#39;s <code>version</code> will not rescue it. An expression
+a later version does admit is a different defect — a promise broken about which
+language the stylesheet is written in — and is reported as that instead.</p>
 <p>Every prefix resolves while parsing, so an unknown prefix or a custom function
 is never mistaken for a syntax error. Neither is a static-type mismatch:
 <code>substring-before($spans, &#39;:&#39;) - 1</code> reads a numeric prefix in XPath 1.0 and is

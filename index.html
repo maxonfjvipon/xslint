@@ -139,7 +139,7 @@
   that has shipped for decades.</p>
 
   <h2>Checks</h2>
-  <p>68 checks, each with its rationale:</p>
+  <p>69 checks, each with its rationale:</p>
   <table>
     <thead>
       <tr>
@@ -413,6 +413,12 @@
     <td>validation</td>
     <td><span class="severity-error">error</span></td>
     <td>The stylesheet is not well-formed XML and cannot be parsed. Fix its syntax.</td>
+  </tr>
+  <tr>
+    <td><a href="checks/syntax-newer-than-xslt-version.html">syntax-newer-than-xslt-version</a></td>
+    <td>validation</td>
+    <td><span class="severity-error">error</span></td>
+    <td>This XPath syntax belongs to a later XSLT version than the one in force here, so a conformant processor of the version in force rejects it. Raise that version, or spell the construct the way it allows.</td>
   </tr>
   <tr>
     <td><a href="checks/circular-import.html">circular-import</a></td>
