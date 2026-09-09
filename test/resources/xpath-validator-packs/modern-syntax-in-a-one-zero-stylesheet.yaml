@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
 # SPDX-License-Identifier: MIT
 ---
-pack: invalid-xpath-expression
+pack: syntax-newer-than-xslt-version
 found:
   amount: 4
   positions: [ [ 4, 29 ], [ 5, 23 ], [ 6, 36 ], [ 7, 31 ] ]

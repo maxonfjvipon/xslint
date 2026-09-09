@@ -236,12 +236,12 @@ const parseOf = function(found) {
 
 /**
  * Whether an expression is syntactically valid — its parse with nothing to
- * complain about. One caller wants the verdict alone: a declarative fix is
- * withheld on an attribute whose expression no processor parses (#651), and
- * that gate has nowhere to say why. The other gate of that pair was in
- * `defect`, and #750 deleted it.
- * @param {{node: Node, expression: string, pattern: boolean}} found - The
- *  expression, whole, as `expressionsOf` yields it
+ * complain about. Two callers want the verdict alone: a declarative fix is
+ * withheld on an attribute no processor parses (#651), and the validator asks
+ * it at a version other than the one in force, to learn which of the two the
+ * refusal is about (#925). The other gate of that pair went at #750.
+ * @param {{node: Node, expression: string, pattern: boolean, version: string}}
+ *  found - The expression, whole, as `expressionsOf` yields it
  * @return {boolean} - True when the expression parses
  */
 const isValid = function(found) {

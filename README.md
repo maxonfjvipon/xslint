@@ -170,7 +170,7 @@ into your own `.xslint.yml` go stale in both directions: they keep withholding
 a check that has since been fixed, and never withhold one newly reported
 wrong.
 
-The nursery holds no checks today, so `--stable` reports all sixty-eight
+The nursery holds no checks today, so `--stable` reports all sixty-nine
 checks.
 
 ## Configuration
