@@ -9,6 +9,20 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Introduce `--stable` by what it is for rather than by the size of the set it
+  withholds. The second sentence a reader met was that the nursery holds no
+  checks, so a flag with a real purpose read as scaffolding around a feature
+  nobody finished — where an empty nursery is the tier working, and the count
+  is the one part of that paragraph a build generates: the set held nine
+  checks the morning of 2026-09-08 and none by the evening. What the prose
+  never said is the reason to pass the flag at all, `--stable` being no
+  shorter `--suppress`: the nursery is read off the checks themselves, so it
+  grows the day an issue is filed against one and shrinks the day that issue
+  closes, where the same names written into a user's own `.xslint.yml` go
+  stale in both directions. The criterion is stated once now instead of twice,
+  the count stands last, and the `.xslint.yml` precedence the paragraph
+  restated is left to the section that states it in full (#914).
+
 - Read the figures `README.md` states of this repository off the tree that
   answers them, rather than off a hand that restated them at a landing. Four
   numbers in one sentence stood between two-fold and twelve-fold understated —

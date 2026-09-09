@@ -153,19 +153,25 @@ If you want to suppress many checks, use `--suppress` as many times as you need:
 xslint --suppress=oversized-template --suppress=short-names
 ```
 
-To hear only from the checks no open issue reports wrong about code a processor
-accepts, use `--stable`:
+Use `--stable` when every defect in the report has to be worth acting on:
 
 ```bash
 xslint --stable
 ```
 
-It withholds the checks in the *nursery* — the ones whose [check
-page][checks] names the open issue keeping them there. The nursery holds no
-checks today, so `--stable` reports all sixty-eight checks; a check joins
-when an issue reports it wrong about code a processor accepts, leaves when
-that issue closes, and grading one by name in `.xslint.yml` re-admits it
-meanwhile.
+It leaves out the *nursery* — the checks an open issue reports wrong about code
+a processor accepts. A check joins the nursery the day such an issue is filed
+and leaves the day it closes, and while it sits there its own [check
+page][checks] names the issue keeping it there.
+
+That is the part `--suppress` cannot do for you. The nursery is read off the
+checks themselves, so it follows the bug reports, where the same names written
+into your own `.xslint.yml` go stale in both directions: they keep withholding
+a check that has since been fixed, and never withhold one newly reported
+wrong.
+
+The nursery holds no checks today, so `--stable` reports all sixty-eight
+checks.
 
 ## Configuration
 
