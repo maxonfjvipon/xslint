@@ -29,13 +29,13 @@ staged over since #750, so a refusal reported here is the only defect that fault
 A refusal is two defects and not one, and what parts them is the version in force. Text no
 version of the language admits is `invalid-xpath-expression`; syntax a later version does admit is
 `syntax-newer-than-xslt-version`, which is #631 answered under a name of its own rather than sharing
-one with a mistake. The measurement is eo's `parse/add-default-package.xsl`, which declares
+one with a mistake. The measurement is eo's `parse/add-default-package.xsl:92`, which declares
 `version="2.0"` and matches `metas/meta[head = 'also']/(tail|part)`, a parenthesized pattern step
 XSLT 3.0 introduced when it rebuilt patterns on the expression grammar. Saxon 9.1.0.8, being 2.0
 only, refuses it as XTSE0340 at the very offset reported here; Saxon-HE 12.5 runs it whatever the
 sheet declares, XSLT 3.0 §3.9.2 having a processor read the 2.0 it promises exactly as if it said
 3.0. So the file works everywhere its author tried it and breaks on a conformant processor of the
-version it names, and one message calling that malformed, unparseable and a syntax fault to fix was
+version it names, and one message calling that malformed, unparsable and a syntax fault to fix was
 wrong about what it is, where the fix goes, and how bad it is. The motive already conceded as much,
 the fix being sometimes the stylesheet's `version` rather than the expression, while the message
 beside it said otherwise; a contradiction between the two is what a user reads as the tool being

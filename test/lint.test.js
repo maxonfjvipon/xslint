@@ -71,12 +71,12 @@ const UNREADABLE = [
  * @type {Array.<Array>}
  */
 const REFUSALS = [
-  [3, 'syntax-newer-than-xslt-version', 'a parenthesized pattern step at 2.0'],
-  [6, 'syntax-newer-than-xslt-version', 'a self axis pattern at 2.0'],
-  [10, 'syntax-newer-than-xslt-version', 'a cast under a 1.0 template'],
-  [11, 'invalid-xpath-expression', 'a fault no version admits at 1.0'],
-  [14, 'invalid-xpath-expression', 'a fault no version admits at 3.0'],
-  [16, 'invalid-xpath-expression', 'a pattern axis no version admits'],
+  [7, 'syntax-newer-than-xslt-version', 'a parenthesized pattern step at 2.0'],
+  [10, 'syntax-newer-than-xslt-version', 'a self axis pattern at 2.0'],
+  [14, 'syntax-newer-than-xslt-version', 'a cast under a 1.0 template'],
+  [15, 'invalid-xpath-expression', 'a fault no version admits at 1.0'],
+  [18, 'invalid-xpath-expression', 'a fault no version admits at 3.0'],
+  [20, 'invalid-xpath-expression', 'a pattern axis no version admits'],
 ]
 
 describe('lint (programmatic API)', function() {

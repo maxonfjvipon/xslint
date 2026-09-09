@@ -1,4 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+* SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+* SPDX-License-Identifier: MIT
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="refused" version="2.0">
   <xsl:template match="alpha/(beta|gamma)">
     <xsl:value-of select="."/>
