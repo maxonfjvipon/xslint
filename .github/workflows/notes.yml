@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+name: notes
+'on':
+  release:
+    types:
+      - published
+      - edited
+permissions:
+  contents: write
+concurrency:
+  group: notes-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+jobs:
+  notes:
+    if: github.event.sender.login == 'rultor'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Set the GitHub release notes from the changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          node scripts/changelog-notes.js "${VERSION}" > notes.md
+          gh release edit "${VERSION}" --title "${VERSION}" \
+            --notes-file notes.md

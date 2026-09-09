@@ -224,7 +224,7 @@ before: 268 descriptions in 65 files stood past that bar, the dearest of them
 142 lines, so a derivation grew wherever one was written the way the cross-file
 linter's cost grew before #755 (#832). The bar is not a licence to respell what
 a block cannot hold as a `/* */` beside it either — such prose is cut and not
-moved, the dearest chain of guides standing at 0.91 of `LOADED` and reddening
+moved, the dearest chain of guides standing at 0.92 of `LOADED` and reddening
 well under it, so a guide is no place to put it either and the ticket number
 left standing in the surviving sentence is what keeps a derivation
 recoverable.
@@ -1011,7 +1011,7 @@ one of them.
 | `src/resources/checks.json` | Every check as a run reads it, built from the YAML; never edited by hand |
 | `src/logger.js` | 4-level logger |
 | `src/output.js` | `colorful(stream)`, the one gate on coloring, and the leveled prefixed `writer` both streams are written through |
-| `src/version.js` | `what` and `when`, rewritten by the `.rultor.yml` release pipeline |
+| `src/version.js` | `what` and `when`, stamped by the `release` workflow off the tag it runs on |
 | `scripts/generate-docs.js` | Builds the `docs/` site from checks + motives |
 | `scripts/generate-checks.js` | Builds `src/resources/checks.json` from the check YAML (`npx grunt checks`) |
 | `scripts/audit.js` | Judges what `npm audit` read for the nightly job: an advisory, a clean tree, or a registry that answered nothing |
@@ -1030,6 +1030,6 @@ one of them.
 | `test/packs.js` | The one harness every pack directory is read through |
 | `test/scaling.test.js` | The speed gate: every stage's own processor time as a share of the run, at two corpus sizes |
 | `test/xcop.deep.test.js` | Writes every pack's inline XSL to one directory and runs xcop over it |
-| `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with; every version the README pins of its own release reached by a rewrite of the `up` job |
+| `test/workflows.test.js` | Every job granted the scope its own steps write with, and left the scope they read with; every version the README pins of its own release reached by a rewrite of the `up` job; every placeholder the stamped module carries answered by one substitution of the release stamp, every substitution held to reaching one place, and every release-notes command to naming a title |
 | `test/manifest.test.js` | What `package.json` declares, held to what a grunt wrapper runs, what this repository's own JavaScript imports, and the coordinates it states of itself |
 | `test/readme.test.js` | Every figure the README states, held to the tree, found exactly once, and naming a check that still exists |

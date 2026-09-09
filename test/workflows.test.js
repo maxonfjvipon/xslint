@@ -91,8 +91,62 @@
  * the table holding the last two apart, and the fifth question is asked of it:
  * red from both sides like every exemption list here, an entry naming a version
  * the README has stopped stating fails as loudly as an unreached pin.
+ *
+ * The `release` job writes two things nothing weighed, and both were wrong at
+ * 0.1.0. It **stamps** the version by replacing the string `0.0.0` wherever it
+ * stands, and `package.json` holds that string three times: the version field,
+ * and the two `@stryker-mutator/*` pins at `^10.0.0`, which contain it. `sed`
+ * without `/g` still rewrites the first match on every line, so all three
+ * moved, and the 0.1.0 tarball on npm names a stryker version nobody has
+ * published. Nothing failed, which is why it shipped: the stamp runs after `npm
+ * install`, so no resolution is attempted against the rewritten pins, `npm
+ * publish` installs no devDependencies, and a consumer reads none. The field is
+ * `npm version`'s to write now, that command knowing which key it owns, and
+ * what is left of the stamp is two substitutions over `src/version.js`, each
+ * held to reaching **one** place in the file it rewrites. That is the whole of
+ * the defect, a pattern being wrong here by reaching more than the field it
+ * means, and it is asked of what the workflow spells rather than of a copy —
+ * `STAMPS` reads the patterns out of the step, so a third one added answers to
+ * it too, and one spelled as anything but a literal is refused rather than read
+ * as a regular expression whose dialect this gate would be guessing at. Both of
+ * those weigh the substitutions they find and neither asks that any were found,
+ * which is the counter-defect of #917's own in the file #917 is about: `STAMPS`
+ * comes off the workflow, so deleting both `sed` lines — or writing them with
+ * `perl -pi -e` — empties the list and passes both gates while `src/version.js`
+ * ships `0.0.0` and `0000-00-00` to npm. So the placeholders are read off that
+ * module, a quoted number being the only thing it holds of the kind, and each
+ * is held to exactly one stamp reaching it — `UNIMPORTED`'s assertion in
+ * `test/manifest.test.js` one file over, a table holding a sweep to having
+ * found something, and what makes the two gates beside it say anything at all
+ * (#917).
+ *
+ * It also writes the **notes**, and so does rultor, and neither waits for the
+ * other. The step ran at 08:40:38 on the day 0.1.0 was cut and succeeded — its
+ * log prints the release URL, which is what `gh release edit` prints on success
+ * — and the release then read `See #876, release log:` over a commit list, 2058
+ * characters where the changelog section is 35014. Rultor publishes the release
+ * a minute before its build ends and writes the body again at the end, so a
+ * step bound to the tag push loses, and so does one bound to `published` alone.
+ * The last four releases split evenly: 0.0.13 and 0.0.14 carried the changelog,
+ * 0.0.12 and 0.1.0 rultor's log — 0.1.0 until it was set right by hand, so
+ * three of the four still read that way. The title never survived at all,
+ * `--title` riding the `create` fallback alone, so every release here is named
+ * after whichever issue rultor was asked in — 0.1.0 read "Sequence a stable
+ * release around what the corpora say, not around an audit", and 0.0.13 and
+ * 0.0.14 both read "Audit: three checks are not genuine best practices". So
+ * `notes.yml` re-asserts both on the `release` event with `edited` among its
+ * types, the one trigger that fires *after* rultor's last write — `published`
+ * standing beside it for the release rultor publishes and never edits again —
+ * and only where the sender is rultor, so an edit of the owner's own is left
+ * where they made it. Nothing re-triggers it: a write through `GITHUB_TOKEN`
+ * raises no event, which is also why the tag-push path keeps a writer of its
+ * own — a release that path creates itself fires no `release` event for the
+ * other to answer. Two questions are asked here and neither is the outcome,
+ * which only a real release shows: every release-notes command names a title,
+ * and the notes are re-asserted on an event that fires after the race (#919).
  */
 
+const {GAP, WHITESPACE} = require('../src/tokens')
 const {allFilesFrom, yaml} = require('../src/helpers')
 const path = require('path')
 const assert = require('assert')
@@ -262,6 +316,128 @@ const REWRITES = (UP.jobs.up.steps ?? [])
   )
   .map((found) => new RegExp(found[1]))
 
+/**
+ * The workflow that runs on a tag and does everything a release does, parsed.
+ * @type {object}
+ */
+const RELEASE = yaml.parsedFromFile(path.join(WORKFLOWS, 'release.yml'))
+
+/**
+ * One `sed` substitution, as the pattern it looks for and the file it rewrites.
+ * The replacement is passed over: a stamp is wrong here by reaching more of a
+ * file than the field it means, which the left side alone decides (#917).
+ * @type {RegExp}
+ */
+const SUBSTITUTES = new RegExp(
+  `sed -i "s/([^/]+)/[^/]*/"${GAP}+([^${WHITESPACE}]+)`, 'g',
+)
+
+/**
+ * A pattern this gate can weigh: ordinary characters and escaped dots, which
+ * is the whole of what an anchored stamp needs. Anything else is refused
+ * rather than read as a regular expression whose dialect — `sed`'s, not
+ * JavaScript's — this gate would be guessing at.
+ * @type {RegExp}
+ */
+const PLAIN = /^(?:[^\\.[\]*^$]|\\\.)+$/
+
+/**
+ * What a file the stamp rewrites holds, read from the tree the workflow runs
+ * over rather than from a fixture, since what a pattern reaches is a question
+ * about this repository's own files (#917).
+ * @param {string} named - Path of the file from the repository root
+ * @return {string} - What it holds
+ */
+const sourced = function(named) {
+  return fs.readFileSync(path.resolve(__dirname, '..', named), 'utf-8')
+}
+
+/**
+ * The file whose placeholders a release stamps.
+ * @type {string}
+ */
+const STAMPED = 'src/version.js'
+
+/**
+ * Every placeholder standing in that file — a quoted number, the module
+ * holding nothing else of the kind. They are read off the file rather than
+ * written down here, so a field added to it and left unstamped is a
+ * placeholder nobody has answered for (#917).
+ * @type {Array.<string>}
+ */
+const PLACEHOLDERS = Array.from(
+  sourced(STAMPED).matchAll(/'([0-9][0-9.-]*)'/g),
+).map((found) => found[1])
+
+/**
+ * Every substitution the release stamp spends.
+ * @type {Array.<{looks: string, rewrites: string}>}
+ */
+const STAMPS = RELEASE.jobs.release.steps
+  .map((step) => step.run ?? '')
+  .flatMap((script) => Array.from(script.matchAll(SUBSTITUTES)))
+  .map((found) => ({looks: found[1], rewrites: found[2]}))
+
+/**
+ * One release-notes command, whole.
+ * @type {RegExp}
+ */
+const COMMANDS = /gh release (?:edit|create)[^\n]*/g
+
+/**
+ * Every release-notes command a step's script spends. A continuation is joined
+ * first, so a `--title` wrapped onto the line behind is read as the argument it
+ * is; an operator then parts what the join ran together, an `edit` falling back
+ * on a `create` being two commands and each answering for itself.
+ * @param {string} script - What the step runs
+ * @return {Array.<string>} - The commands, whole
+ */
+const commanded = function(script) {
+  return Array.from(
+    script.replaceAll('\\\n', ' ')
+      .replaceAll('||', '\n')
+      .replaceAll('&&', '\n')
+      .matchAll(COMMANDS),
+  ).map((found) => found[0])
+}
+
+/**
+ * Every workflow of the tree, each knowing where it stands, which
+ * release-notes commands it spends and what triggers it.
+ * @type {Array.<{where: string, notes: Array.<string>, on: object}>}
+ */
+const WRITTEN = allFilesFrom(WORKFLOWS)
+  .filter((file) => file.endsWith('.yml'))
+  .map((file) => {
+    const workflow = yaml.parsedFromFile(file)
+    return {
+      where: path.basename(file),
+      notes: Object.values(workflow.jobs)
+        .flatMap((job) => job.steps ?? [])
+        .flatMap((step) => commanded(step.run ?? '')),
+      on: workflow.on,
+    }
+  })
+
+/**
+ * What a stamp's pattern says, as the literal it is.
+ * @param {string} looks - The pattern, as the workflow spells it
+ * @return {string} - The text it stands for
+ */
+const literal = function(looks) {
+  return looks.replaceAll('\\.', '.')
+}
+
+/**
+ * How many places a stamp's pattern reaches, counted as the literal it is.
+ * @param {string} text - What the file holds
+ * @param {string} looks - The pattern, as the workflow spells it
+ * @return {number} - How many times it stands there
+ */
+const reaching = function(text, looks) {
+  return text.split(literal(looks)).length - 1
+}
+
 describe('workflows', function() {
   it('grants every job the scope its own steps write with', function() {
     assert.deepEqual(
@@ -325,7 +501,8 @@ describe('workflows', function() {
         PINNED.filter((one) => one.version !== PINNED[0].version)
           .map((one) => `README.md:${one.where}`),
         [],
-        'cannot pin two versions of one repository in one README, a reader copying whichever block they land on (#897)',
+        'cannot pin two versions of one repository in one README, a ' +
+          'reader copying whichever block they land on (#897)',
       )
     })
 
@@ -334,7 +511,8 @@ describe('workflows', function() {
       PINNED.filter((one) => !REWRITES.some((rule) => rule.test(one.line)))
         .map((one) => `README.md:${one.where}`),
       [],
-      'cannot leave a version pin outside every pattern the up job rewrites with, a pin nothing reaches going stale in silence (#897)',
+      'cannot leave a version pin outside every pattern the up job ' +
+        'rewrites with, a pin nothing reaches going stale in silence (#897)',
     )
   })
 
@@ -344,7 +522,8 @@ describe('workflows', function() {
         .filter((one) => REWRITES.some((rule) => rule.test(one.line)))
         .map((one) => `README.md:${one.where}`),
       [],
-      'cannot rewrite a version this repository does not release to a tag of ours (#897)',
+      'cannot rewrite a version this repository does not release to a tag ' +
+        'of ours (#897)',
     )
   })
 
@@ -353,7 +532,9 @@ describe('workflows', function() {
       REWRITES.filter((rule) => !README.some((line) => rule.test(line)))
         .map((rule) => rule.source),
       [],
-      'cannot keep a pattern no line of the README answers, a rewrite matching nothing being the failure it was written to prevent (#897)',
+      'cannot keep a pattern no line of the README answers, a rewrite ' +
+        'matching nothing being the failure it was written to prevent ' +
+        '(#897)',
     )
   })
 
@@ -365,6 +546,75 @@ describe('workflows', function() {
         ),
         [],
         'cannot exempt a version the README has stopped stating (#897)',
+      )
+    })
+
+  it('spends one stamp on every placeholder the stamped module carries',
+    function() {
+      assert.deepEqual(
+        PLACEHOLDERS.filter(
+          (stands) => STAMPS.filter(
+            (one) => one.rewrites === STAMPED &&
+              literal(one.looks).includes(stands),
+          ).length !== 1,
+        ),
+        [],
+        `cannot leave a placeholder ${STAMPED} carries to no stamp of the ` +
+          'release\'s, the two gates below weighing the substitutions they ' +
+          'find and neither asking that any was found, so a stamp deleted ' +
+          'or retooled ships the placeholder to npm and reads exactly as a ' +
+          'stamp that works (#917)',
+      )
+    })
+  it('reaches one place with every substitution the release stamp spends',
+    function() {
+      assert.deepStrictEqual(
+        STAMPS.filter(
+          (one) => reaching(sourced(one.rewrites), one.looks) !== 1,
+        ).map((one) => `${one.rewrites}: ${one.looks}`),
+        [],
+        'cannot stamp the version with a pattern reaching more of a file ' +
+          'than the field it means, a placeholder standing inside a ' +
+          'dependency of its own being rewritten along with it (#917)',
+      )
+    })
+
+  it('spells every substitution the release stamp spends as a literal',
+    function() {
+      assert.deepStrictEqual(
+        STAMPS.filter((one) => !PLAIN.test(one.looks))
+          .map((one) => `${one.rewrites}: ${one.looks}`),
+        [],
+        'cannot weigh a stamp written as anything but ordinary characters ' +
+          'and escaped dots, what one reaches being read here as the ' +
+          'literal it is (#917)',
+      )
+    })
+
+  it('names a title with every release-notes command any workflow spends',
+    function() {
+      assert.deepStrictEqual(
+        WRITTEN.flatMap(
+          (one) => one.notes.filter((command) => !command.includes('--title'))
+            .map((command) => `${one.where}: ${command}`),
+        ),
+        [],
+        'cannot write release notes without naming the title beside them, ' +
+          'a release left unnamed keeping the name of whatever issue rultor ' +
+          'was asked in (#919)',
+      )
+    })
+
+  it('writes the release notes again on an event that fires after rultor',
+    function() {
+      assert.ok(
+        WRITTEN.some(
+          (one) => one.notes.length > 0 &&
+            (one.on.release?.types ?? []).includes('edited'),
+        ),
+        'cannot leave the release notes to a step bound to the tag push, ' +
+          'rultor writing its own body over the release a minute after ' +
+          'publishing it, so nothing but the edited event lands last (#919)',
       )
     })
 })

@@ -9,6 +9,26 @@ publication date only; detailed notes begin with the Unreleased section.
 
 ## Unreleased
 
+- Anchor what a release writes, both halves of it having been wrong at 0.1.0.
+  The version stamp replaced the string `0.0.0` wherever it stood, and
+  `package.json` holds it three times: the version field, and two
+  `@stryker-mutator/*` pins at `^10.0.0` that contain it. All three moved, so
+  the published tarball named a stryker version nobody has released, and
+  nothing failed — the stamp runs after `npm install`, and `npm publish`
+  installs no devDependencies. The field is `npm version`'s to write now, that
+  command knowing which key it owns, and the two substitutions left over
+  `src/version.js` are held to reaching one place each — beside a third gate
+  reading that module's own placeholders and holding each to exactly one
+  stamp, so a substitution deleted or retooled cannot pass by leaving the
+  other two nothing to weigh. The release notes were
+  the other half: rultor publishes a release a minute before its build ends and
+  writes the body again at the end, so the step bound to the tag push wrote the
+  changelog and lost it — 0.0.12 and 0.1.0 carry rultor's commit log where
+  0.0.13 and 0.0.14 carry the changelog, and no release has ever carried its
+  own version as a title, `--title` having ridden the `create` fallback alone.
+  A workflow on the `release` event, with `edited` among its types, asserts
+  both again after the race, and only where rultor is the sender.
+
 ## 0.1.0 - 2026-09-09
 
 - Introduce `--stable` by what it is for rather than by the size of the set it
