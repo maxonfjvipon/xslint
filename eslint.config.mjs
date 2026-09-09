@@ -90,9 +90,9 @@ const RESTRICTED = [
   },
   {
     selector:
-      "CallExpression[callee.property.name='endsWith'][arguments.0.value=/^\\.xslt?$/], BinaryExpression[operator=/^[!=]={1,2}$/] > Literal[value=/^\\.xslt?$/]",
+      "CallExpression[callee.property.name='endsWith'][arguments.0.value=/\\.xslt?$/], BinaryExpression[operator=/^[!=]={1,2}$/] > Literal[value=/\\.xslt?$/]",
     message:
-      "What names a stylesheet is SUFFIXES in src/xslint.js and nowhere else, asked through suffixed: one hard-coded suffix at the discovery filter left a stylesheet named .xslt invisible, so naming it on the command line printed 'Processed files: 0' and 'No defects found' over a file nothing had read, where the same bytes named .xsl drew four defects (#924). Two sweeps over this repository's own fixtures spelled the same literal and would have missed such a file the same way"
+      "What names a stylesheet is SUFFIXES in src/xslint.js and nowhere else, asked through suffixed: one hard-coded suffix at the discovery filter left a stylesheet named .xslt invisible, so naming it on the command line printed 'Processed files: 0' and 'No defects found' over a file nothing had read, where the same bytes named .xsl drew four defects (#924). What counts is a string ending in one of the two, not one spelling it alone: three sweeps over this repository's own fixtures carried the same literal and would have missed such a file the same way, and the third carried it inside a composite, .fixed.xsl, which an anchored selector walked straight past"
   },
   {
     selector:

@@ -6,6 +6,7 @@
 const {runXslint, xslintStreams} = require('./helpers')
 const {fixed} = require('../src/fixer')
 const {xml} = require('../src/helpers')
+const {suffixed} = require('../src/xslint')
 const assert = require('assert')
 const fs = require('fs')
 const os = require('os')
@@ -39,6 +40,15 @@ const scratch = function(content) {
 }
 
 /**
+ * What marks the stylesheet a fixing run is expected to write. It stands in
+ * front of the suffix rather than being one, so the sweep below reads it under
+ * either spelling of a name: spelled whole as `.fixed.xsl` it is a composite,
+ * which the gate on that suffix walked past while it was anchored (#924).
+ * @type {string}
+ */
+const FIXED = '.fixed.'
+
+/**
  * Every rewritten stylesheet the fixer is expected to produce. A fix spliced
  * with a stale offset eats whatever sits at the tail of its span — an
  * attribute's closing quote, most often — so each of these is parsed back to
@@ -47,7 +57,7 @@ const scratch = function(content) {
  */
 const REWRITTEN = fs
   .readdirSync(path.resolve(__dirname, 'resources', 'fix'))
-  .filter((name) => name.endsWith('.fixed.xsl'))
+  .filter((name) => suffixed(name) && name.includes(FIXED))
 
 /**
  * Cases where two fixes contend for one span, with the text the winner leaves

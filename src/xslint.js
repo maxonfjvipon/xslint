@@ -42,16 +42,21 @@
  * and a word per file that is not a stylesheet would bury a report under a
  * repository's worth of them. A `no-restricted-syntax` selector bans a
  * stylesheet suffix spelled into an `endsWith` or an equality anywhere in the
- * repository, and caught two sweeps over this tree's own fixtures on first
+ * repository, and caught three sweeps over this tree's own fixtures on first
  * contact: `test/grammar-corpus.test.js`, which claims every expression the
- * repository carries, and `test/tiers.test.js`, over the fix fixtures — both
- * of which would have missed such a file exactly as discovery did. The second
- * marks a fixed stylesheet `.fixed.` in front of the suffix rather than as one
- * of them, so the marker holds under either spelling. What the rows asserting
- * all this must not do is take the list from the code: derived from
- * `SUFFIXES`, the row for a suffix went away with the suffix, so the one
- * mutation they exist to catch left the suite green. They spell the two out,
- * and a gate holds the two lists to each other from both sides.
+ * repository carries, and `test/tiers.test.js` and `test/fixer.deep.test.js`,
+ * both over the fix fixtures — every one of which would have missed such a
+ * file exactly as discovery did. What the selector asks is whether a string
+ * *ends* in one of the two, never whether it spells one alone, and the third
+ * sweep is the reason: it read `.fixed.xsl` whole, a composite an anchored
+ * pattern walks straight past, so the gate written against #924 carried #924's
+ * own blind spot until the anchor came off. Those two mark a fixed stylesheet
+ * `.fixed.` in front of the suffix rather than as one of them, so the marker
+ * holds under either spelling. What the rows asserting all this must not do is
+ * take the list from the code: derived from `SUFFIXES`, the row for a suffix
+ * went away with the suffix, so the one mutation they exist to catch left the
+ * suite green. They spell the two out, and a gate holds the two lists to each
+ * other from both sides.
  *
  * The exit code it sets is `process.exitCode` and never `process.exit`, which
  * ends the process where it stands and abandons every write the kernel has not
