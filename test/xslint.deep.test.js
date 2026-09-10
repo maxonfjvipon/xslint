@@ -6,7 +6,7 @@
 const {
   runXslint, xslintStatus, xslintStreams, xslintUnread,
 } = require('./helpers')
-const {SUFFIXES} = require('../src/xslint')
+const {SUFFIXES, excluded, pruned} = require('../src/xslint')
 const assert = require('assert')
 const version = require('../src/version')
 const path = require('path')
@@ -77,6 +77,48 @@ const drawn = function(printed) {
     .filter((found) => found !== null)
     .map((found) => found[1])
 }
+
+/**
+ * What a pattern covers, and so what the walk may leave unopened. One reaching
+ * every file under a directory is safe to skip; one naming the directory alone
+ * excludes a path no walk hands back, and a negated one excludes what stands
+ * anywhere else, so skipping on either drops the stylesheets under it from a
+ * report that keeps them (#923).
+ * @type {Array.<{pattern: string, dir: string, prunes: boolean}>}
+ */
+const PRUNING = [
+  {pattern: 'shut/**', dir: 'shut', prunes: true},
+  {pattern: '**/shut/**', dir: 'shut', prunes: true},
+  {pattern: '**/shut/**', dir: 'over/shut', prunes: true},
+  {pattern: '**/shut/**', dir: '.hidden/shut', prunes: true},
+  {pattern: '{shut,barred}/**', dir: 'barred', prunes: true},
+  {pattern: 'shut/**', dir: 'open', prunes: false},
+  {pattern: '**/shut', dir: 'shut', prunes: false},
+  {pattern: 'shut', dir: 'shut', prunes: false},
+  {pattern: 'shut/**/*.xsl', dir: 'shut', prunes: false},
+  {pattern: '!shut/**', dir: 'shut/deeper', prunes: false},
+  {pattern: '!shut/**', dir: 'open', prunes: false},
+]
+
+/**
+ * Where a stylesheet may stand inside a directory the walk is about to skip.
+ * Every one has to be excluded already for skipping to be sound, a prune
+ * being an optimisation over what the report holds and never a second opinion
+ * about it. One opens with a dot, which a wildcard passes over unless told
+ * not to.
+ * @type {Array.<string>}
+ */
+const COVERED = [
+  'sheet.xsl', 'under/sheet.xsl', 'under/deeper/sheet.xsl',
+  '.hidden/sheet.xsl',
+]
+
+/**
+ * A stylesheet nothing about its content matters in, for a run whose subject
+ * is which files were read.
+ * @type {string}
+ */
+const CLEAN = 'test/resources/excluded/sheet.xsl'
 
 describe('xslint', function() {
   it('should print its own version', function() {
@@ -354,6 +396,67 @@ describe('xslint', function() {
       '--config=test/resources/excluded/.xslint.yml',
     ])
     assert.ok(streams.stderr.includes('Processed files: 0'))
+  })
+  PRUNING.forEach(({pattern, dir, prunes}) => {
+    it(`should answer ${prunes} to leaving ${dir} unopened under ${pattern}`,
+      function() {
+        const base = path.resolve(os.tmpdir(), 'yard')
+        assert.equal(
+          pruned(path.join(base, dir), [pattern], base),
+          prunes,
+          `the walk reads ${pattern} as covering ${dir} or as leaving it ` +
+            'open, against what the row says, and which of the two decides ' +
+            'whether an exclusion costs the whole walk or nothing (#923)',
+        )
+      })
+  })
+  it('should never leave unopened a directory holding a file it reports',
+    function() {
+      const base = path.resolve(os.tmpdir(), 'yard')
+      assert.deepEqual(
+        PRUNING
+          .filter(({pattern, dir}) => pruned(
+            path.join(base, dir), [pattern], base,
+          ))
+          .filter(({pattern, dir}) => COVERED.some((name) => !excluded(
+            path.join(base, dir, name), [pattern], base,
+          )))
+          .map(({pattern, dir}) => `${pattern} over ${dir}`),
+        [],
+        'a pattern the walk skips a directory on leaves a stylesheet under ' +
+          'it in the report, so the run would answer with fewer defects than ' +
+          'the same configuration read as a filter (#923)',
+      )
+    })
+  it('should never open a directory the config excludes', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))
+    const shut = path.join(dir, 'shut')
+    fs.mkdirSync(shut)
+    fs.copyFileSync(CLEAN, path.join(shut, 'buried.xsl'))
+    fs.copyFileSync(CLEAN, path.join(dir, 'kept.xsl'))
+    const cfg = path.join(dir, '.xslint.yml')
+    fs.writeFileSync(cfg, 'exclude:\n  - "shut/**"\n')
+    fs.chmodSync(shut, 0o000)
+    let opens = true
+    try {
+      fs.readdirSync(shut)
+    } catch {
+      opens = false
+    }
+    if (opens) {
+      fs.chmodSync(shut, 0o755)
+      fs.rmSync(dir, {recursive: true, force: true})
+      this.skip()
+    }
+    const streams = xslintStreams([dir, `--config=${cfg}`])
+    fs.chmodSync(shut, 0o755)
+    fs.rmSync(dir, {recursive: true, force: true})
+    assert.ok(
+      streams.stderr.includes('Processed files: 1'),
+      'the run opened a directory every pattern of its configuration ' +
+        'covers, which is the whole of what an exclusion used to cost: this ' +
+        'one cannot be read at all, so reaching it is the failure (#923)',
+    )
   })
   it('should apply max-warnings from the config file', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xslint-'))

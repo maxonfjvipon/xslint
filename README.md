@@ -138,7 +138,8 @@ xslint path/to/your/file1.xsl path/to/your/file2.xslt
 Either spelling of the name is read, `.xsl` and `.xslt`. A directory is walked
 for both and everything else in it is stepped over, while a file named on the
 command line under any other suffix earns a warning rather than being counted
-as clean.
+as clean. A `.git` or a `node_modules` is never opened, wherever in the tree it
+stands.
 
 You can suppress some [checks][checks] by using `--suppress` option:
 
@@ -201,7 +202,11 @@ stable: false                           # default for --stable
   `off`, `warning`, or `error`. `off` disables the check (like `--suppress`);
   `warning` and `error` re-grade its severity.
 - **`exclude`** lists globs, relative to the config file's own directory, whose
-  matching files are not linted.
+  matching files are not linted. A pattern covering everything under a
+  directory — `dir/**` — also stops the walk descending it, so an exclusion
+  costs nothing rather than the walk it then throws away. A wildcard here reads
+  a name opening with a dot like any other, so `dir/**` covers a
+  `dir/.hidden/sheet.xsl` as much as the rest of what stands under `dir`.
 - **`max-warnings`**, **`log-level`**, **`quiet`**, and **`stable`** set the
   defaults for the matching command-line flags. A check named **verbatim** under
   `rules` outranks `stable`, so grading a nursery check `warning` or `error`
