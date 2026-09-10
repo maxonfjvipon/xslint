@@ -90,6 +90,7 @@ const PRUNING = [
   {pattern: 'shut/**', dir: 'shut', prunes: true},
   {pattern: '**/shut/**', dir: 'shut', prunes: true},
   {pattern: '**/shut/**', dir: 'over/shut', prunes: true},
+  {pattern: '**/shut/**', dir: '.hidden/shut', prunes: true},
   {pattern: '{shut,barred}/**', dir: 'barred', prunes: true},
   {pattern: 'shut/**', dir: 'open', prunes: false},
   {pattern: '**/shut', dir: 'shut', prunes: false},
