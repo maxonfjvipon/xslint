@@ -81,8 +81,9 @@ const drawn = function(printed) {
 /**
  * What a pattern covers, and so what the walk may leave unopened. One reaching
  * every file under a directory is safe to skip; one naming the directory alone
- * excludes a path no walk ever hands back, so skipping on it would drop the
- * stylesheets standing under it from the report (#923).
+ * excludes a path no walk hands back, and a negated one excludes what stands
+ * anywhere else, so skipping on either drops the stylesheets under it from a
+ * report that keeps them (#923).
  * @type {Array.<{pattern: string, dir: string, prunes: boolean}>}
  */
 const PRUNING = [
@@ -94,16 +95,22 @@ const PRUNING = [
   {pattern: '**/shut', dir: 'shut', prunes: false},
   {pattern: 'shut', dir: 'shut', prunes: false},
   {pattern: 'shut/**/*.xsl', dir: 'shut', prunes: false},
+  {pattern: '!shut/**', dir: 'shut/deeper', prunes: false},
+  {pattern: '!shut/**', dir: 'open', prunes: false},
 ]
 
 /**
  * Where a stylesheet may stand inside a directory the walk is about to skip.
- * Every one of them has to be excluded already for skipping to be sound, a
- * prune being an optimisation over what the report holds and never a second
- * opinion about it.
+ * Every one has to be excluded already for skipping to be sound, a prune
+ * being an optimisation over what the report holds and never a second opinion
+ * about it. One opens with a dot, which a wildcard passes over unless told
+ * not to.
  * @type {Array.<string>}
  */
-const COVERED = ['sheet.xsl', 'under/sheet.xsl', 'under/deeper/sheet.xsl']
+const COVERED = [
+  'sheet.xsl', 'under/sheet.xsl', 'under/deeper/sheet.xsl',
+  '.hidden/sheet.xsl',
+]
 
 /**
  * A stylesheet nothing about its content matters in, for a run whose subject

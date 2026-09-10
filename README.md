@@ -204,7 +204,9 @@ stable: false                           # default for --stable
 - **`exclude`** lists globs, relative to the config file's own directory, whose
   matching files are not linted. A pattern covering everything under a
   directory — `dir/**` — also stops the walk descending it, so an exclusion
-  costs nothing rather than the walk it then throws away.
+  costs nothing rather than the walk it then throws away. A wildcard here reads
+  a name opening with a dot like any other, so `dir/**` covers a
+  `dir/.hidden/sheet.xsl` as much as the rest of what stands under `dir`.
 - **`max-warnings`**, **`log-level`**, **`quiet`**, and **`stable`** set the
   defaults for the matching command-line flags. A check named **verbatim** under
   `rules` outranks `stable`, so grading a nursery check `warning` or `error`
