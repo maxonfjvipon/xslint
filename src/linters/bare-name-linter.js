@@ -57,6 +57,15 @@ const SELECTING = ['apply-templates', 'copy-of', 'for-each', 'value-of']
 const NAME = 'name'
 
 /**
+ * The attributes a variable binds a value in, the second being the shadow
+ * spelling XSLT 3.0 gives any attribute of an XSLT element. A variable bound
+ * by content instead holds a tree of its own, which is why the two are asked
+ * for (#922).
+ * @type {Array.<string>}
+ */
+const BINDS = [SELECT, `_${SELECT}`]
+
+/**
  * The nearest ancestor template of the element, which is as far as a variable
  * declared inside one reaches.
  * @param {Element} element - The element to climb from
@@ -73,6 +82,21 @@ const scoped = function(element) {
     template = node
   }
   return template
+}
+
+/**
+ * Whether the node is an `xsl:variable` binding a name to an expression, which
+ * is the only declaration a bare name can be confused with. A variable bound
+ * by content holds a parentless tree instead, whose nodes belong to no
+ * document, so `node() except $errors` subtracts nothing and the bare name
+ * beside it is the element the template meant to replace (#922).
+ * @param {Node} node - A node of the stylesheet
+ * @return {boolean} - True when it takes a name a bare one collides with
+ */
+const binding = function(node) {
+  return node.nodeType === 1 && node.namespaceURI === XSLT &&
+    node.localName === ELEMENTS.declares && node.hasAttribute(NAME) &&
+    BINDS.some((one) => node.hasAttribute(one))
 }
 
 /**
@@ -97,8 +121,7 @@ const declared = function(template, element) {
       reached = true
     }
     if (!reached) {
-      if (node.nodeType === 1 && node.namespaceURI === XSLT &&
-        node.localName === ELEMENTS.declares && node.hasAttribute(NAME)) {
+      if (binding(node)) {
         taken.add(node.getAttribute(NAME))
       }
       Array.from(node.childNodes).forEach(visit)
@@ -125,10 +148,7 @@ const globals = function(xsl) {
   if (!GLOBALS.has(xsl)) {
     GLOBALS.set(xsl, new Set(
       Array.from(xsl.documentElement.childNodes)
-        .filter(
-          (node) => node.nodeType === 1 && node.namespaceURI === XSLT &&
-            node.localName === ELEMENTS.declares && node.hasAttribute(NAME),
-        )
+        .filter(binding)
         .map((node) => node.getAttribute(NAME)),
     ))
   }
