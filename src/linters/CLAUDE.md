@@ -79,6 +79,12 @@ them runs once per expression: spelled the other way the stage read 7.08% of
 its run against a bar of 7, and `test/scaling.test.js` is what said so rather
 than a reviewer.
 
+What takes a name is a variable bound by `@select`, in either spelling, rather
+than every `xsl:variable` carrying a `@name`. One bound by *content* holds a
+parentless tree, whose nodes are members of no `node()` the source yields, so
+`select="(node() except errors)|@*"` names the child element it replaces and
+the `$errors` #458 offers subtracts nothing at all (#922).
+
 ## `src/linters/*-linter.js`
 
 Code-based `checks/format/*.yaml`, one construct each (axis, namespace, count, name, ...); see the

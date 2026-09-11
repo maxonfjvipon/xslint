@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Max Trunnikov
+# SPDX-License-Identifier: MIT
+---
+pack: confusing-variable-and-node
+found:
+  amount: 0
+  positions: [ ]
+  fixes: [ ]
+input: |-
+  <?xml version="1.0"?>
+  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" id="style1">
+    <xsl:output encoding="UTF-8" method="xml"/>
+    <xsl:variable name="header">
+      <title/>
+    </xsl:variable>
+    <xsl:template match="/objects">
+      <xsl:variable name="errors" as="element()*">
+        <xsl:apply-templates select="metas"/>
+      </xsl:variable>
+      <xsl:copy>
+        <xsl:apply-templates select="(node() except errors)|@*"/>
+        <xsl:copy-of select="errors"/>
+        <xsl:value-of select="header"/>
+        <xsl:for-each select="errors | header[1]">
+          <lomonosov/>
+        </xsl:for-each>
+      </xsl:copy>
+    </xsl:template>
+  </xsl:stylesheet>
