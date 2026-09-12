@@ -151,9 +151,6 @@ contrib/samples/assembly/assemble.xsl:309:3 use-choose-without-otherwise
 contrib/samples/assembly/assemble.xsl:341:21 string-length-compared-to-zero suggestion "$fileref = ''"
 contrib/samples/assembly/assemble.xsl:349:21 count-compared-to-zero fix "not($ref.content/*)"
 contrib/samples/assembly/assemble.xsl:386:13 use-choose-without-otherwise
-contrib/samples/assembly/assemble.xsl:409:27 name-compared-to-string
-contrib/samples/assembly/assemble.xsl:410:27 name-compared-to-string
-contrib/samples/assembly/assemble.xsl:411:27 name-compared-to-string
 contrib/samples/assembly/topic-maker-chunk.xsl:1:1 missing-id-in-stylesheet
 contrib/samples/assembly/topic-maker-chunk.xsl:3:17 redundant-namespace-declarations fix ""
 contrib/samples/assembly/topic-maker-chunk.xsl:4:17 leaking-result-namespace suggestion "exsl d"
@@ -722,15 +719,7 @@ xsl/assembly/assemble.xsl:356:3 use-choose-without-otherwise
 xsl/assembly/assemble.xsl:383:23 string-length-compared-to-zero suggestion "$fragment.id != ''"
 xsl/assembly/assemble.xsl:406:21 string-length-compared-to-zero suggestion "$fileref = ''"
 xsl/assembly/assemble.xsl:433:21 count-compared-to-zero fix "not($ref.content)"
-xsl/assembly/assemble.xsl:512:29 name-compared-to-string
-xsl/assembly/assemble.xsl:513:29 name-compared-to-string
-xsl/assembly/assemble.xsl:514:29 name-compared-to-string
-xsl/assembly/assemble.xsl:515:29 name-compared-to-string
 xsl/assembly/assemble.xsl:530:13 use-choose-without-otherwise
-xsl/assembly/assemble.xsl:554:27 name-compared-to-string
-xsl/assembly/assemble.xsl:555:27 name-compared-to-string
-xsl/assembly/assemble.xsl:556:27 name-compared-to-string
-xsl/assembly/assemble.xsl:557:27 name-compared-to-string
 xsl/assembly/assemble.xsl:589:7 use-choose-without-otherwise
 xsl/assembly/assemble.xsl:621:21 string-length-compared-to-zero suggestion "$fileref != ''"
 xsl/assembly/effectivity.xsl:2:1 missing-id-in-stylesheet
@@ -3053,7 +3042,6 @@ xsl/manpages/endnotes.xsl:263:25 name-compared-to-string
 xsl/manpages/endnotes.xsl:264:25 name-compared-to-string
 xsl/manpages/endnotes.xsl:348:5 setting-value-of-variable-incorrectly
 xsl/manpages/endnotes.xsl:419:3 setting-value-of-variable-incorrectly
-xsl/manpages/endnotes.xsl:504:36 name-compared-to-string
 xsl/manpages/info.xsl:2:1 missing-id-in-stylesheet
 xsl/manpages/info.xsl:2:1 too-many-templates
 xsl/manpages/info.xsl:275:5 use-choose-without-otherwise
@@ -3116,9 +3104,7 @@ xsl/manpages/utility.xsl:2:1 missing-id-in-stylesheet
 xsl/manpages/utility.xsl:2:1 too-many-templates
 xsl/manpages/utility.xsl:56:5 unused-function-template-parameter
 xsl/manpages/utility.xsl:134:5 setting-value-of-variable-incorrectly
-xsl/manpages/utility.xsl:273:54 name-compared-to-string
 xsl/manpages/utility.xsl:302:91 redundant-whitespace fix " "
-xsl/manpages/utility.xsl:303:54 name-compared-to-string
 xsl/manpages/utility.xsl:307:13 use-choose-without-otherwise
 xsl/manpages/utility.xsl:348:5 use-single-option-for-choose
 xsl/manpages/utility.xsl:388:5 blank-nested-if
