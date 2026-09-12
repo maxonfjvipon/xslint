@@ -5,7 +5,7 @@
 
 const {GAP, WHITESPACE} = require('./tokens')
 const {PREFIXES, nodes, satisfies, strings} = require('./xpath')
-const {attributed, named, ranked} = require('./tree')
+const {EVERY, attributed, named, ranked} = require('./tree')
 const {parsed} = require('./grammar')
 const {ASSUMED, filters} = require('./syntax')
 const {conjunctsOf, predicateOf} = require('./predicates')
@@ -17,14 +17,6 @@ const {conjunctsOf, predicateOf} = require('./predicates')
  * @type {Array}
  */
 const NOTHING = Object.freeze([])
-
-/**
- * How a selector spells every name there is, which is a shape of axis rather
- * than a name to bucket: `@*` behind a descendant step is every attribute of a
- * document, and that is a sequence one walk answers whole.
- * @type {string}
- */
-const EVERY = '*'
 
 /**
  * The splits already taken. A selector is one string and its split one answer,
@@ -818,7 +810,6 @@ const valued = function(xsl, xpath) {
 }
 
 module.exports = {
-  EVERY,
   answered,
   chosen,
   weighed,

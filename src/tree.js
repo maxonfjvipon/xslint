@@ -7,8 +7,8 @@
  * `walked`, `named`, `attributed` and `holding` — one pass over a document,
  * remembered against it, and the axis every served selector comes off.
  * `named` buckets each element twice since #811's wildcard phase, once under
- * its own name and once under its namespace beside a literal `*`, which no
- * local name is — so `//xsl:*` is a bucket the walk already holds rather than
+ * its own name and once under its namespace beside `EVERY`, which no local
+ * name is — so `//xsl:*` is a bucket the walk already holds rather than
  * the one shape past a name that a sweep still paid for. That second key has
  * to be the *walk's* rather than a gather at the door, and the difference is
  * the whole of what the phase buys: building the wildcard's candidates by
@@ -192,6 +192,16 @@ const ranked = function(xsl) {
 const NAMED = new WeakMap()
 
 /**
+ * How XPath spells every name there is, which no local name can be: the walk
+ * keys a namespace's every-element bucket with it, and `src/selectors.js`
+ * reads that key back and spells an `@*` axis with it too. One constant, and
+ * not two that have to agree — the walk keyed the bucket with a literal no
+ * reader of the file spending it could see (#893).
+ * @type {string}
+ */
+const EVERY = '*'
+
+/**
  * Put an element in the bucket one key names, opening that bucket where the
  * element is the first to want it.
  * @param {Map.<string, Array.<Node>>} buckets - What the walk has bucketed
@@ -227,7 +237,7 @@ const named = function(xsl) {
       for (let kid = node.firstChild; kid !== null; kid = kid.nextSibling) {
         if (kid.nodeType === 1) {
           bucket(buckets, `${kid.namespaceURI} ${kid.localName}`, kid)
-          bucket(buckets, `${kid.namespaceURI} *`, kid)
+          bucket(buckets, `${kid.namespaceURI} ${EVERY}`, kid)
           rank.set(kid, rank.size)
           visit(kid)
         }
@@ -240,6 +250,7 @@ const named = function(xsl) {
 }
 
 module.exports = {
+  EVERY,
   attributed,
   holding,
   named,
