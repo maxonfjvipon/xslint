@@ -165,6 +165,14 @@ const WIDENED = {
     "What a namespace's every-element bucket is keyed by is EVERY in src/tree.js and nowhere else: the walk keyed it with a literal '*' while src/selectors.js read that key back through the constant, so the two had to agree and nothing held them together — changing EVERY turned eight tests red across test/selectors.test.js and test/predicates.test.js, every one of them naming a union or a wildcard that had stopped merging and not one of them naming the file that spelled the literal (#893)"
 };
 
+const HOMED = {
+  selector:
+    "VariableDeclarator[init.value='*'], " +
+    "VariableDeclarator[init.quasis.length=1][init.quasis.0.value.cooked='*']",
+  message:
+    "Where the constant naming every name there is lives is src/tree.js and nowhere else: src/selectors.js kept an EVERY of its own while the walk keyed its bucket with a literal, so one key wore two spellings a file apart and a drift between them was reported by nothing — WIDENED beside this one bans the literal, which is how the key is written rather than where the constant belongs, so the defect this ticket is named after goes back in under its own title unless a second declaration is refused too (#893)"
+};
+
 const SPRAWLING = ["src/grammar.js"];
 
 export default defineConfig([
@@ -235,6 +243,15 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
+          VERSIONED, GRADED, QUOTED, WIDENED,
+          HOMED]
+    }
+  },
+  {
+    files: ["src/tree.js"],
+    rules: {
+      "no-restricted-syntax":
+        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
           VERSIONED, GRADED, QUOTED, WIDENED]
     }
   },
@@ -243,7 +260,8 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          VERSIONED, QUOTED, WIDENED]
+          VERSIONED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
@@ -251,14 +269,16 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          GRADED, QUOTED, WIDENED]
+          GRADED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
     files: ["src/tokens.js"],
     rules: {
       "no-restricted-syntax":
-        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED, GRADED, WIDENED]
+        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED, GRADED, WIDENED,
+          HOMED]
     }
   },
   {
@@ -266,7 +286,8 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, VERSIONED,
-          GRADED, QUOTED, WIDENED]
+          GRADED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
