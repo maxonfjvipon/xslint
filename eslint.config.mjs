@@ -158,6 +158,21 @@ const GRADED = {
     "Which tier a fix lands in is the check's fix: in its own YAML and nowhere else, src/xslint.js stamping every defect from what the check declares: sixteen linters and fixers asserted a tier beside it, so what a check said and what a user was offered could disagree with nothing in the tree to notice (#899). Declare it in the check and let the run read it. src/linters/double-slash-linter.js is the one exemption, starts-with-double-slash being safe in a @select and a suggestion on an xsl:template whose priority a dropped // shifts, which is a property of the place a defect stands rather than of the check (#583)"
 };
 
+const WIDENED = {
+  selector:
+    "TemplateElement[value.cooked=/ \\*$/]",
+  message:
+    "What a namespace's every-element bucket is keyed by is EVERY in src/tree.js and nowhere else: the walk keyed it with a literal '*' while src/selectors.js read that key back through the constant, so the two had to agree and nothing held them together — changing EVERY turned eight tests red across test/selectors.test.js and test/predicates.test.js, every one of them naming a union or a wildcard that had stopped merging and not one of them naming the file that spelled the literal (#893)"
+};
+
+const HOMED = {
+  selector:
+    "VariableDeclarator[init.value='*'], " +
+    "VariableDeclarator[init.quasis.length=1][init.quasis.0.value.cooked='*']",
+  message:
+    "Where the constant naming every name there is lives is src/tree.js and nowhere else: src/selectors.js kept an EVERY of its own while the walk keyed its bucket with a literal, so one key wore two spellings a file apart and a drift between them was reported by nothing — WIDENED beside this one bans the literal, which is how the key is written rather than where the constant belongs, so the defect this ticket is named after goes back in under its own title unless a second declaration is refused too (#893)"
+};
+
 const SPRAWLING = ["src/grammar.js"];
 
 export default defineConfig([
@@ -228,7 +243,16 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          VERSIONED, GRADED, QUOTED]
+          VERSIONED, GRADED, QUOTED, WIDENED,
+          HOMED]
+    }
+  },
+  {
+    files: ["src/tree.js"],
+    rules: {
+      "no-restricted-syntax":
+        ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
+          VERSIONED, GRADED, QUOTED, WIDENED]
     }
   },
   {
@@ -236,7 +260,8 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          VERSIONED, QUOTED]
+          VERSIONED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
@@ -244,14 +269,16 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, CLASSED,
-          GRADED, QUOTED]
+          GRADED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
     files: ["src/tokens.js"],
     rules: {
       "no-restricted-syntax":
-        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED, GRADED]
+        ["error", ...RESTRICTED, STAGED, CLASSED, VERSIONED, GRADED, WIDENED,
+          HOMED]
     }
   },
   {
@@ -259,7 +286,8 @@ export default defineConfig([
     rules: {
       "no-restricted-syntax":
         ["error", ...RESTRICTED, STAGED, OPAQUE, TRIVIA, PAIRED, VERSIONED,
-          GRADED, QUOTED]
+          GRADED, QUOTED, WIDENED,
+          HOMED]
     }
   },
   {
