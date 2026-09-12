@@ -3,9 +3,35 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {VALUED, calls, gathered, offsetOf, operatorOf, stringOf,
-  textOf} = require('../syntax')
-const {qualified} = require('../tokens')
+/*
+ * `name-compared-to-string` read what a comparison held and never where it
+ * stood, and a node test is a question about the axis in force. The `self`
+ * axis's principal node kind is element, so a name test under it is false for
+ * every attribute and every namespace node: `@*[name() != 'as']` drew the
+ * advice to write `@*[not(self::as)]`, a predicate that excludes nothing at
+ * all. Saxon 12.9 keeps every attribute through the second where the first
+ * drops the one it names, so the rewrite copied into the result the very
+ * attribute the stylesheet meant to leave out — and it is a suggestion an
+ * editor offers in one click. Sixty-two of them stood over the three corpora,
+ * `@*[name(.) = 'xml:id']` and `namespace::*[name() = '']` among them (#930).
+ *
+ * What is withheld is the whole report and not the fix alone, since the
+ * message names the rewrite it cannot make. XPath 2.0 does have a node test
+ * for the attribute half — `self::attribute(as)`, a kind test rather than a
+ * name test — but that is a rewrite of another shape, and 1.0 has none at all,
+ * so the string comparison is the only way to put the question there.
+ *
+ * The axis is carried down a walk rather than climbed to, because the parse
+ * holds no parent pointers and a step holds its predicates as its children.
+ * The nearest step above a comparison is therefore the one that answers, which
+ * is a distinction rather than a convenience: the `name()` of
+ * `@*[../child::zed[name() = 'gee']]` is asked of an element and still
+ * reported, where the one in `@*[name() != 'as']` is asked of an attribute.
+ */
+
+const {VALUED, calls, offsetOf, operatorOf, parseOf, stringOf,
+  textOf, tokensOf} = require('../syntax')
+const {TOKENS, qualified} = require('../tokens')
 const {metaOf, suppressed, defect} = require('../checks')
 const {MODERN, since} = require('../xsl-version')
 const {logger} = require('../logger')
@@ -43,6 +69,47 @@ const NAMING = ['name', 'local-name']
  * @type {Array.<string>}
  */
 const OPERATORS = ['=', '!=']
+
+/**
+ * The axes whose principal node kind is not element, so no `self::` name test
+ * ever matches what they select. `self::as` is false for every attribute node,
+ * which is how `@*[name() != 'as']` came to be rewritten into a filter that
+ * excludes nothing and the attribute the stylesheet meant to drop was copied
+ * into the result (#930).
+ * @type {Array.<string>}
+ */
+const UNNAMED = [TOKENS.AT, TOKENS.ATTRIBUTE, TOKENS.NAMESPACE]
+
+/**
+ * Every comparison of the tree, each with whether a node test standing in its
+ * place would be asked about a node a name names. A step holds its predicates
+ * as its children, so the nearest step above a comparison is the one whose axis
+ * decides that: the `name()` of `@*[../child::zed[name() = 'gee']]` is asked of
+ * an element where the one in `@*[name() != 'as']` is asked of an attribute.
+ * @param {{node: Node, expression: string, pattern: boolean}} found - Record
+ * @return {Array.<{node: object, names: boolean}>} - The comparisons found
+ */
+const weighed = function(found) {
+  const held = []
+  /**
+   * Take the node where it is a comparison, then walk what it holds, under its
+   * own axis where the node is a step.
+   * @param {object} node - A node of the tree
+   * @param {boolean} names - Whether the axis in force selects a named node
+   */
+  const visit = function(node, names) {
+    if (VALUED.includes(node.kind)) {
+      held.push({node, names})
+    }
+    let inner = names
+    if (node.kind === 'step') {
+      inner = !UNNAMED.includes(tokensOf(found, node)[0].type)
+    }
+    node.children.forEach((kid) => visit(kid, inner))
+  }
+  visit(parseOf(found).tree, true)
+  return held
+}
 
 /**
  * The standard function a node calls about the *current* node — `name` or
@@ -124,10 +191,10 @@ const test = function(local, operator, literal, modern) {
  */
 const comparisons = function(found, modern) {
   const results = []
-  for (const node of gathered(found, VALUED)) {
+  for (const {node, names} of weighed(found)) {
     const pair = paired(found, node)
     const operator = operatorOf(found, node.children[0], node.children[1])
-    if (pair !== null && OPERATORS.includes(operator)) {
+    if (pair !== null && OPERATORS.includes(operator) && names) {
       results.push({
         offset: offsetOf(found, node),
         value: textOf(found, node),

@@ -28,3 +28,12 @@ name sorts, which no node test expresses — and so is a comparison about anothe
 node, `name(@a) = 'x'` speaking of the attribute rather than of the element a
 `self::` step would match. In a 1.0 stylesheet a `local-name()` comparison has no
 shorter equivalent at all, the `*:x` wildcard being XPath 2.0's.
+
+The axis under which the comparison stands settles it as well. The `self` axis
+selects elements, so `self::as` is false for every attribute and every namespace
+node: in `@*[name() != 'as']` the name asked for is an attribute's, and the node
+test that looks like its equivalent excludes nothing at all — the attribute the
+predicate meant to drop survives it along with the rest. XPath 2.0 asks that one
+with a kind test, `@*[not(self::attribute(as))]`, and a 1.0 stylesheet has no
+node test for it at all, so there the string comparison is the only way to put
+the question.
